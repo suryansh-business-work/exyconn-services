@@ -1,0 +1,64 @@
+# =============================================================================
+# Exyconn Services - Docker Compose
+# UI: Port 4003 | Server: Port 4004
+# Domains: services.exyconn.com | exyconn-service-server.exyconn.com
+# =============================================================================
+
+services:
+  # ============================================================================
+  # SERVICES UI (services.exyconn.com) - Port 4003
+  # ============================================================================
+  services-ui:
+    container_name: exyconn-services-ui
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:4004}
+    restart: unless-stopped
+    ports:
+      - "4003:80"
+    depends_on:
+      services-server:
+        condition: service_started
+    networks:
+      - services-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # SERVICES SERVER (exyconn-service-server.exyconn.com) - Port 4004
+  # ============================================================================
+  services-server:
+    container_name: exyconn-services-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4004:4004"
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=4004
+    networks:
+      - services-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:4004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  services-network:
+    driver: bridge
+    name: exyconn-services-network

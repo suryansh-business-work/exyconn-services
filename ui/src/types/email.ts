@@ -128,7 +128,7 @@ export interface EmailLog {
   cc?: string[];
   bcc?: string[];
   subject: string;
-  status: 'sent' | 'failed' | 'pending';
+  status: "sent" | "failed" | "pending";
   messageId?: string;
   error?: string;
   variables: Record<string, string>;

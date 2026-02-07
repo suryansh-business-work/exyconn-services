@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -13,14 +13,14 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Add, Search } from '@mui/icons-material';
-import { PageBreadcrumb, ActionButton } from '../../components/common';
-import OrganizationTable from './OrganizationTable';
-import OrganizationFormDialog from './OrganizationFormDialog';
-import { organizationApi } from '../../api/organizationApi';
-import { Organization, OrganizationFormValues } from '../../types/organization';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { Add, Search } from "@mui/icons-material";
+import { PageBreadcrumb, ActionButton } from "../../components/common";
+import OrganizationTable from "./OrganizationTable";
+import OrganizationFormDialog from "./OrganizationFormDialog";
+import { organizationApi } from "../../api/organizationApi";
+import { Organization, OrganizationFormValues } from "../../types/organization";
 
 interface OrganizationsPageProps {
   onOrgCreated?: () => Promise<void>;
@@ -31,10 +31,12 @@ const OrganizationsPage = ({ onOrgCreated }: OrganizationsPageProps) => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('createdAt');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [orgTypeFilter, setOrgTypeFilter] = useState<'' | 'Service' | 'Product'>('');
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [orgTypeFilter, setOrgTypeFilter] = useState<
+    "" | "Service" | "Product"
+  >("");
   const [isLoading, setIsLoading] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
@@ -46,14 +48,19 @@ const OrganizationsPage = ({ onOrgCreated }: OrganizationsPageProps) => {
   const fetchOrganizations = useCallback(async () => {
     setIsLoading(true);
     try {
-      const params: Record<string, string | number> = { page, limit, sortBy, sortOrder };
+      const params: Record<string, string | number> = {
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      };
       if (search) params.search = search;
       if (orgTypeFilter) params.orgType = orgTypeFilter;
       const response = await organizationApi.list(params);
       setOrganizations(response.data);
       setTotal(response.total);
     } catch (error) {
-      console.error('Failed to fetch organizations:', error);
+      console.error("Failed to fetch organizations:", error);
     } finally {
       setIsLoading(false);
     }
@@ -86,7 +93,7 @@ const OrganizationsPage = ({ onOrgCreated }: OrganizationsPageProps) => {
       setFormOpen(false);
       fetchOrganizations();
     } catch (error) {
-      console.error('Failed to save organization:', error);
+      console.error("Failed to save organization:", error);
     } finally {
       setIsSaving(false);
     }
@@ -107,7 +114,7 @@ const OrganizationsPage = ({ onOrgCreated }: OrganizationsPageProps) => {
       fetchOrganizations();
       await onOrgCreated?.();
     } catch (error) {
-      console.error('Failed to delete organization:', error);
+      console.error("Failed to delete organization:", error);
     } finally {
       setIsDeleting(false);
     }
@@ -115,23 +122,38 @@ const OrganizationsPage = ({ onOrgCreated }: OrganizationsPageProps) => {
 
   const handleSortChange = (field: string) => {
     if (sortBy === field) {
-      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortBy(field);
-      setSortOrder('asc');
+      setSortOrder("asc");
     }
   };
 
   return (
     <Box>
       <PageBreadcrumb
-        items={[{ label: 'Home', href: '/welcome' }, { label: 'Manage Organizations' }]}
+        items={[
+          { label: "Home", href: "/welcome" },
+          { label: "Manage Organizations" },
+        ]}
       />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
         <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18 }}>
           Manage Organizations
         </Typography>
-        <Button variant="contained" size="small" startIcon={<Add />} onClick={handleCreate}>
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<Add />}
+          onClick={handleCreate}
+        >
           Create Organization
         </Button>
       </Box>
@@ -163,7 +185,7 @@ const OrganizationsPage = ({ onOrgCreated }: OrganizationsPageProps) => {
               value={orgTypeFilter}
               label="Type"
               onChange={(e) => {
-                setOrgTypeFilter(e.target.value as '' | 'Service' | 'Product');
+                setOrgTypeFilter(e.target.value as "" | "Service" | "Product");
                 setPage(1);
               }}
               sx={{ fontSize: 12 }}
@@ -205,15 +227,23 @@ const OrganizationsPage = ({ onOrgCreated }: OrganizationsPageProps) => {
         organization={selectedOrg}
         isLoading={isSaving}
       />
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
         <DialogTitle sx={{ fontSize: 16 }}>Delete Organization</DialogTitle>
         <DialogContent>
           <Typography variant="body2" sx={{ fontSize: 13 }}>
-            Are you sure you want to delete "{orgToDelete?.orgName}"? This action cannot be undone.
+            Are you sure you want to delete "{orgToDelete?.orgName}"? This
+            action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button size="small" onClick={() => setDeleteDialogOpen(false)} disabled={isDeleting}>
+          <Button
+            size="small"
+            onClick={() => setDeleteDialogOpen(false)}
+            disabled={isDeleting}
+          >
             Cancel
           </Button>
           <ActionButton

@@ -1,15 +1,24 @@
-import { Skeleton, Box } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { Skeleton, Box } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 interface PageSkeletonProps {
-  variant?: 'table' | 'cards' | 'form' | 'dashboard';
+  variant?: "table" | "cards" | "form" | "dashboard";
 }
 
 const TableSkeleton = () => (
   <Box>
-    <Skeleton variant="rectangular" height={40} sx={{ mb: 2, borderRadius: 1 }} />
+    <Skeleton
+      variant="rectangular"
+      height={40}
+      sx={{ mb: 2, borderRadius: 1 }}
+    />
     {[...Array(5)].map((_, i) => (
-      <Skeleton key={i} variant="rectangular" height={52} sx={{ mb: 1, borderRadius: 1 }} />
+      <Skeleton
+        key={i}
+        variant="rectangular"
+        height={52}
+        sx={{ mb: 1, borderRadius: 1 }}
+      />
     ))}
   </Box>
 );
@@ -27,11 +36,26 @@ const CardsSkeleton = () => (
 const FormSkeleton = () => (
   <Box>
     {[...Array(4)].map((_, i) => (
-      <Skeleton key={i} variant="rectangular" height={40} sx={{ mb: 2, borderRadius: 1 }} />
+      <Skeleton
+        key={i}
+        variant="rectangular"
+        height={40}
+        sx={{ mb: 2, borderRadius: 1 }}
+      />
     ))}
-    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', mt: 3 }}>
-      <Skeleton variant="rectangular" width={80} height={36} sx={{ borderRadius: 1 }} />
-      <Skeleton variant="rectangular" width={80} height={36} sx={{ borderRadius: 1 }} />
+    <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end", mt: 3 }}>
+      <Skeleton
+        variant="rectangular"
+        width={80}
+        height={36}
+        sx={{ borderRadius: 1 }}
+      />
+      <Skeleton
+        variant="rectangular"
+        width={80}
+        height={36}
+        sx={{ borderRadius: 1 }}
+      />
     </Box>
   </Box>
 );
@@ -41,7 +65,11 @@ const DashboardSkeleton = () => (
     <Grid container spacing={2} sx={{ mb: 2 }}>
       {[...Array(4)].map((_, i) => (
         <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
-          <Skeleton variant="rectangular" height={100} sx={{ borderRadius: 1 }} />
+          <Skeleton
+            variant="rectangular"
+            height={100}
+            sx={{ borderRadius: 1 }}
+          />
         </Grid>
       ))}
     </Grid>
@@ -56,15 +84,15 @@ const DashboardSkeleton = () => (
   </Box>
 );
 
-const PageSkeleton = ({ variant = 'table' }: PageSkeletonProps) => {
+const PageSkeleton = ({ variant = "table" }: PageSkeletonProps) => {
   switch (variant) {
-    case 'table':
+    case "table":
       return <TableSkeleton />;
-    case 'cards':
+    case "cards":
       return <CardsSkeleton />;
-    case 'form':
+    case "form":
       return <FormSkeleton />;
-    case 'dashboard':
+    case "dashboard":
       return <DashboardSkeleton />;
     default:
       return <TableSkeleton />;

@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import { UploadedFileModel, IUploadedFile, UploadMode } from './history.models';
-import { ListHistoryQuery } from './history.validators';
+import mongoose from "mongoose";
+import { UploadedFileModel, IUploadedFile, UploadMode } from "./history.models";
+import { ListHistoryQuery } from "./history.validators";
 
 export interface PaginatedResult<T> {
   data: T[];
@@ -20,7 +20,10 @@ export interface UploadStats {
 }
 
 export const historyService = {
-  async list(orgId: string, query: ListHistoryQuery): Promise<PaginatedResult<IUploadedFile>> {
+  async list(
+    orgId: string,
+    query: ListHistoryQuery,
+  ): Promise<PaginatedResult<IUploadedFile>> {
     const {
       page = 1,
       limit = 10,
@@ -31,12 +34,14 @@ export const historyService = {
       endDate,
       configId,
     } = query;
-    const filter: Record<string, unknown> = { organizationId: new mongoose.Types.ObjectId(orgId) };
+    const filter: Record<string, unknown> = {
+      organizationId: new mongoose.Types.ObjectId(orgId),
+    };
 
     if (search) {
       filter.$or = [
-        { fileName: { $regex: search, $options: 'i' } },
-        { originalName: { $regex: search, $options: 'i' } },
+        { fileName: { $regex: search, $options: "i" } },
+        { originalName: { $regex: search, $options: "i" } },
       ];
     }
     if (fileType) {
@@ -50,8 +55,12 @@ export const historyService = {
     }
     if (startDate || endDate) {
       filter.createdAt = {};
-      if (startDate) (filter.createdAt as Record<string, unknown>).$gte = new Date(startDate);
-      if (endDate) (filter.createdAt as Record<string, unknown>).$lte = new Date(endDate);
+      if (startDate)
+        (filter.createdAt as Record<string, unknown>).$gte = new Date(
+          startDate,
+        );
+      if (endDate)
+        (filter.createdAt as Record<string, unknown>).$lte = new Date(endDate);
     }
 
     const [data, total] = await Promise.all([
@@ -79,21 +88,22 @@ export const historyService = {
   async getStats(orgId: string): Promise<UploadStats> {
     const orgObjectId = new mongoose.Types.ObjectId(orgId);
 
-    const [totalResult, sizeResult, byTypeResult, byModeResult] = await Promise.all([
-      UploadedFileModel.countDocuments({ organizationId: orgObjectId }),
-      UploadedFileModel.aggregate([
-        { $match: { organizationId: orgObjectId } },
-        { $group: { _id: null, totalSize: { $sum: '$size' } } },
-      ]),
-      UploadedFileModel.aggregate([
-        { $match: { organizationId: orgObjectId } },
-        { $group: { _id: '$fileType', count: { $sum: 1 } } },
-      ]),
-      UploadedFileModel.aggregate([
-        { $match: { organizationId: orgObjectId } },
-        { $group: { _id: '$uploadMode', count: { $sum: 1 } } },
-      ]),
-    ]);
+    const [totalResult, sizeResult, byTypeResult, byModeResult] =
+      await Promise.all([
+        UploadedFileModel.countDocuments({ organizationId: orgObjectId }),
+        UploadedFileModel.aggregate([
+          { $match: { organizationId: orgObjectId } },
+          { $group: { _id: null, totalSize: { $sum: "$size" } } },
+        ]),
+        UploadedFileModel.aggregate([
+          { $match: { organizationId: orgObjectId } },
+          { $group: { _id: "$fileType", count: { $sum: 1 } } },
+        ]),
+        UploadedFileModel.aggregate([
+          { $match: { organizationId: orgObjectId } },
+          { $group: { _id: "$uploadMode", count: { $sum: 1 } } },
+        ]),
+      ]);
 
     const byFileType: Record<string, number> = {};
     byTypeResult.forEach((item: { _id: string; count: number }) => {
@@ -103,8 +113,8 @@ export const historyService = {
     const byUploadMode: Record<UploadMode, number> = {
       single: 0,
       multiple: 0,
-      'single-array': 0,
-      'multiple-array': 0,
+      "single-array": 0,
+      "multiple-array": 0,
     };
     byModeResult.forEach((item: { _id: UploadMode; count: number }) => {
       byUploadMode[item._id] = item.count;

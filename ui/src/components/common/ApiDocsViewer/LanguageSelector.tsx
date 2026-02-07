@@ -1,5 +1,10 @@
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { CodeLanguage } from './types';
+import {
+  Box,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
+import { CodeLanguage } from "./types";
 
 interface LanguageSelectorProps {
   value: CodeLanguage;
@@ -18,10 +23,10 @@ const LanguageSelector = ({ value, onChange }: LanguageSelectorProps) => {
         onChange={(_, newValue) => newValue && onChange(newValue)}
         size="small"
         sx={{
-          '& .MuiToggleButton-root': {
+          "& .MuiToggleButton-root": {
             px: 2,
             py: 0.5,
-            textTransform: 'none',
+            textTransform: "none",
             fontSize: 12,
             fontWeight: 500,
           },

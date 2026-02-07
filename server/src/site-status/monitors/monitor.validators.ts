@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const siteCheckOptionsSchema = z.object({
   httpStatus: z.boolean().default(true),
@@ -12,7 +12,7 @@ export const siteCheckOptionsSchema = z.object({
 
 export const createSiteMonitorSchema = z.object({
   body: z.object({
-    url: z.string().url('Invalid URL format'),
+    url: z.string().url("Invalid URL format"),
     name: z.string().min(2).max(100),
     checks: siteCheckOptionsSchema,
   }),
@@ -23,7 +23,7 @@ export const createSiteMonitorSchema = z.object({
 
 export const updateSiteMonitorSchema = z.object({
   body: z.object({
-    url: z.string().url('Invalid URL format').optional(),
+    url: z.string().url("Invalid URL format").optional(),
     name: z.string().min(2).max(100).optional(),
     isActive: z.boolean().optional(),
     checks: siteCheckOptionsSchema.partial().optional(),
@@ -39,14 +39,16 @@ export const listSiteMonitorsSchema = z.object({
     orgId: z.string().min(1),
   }),
   query: z.object({
-    page: z.string().default('1').transform(Number),
-    limit: z.string().default('10').transform(Number),
+    page: z.string().default("1").transform(Number),
+    limit: z.string().default("10").transform(Number),
     search: z.string().optional(),
-    sortBy: z.enum(['name', 'url', 'createdAt', 'lastCheckedAt']).default('createdAt'),
-    sortOrder: z.enum(['asc', 'desc']).default('desc'),
+    sortBy: z
+      .enum(["name", "url", "createdAt", "lastCheckedAt"])
+      .default("createdAt"),
+    sortOrder: z.enum(["asc", "desc"]).default("desc"),
     isActive: z
       .string()
-      .transform((v) => v === 'true')
+      .transform((v) => v === "true")
       .optional(),
   }),
 });

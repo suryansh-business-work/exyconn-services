@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,7 +14,7 @@ import {
   ListItemText,
   CircularProgress,
   Tooltip,
-} from '@mui/material';
+} from "@mui/material";
 import {
   ChevronLeft,
   ChevronRight,
@@ -24,18 +24,22 @@ import {
   Business,
   Home,
   Key,
-} from '@mui/icons-material';
-import { useOrg } from '../../context/OrgContext';
-import { useNavigate } from 'react-router-dom';
+} from "@mui/icons-material";
+import { useOrg } from "../../context/OrgContext";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
-  drawerMode: 'expanded' | 'collapsed' | 'icon-only';
+  drawerMode: "expanded" | "collapsed" | "icon-only";
   onToggleDrawer: () => void;
   onManageOrganizations: () => void;
   onNavigate?: (path: string) => void;
 }
 
-const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderProps) => {
+const Header = ({
+  drawerMode,
+  onToggleDrawer,
+  onManageOrganizations,
+}: HeaderProps) => {
   const {
     organizations,
     selectedOrg,
@@ -46,13 +50,15 @@ const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderPro
   } = useOrg();
   const navigate = useNavigate();
   const [orgAnchorEl, setOrgAnchorEl] = useState<HTMLElement | null>(null);
-  const [apiKeyAnchorEl, setApiKeyAnchorEl] = useState<HTMLElement | null>(null);
-  const [orgSearch, setOrgSearch] = useState('');
+  const [apiKeyAnchorEl, setApiKeyAnchorEl] = useState<HTMLElement | null>(
+    null,
+  );
+  const [orgSearch, setOrgSearch] = useState("");
 
   const filteredOrgs = organizations.filter(
     (org) =>
       org.orgName.toLowerCase().includes(orgSearch.toLowerCase()) ||
-      org.orgSlug.toLowerCase().includes(orgSearch.toLowerCase())
+      org.orgSlug.toLowerCase().includes(orgSearch.toLowerCase()),
   );
 
   const handleOrgSelect = (org: typeof selectedOrg) => {
@@ -67,7 +73,7 @@ const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderPro
       }
     }
     setOrgAnchorEl(null);
-    setOrgSearch('');
+    setOrgSearch("");
   };
 
   const handleApiKeySelect = (apiKey: typeof selectedApiKey) => {
@@ -80,21 +86,21 @@ const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderPro
   };
 
   const handleHomeClick = () => {
-    navigate('/welcome');
+    navigate("/welcome");
   };
 
   const getOrgDisplayText = () => {
     if (organizations.length === 0) {
-      return 'No Organization - Please create and select';
+      return "No Organization - Please create and select";
     }
-    return selectedOrg?.orgName || 'Select Organization';
+    return selectedOrg?.orgName || "Select Organization";
   };
 
   const getApiKeyDisplayText = () => {
     if (!selectedOrg?.orgApiKeys?.length) {
-      return 'No API Key';
+      return "No API Key";
     }
-    return selectedApiKey?.keyName || 'Select API Key';
+    return selectedApiKey?.keyName || "Select API Key";
   };
 
   return (
@@ -102,21 +108,30 @@ const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderPro
       position="fixed"
       elevation={0}
       sx={{
-        bgcolor: 'background.paper',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
+        bgcolor: "background.paper",
+        borderBottom: "1px solid",
+        borderColor: "divider",
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar sx={{ minHeight: '44px !important', height: 44, px: 1.5 }}>
-        <IconButton edge="start" color="default" onClick={onToggleDrawer} size="small">
-          {drawerMode === 'icon-only' ? (
+      <Toolbar sx={{ minHeight: "44px !important", height: 44, px: 1.5 }}>
+        <IconButton
+          edge="start"
+          color="default"
+          onClick={onToggleDrawer}
+          size="small"
+        >
+          {drawerMode === "icon-only" ? (
             <ChevronRight fontSize="small" />
           ) : (
             <ChevronLeft fontSize="small" />
           )}
         </IconButton>
-        <Typography variant="h6" color="text.primary" sx={{ fontWeight: 600, fontSize: 14, ml: 1 }}>
+        <Typography
+          variant="h6"
+          color="text.primary"
+          sx={{ fontWeight: 600, fontSize: 14, ml: 1 }}
+        >
           Services
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
@@ -130,29 +145,34 @@ const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderPro
         <Box
           onClick={(e) => setOrgAnchorEl(e.currentTarget)}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
             px: 1.5,
             py: 0.5,
             borderRadius: 1,
             mr: 1,
-            bgcolor: 'action.hover',
-            '&:hover': { bgcolor: 'action.selected' },
+            bgcolor: "action.hover",
+            "&:hover": { bgcolor: "action.selected" },
           }}
         >
-          <Business sx={{ fontSize: 18, mr: 1, color: 'text.secondary' }} />
-          <Typography variant="body2" sx={{ fontSize: 13, fontWeight: 500, color: 'black' }}>
+          <Business sx={{ fontSize: 18, mr: 1, color: "text.secondary" }} />
+          <Typography
+            variant="body2"
+            sx={{ fontSize: 13, fontWeight: 500, color: "black" }}
+          >
             {getOrgDisplayText()}
           </Typography>
-          <KeyboardArrowDown sx={{ fontSize: 18, ml: 0.5, color: 'text.secondary' }} />
+          <KeyboardArrowDown
+            sx={{ fontSize: 18, ml: 0.5, color: "text.secondary" }}
+          />
         </Box>
         <Menu
           anchorEl={orgAnchorEl}
           open={Boolean(orgAnchorEl)}
           onClose={() => {
             setOrgAnchorEl(null);
-            setOrgSearch('');
+            setOrgSearch("");
           }}
           PaperProps={{ sx: { width: 280, maxHeight: 400 } }}
         >
@@ -175,9 +195,9 @@ const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderPro
             />
           </Box>
           <Divider />
-          <Box sx={{ maxHeight: 250, overflow: 'auto' }}>
+          <Box sx={{ maxHeight: 250, overflow: "auto" }}>
             {isLoading ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
                 <CircularProgress size={20} />
               </Box>
             ) : filteredOrgs.length === 0 ? (
@@ -227,58 +247,67 @@ const Header = ({ drawerMode, onToggleDrawer, onManageOrganizations }: HeaderPro
         </Menu>
 
         {/* API Key Dropdown */}
-        {selectedOrg && selectedOrg.orgApiKeys && selectedOrg.orgApiKeys.length > 0 && (
-          <>
-            <Box
-              onClick={(e) => setApiKeyAnchorEl(e.currentTarget)}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                px: 1.5,
-                py: 0.5,
-                borderRadius: 1,
-                bgcolor: 'action.hover',
-                '&:hover': { bgcolor: 'action.selected' },
-              }}
-            >
-              <Key sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-              <Typography
-                variant="body2"
-                sx={{ fontSize: 12, fontWeight: 500, maxWidth: 120, color: 'black' }}
-                noWrap
+        {selectedOrg &&
+          selectedOrg.orgApiKeys &&
+          selectedOrg.orgApiKeys.length > 0 && (
+            <>
+              <Box
+                onClick={(e) => setApiKeyAnchorEl(e.currentTarget)}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: 1,
+                  bgcolor: "action.hover",
+                  "&:hover": { bgcolor: "action.selected" },
+                }}
               >
-                {getApiKeyDisplayText()}
-              </Typography>
-              <KeyboardArrowDown sx={{ fontSize: 16, ml: 0.5, color: 'text.secondary' }} />
-            </Box>
-            <Menu
-              anchorEl={apiKeyAnchorEl}
-              open={Boolean(apiKeyAnchorEl)}
-              onClose={() => setApiKeyAnchorEl(null)}
-            >
-              {selectedOrg.orgApiKeys.map((key) => (
-                <MenuItem
-                  key={key.apiKey}
-                  onClick={() => handleApiKeySelect(key)}
-                  selected={selectedApiKey?.apiKey === key.apiKey}
+                <Key sx={{ fontSize: 16, mr: 0.5, color: "text.secondary" }} />
+                <Typography
+                  variant="body2"
                   sx={{
                     fontSize: 12,
-                    py: 1,
+                    fontWeight: 500,
+                    maxWidth: 120,
+                    color: "black",
                   }}
+                  noWrap
                 >
-                  <ListItemIcon sx={{ minWidth: 28 }}>
-                    <Key sx={{ fontSize: 16 }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={key.keyName}
-                    secondary={`${key.apiKey.substring(0, 16)}...`}
-                  />
-                </MenuItem>
-              ))}
-            </Menu>
-          </>
-        )}
+                  {getApiKeyDisplayText()}
+                </Typography>
+                <KeyboardArrowDown
+                  sx={{ fontSize: 16, ml: 0.5, color: "text.secondary" }}
+                />
+              </Box>
+              <Menu
+                anchorEl={apiKeyAnchorEl}
+                open={Boolean(apiKeyAnchorEl)}
+                onClose={() => setApiKeyAnchorEl(null)}
+              >
+                {selectedOrg.orgApiKeys.map((key) => (
+                  <MenuItem
+                    key={key.apiKey}
+                    onClick={() => handleApiKeySelect(key)}
+                    selected={selectedApiKey?.apiKey === key.apiKey}
+                    sx={{
+                      fontSize: 12,
+                      py: 1,
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 28 }}>
+                      <Key sx={{ fontSize: 16 }} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={key.keyName}
+                      secondary={`${key.apiKey.substring(0, 16)}...`}
+                    />
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          )}
       </Toolbar>
     </AppBar>
   );

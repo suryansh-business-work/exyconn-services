@@ -1,6 +1,6 @@
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import { NavigateNext } from '@mui/icons-material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
+import { NavigateNext } from "@mui/icons-material";
+import { Link as RouterLink } from "react-router-dom";
 
 interface BreadcrumbItem {
   label: string;
@@ -17,11 +17,13 @@ const PageBreadcrumb = ({ items }: PageBreadcrumbProps) => {
       sx={{
         mb: 2,
         pb: 1.5,
-        borderBottom: '1px solid',
-        borderColor: 'divider',
+        borderBottom: "1px solid",
+        borderColor: "divider",
       }}
     >
-      <Breadcrumbs separator={<NavigateNext fontSize="small" sx={{ fontSize: 14 }} />}>
+      <Breadcrumbs
+        separator={<NavigateNext fontSize="small" sx={{ fontSize: 14 }} />}
+      >
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return isLast ? (
@@ -40,7 +42,11 @@ const PageBreadcrumb = ({ items }: PageBreadcrumbProps) => {
               {item.label}
             </Link>
           ) : (
-            <Typography key={index} color="text.secondary" sx={{ fontSize: 13 }}>
+            <Typography
+              key={index}
+              color="text.secondary"
+              sx={{ fontSize: 13 }}
+            >
               {item.label}
             </Typography>
           );

@@ -1,16 +1,18 @@
-import { Box, Typography, Chip, Divider, Paper } from '@mui/material';
-import CodeViewer from './CodeViewer';
-import { EndpointCardProps } from './types';
+import { Box, Typography, Chip, Divider, Paper } from "@mui/material";
+import CodeViewer from "./CodeViewer";
+import { EndpointCardProps } from "./types";
 
-const getMethodColor = (method: string): 'primary' | 'success' | 'warning' | 'error' => {
-  const colors: Record<string, 'primary' | 'success' | 'warning' | 'error'> = {
-    POST: 'primary',
-    GET: 'success',
-    PUT: 'warning',
-    DELETE: 'error',
-    PATCH: 'warning',
+const getMethodColor = (
+  method: string,
+): "primary" | "success" | "warning" | "error" => {
+  const colors: Record<string, "primary" | "success" | "warning" | "error"> = {
+    POST: "primary",
+    GET: "success",
+    PUT: "warning",
+    DELETE: "error",
+    PATCH: "warning",
   };
-  return colors[method] || 'primary';
+  return colors[method] || "primary";
 };
 
 const EndpointCard = ({
@@ -22,15 +24,25 @@ const EndpointCard = ({
   return (
     <Box>
       {/* Endpoint URL */}
-      <Paper variant="outlined" sx={{ p: 2, mb: 2, bgcolor: 'grey.50' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+      <Paper variant="outlined" sx={{ p: 2, mb: 2, bgcolor: "grey.50" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            flexWrap: "wrap",
+          }}
+        >
           <Chip
             label={endpoint.method}
             size="small"
             color={getMethodColor(endpoint.method)}
             sx={{ fontWeight: 600, minWidth: 60 }}
           />
-          <Typography variant="body2" sx={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
+          <Typography
+            variant="body2"
+            sx={{ fontFamily: "monospace", wordBreak: "break-all" }}
+          >
             {baseUrl}
             {endpoint.path}
           </Typography>
@@ -57,7 +69,10 @@ const EndpointCard = ({
         <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
           Example Request
         </Typography>
-        <CodeViewer code={generateCodeExample(endpoint)} language={codeLanguage} />
+        <CodeViewer
+          code={generateCodeExample(endpoint)}
+          language={codeLanguage}
+        />
       </Box>
 
       <Divider sx={{ my: 2 }} />

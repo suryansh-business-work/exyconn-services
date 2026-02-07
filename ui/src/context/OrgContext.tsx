@@ -1,9 +1,16 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { organizationApi } from '../api/organizationApi';
-import { Organization, ApiKey } from '../types/organization';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from "react";
+import { organizationApi } from "../api/organizationApi";
+import { Organization, ApiKey } from "../types/organization";
 
-const STORAGE_KEY_ORG = 'selected_organization';
-const STORAGE_KEY_API_KEY = 'selected_api_key';
+const STORAGE_KEY_ORG = "selected_organization";
+const STORAGE_KEY_API_KEY = "selected_api_key";
 
 interface OrgContextType {
   organizations: Organization[];
@@ -58,7 +65,9 @@ export const OrgProvider = ({ children }: OrgProviderProps) => {
             setSelectedOrg(org);
             // Restore API key
             if (storedApiKeyId && org.orgApiKeys?.length) {
-              const apiKey = org.orgApiKeys.find((k) => k.apiKey === storedApiKeyId);
+              const apiKey = org.orgApiKeys.find(
+                (k) => k.apiKey === storedApiKeyId,
+              );
               setSelectedApiKey(apiKey || org.orgApiKeys[0]);
             } else if (org.orgApiKeys?.length) {
               setSelectedApiKey(org.orgApiKeys[0]);
@@ -80,8 +89,8 @@ export const OrgProvider = ({ children }: OrgProviderProps) => {
         setInitialized(true);
       }
     } catch (err) {
-      setError('Failed to load organizations');
-      console.error('Failed to fetch organizations:', err);
+      setError("Failed to load organizations");
+      console.error("Failed to fetch organizations:", err);
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +112,10 @@ export const OrgProvider = ({ children }: OrgProviderProps) => {
   // Persist selected API key to localStorage
   useEffect(() => {
     if (selectedApiKey) {
-      localStorage.setItem(STORAGE_KEY_API_KEY, JSON.stringify(selectedApiKey.apiKey));
+      localStorage.setItem(
+        STORAGE_KEY_API_KEY,
+        JSON.stringify(selectedApiKey.apiKey),
+      );
     } else {
       localStorage.removeItem(STORAGE_KEY_API_KEY);
     }
@@ -144,7 +156,7 @@ export const OrgProvider = ({ children }: OrgProviderProps) => {
 export const useOrg = (): OrgContextType => {
   const context = useContext(OrgContext);
   if (context === undefined) {
-    throw new Error('useOrg must be used within an OrgProvider');
+    throw new Error("useOrg must be used within an OrgProvider");
   }
   return context;
 };

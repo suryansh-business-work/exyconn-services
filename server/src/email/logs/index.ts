@@ -1,4 +1,4 @@
-export * from './log.models';
-export * from './log.validators';
-export * from './log.services';
-export { default as logRoutes } from './log.routes';
+export * from "./log.models";
+export * from "./log.validators";
+export * from "./log.services";
+export { default as logRoutes } from "./log.routes";

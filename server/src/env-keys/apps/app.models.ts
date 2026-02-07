@@ -1,10 +1,10 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IEnvApp extends Document {
   organizationId: mongoose.Types.ObjectId;
   name: string;
   description?: string;
-  environment: 'development' | 'staging' | 'production';
+  environment: "development" | "staging" | "production";
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -14,7 +14,7 @@ const EnvAppSchema = new Schema<IEnvApp>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
@@ -22,8 +22,8 @@ const EnvAppSchema = new Schema<IEnvApp>(
     description: { type: String },
     environment: {
       type: String,
-      enum: ['development', 'staging', 'production'],
-      default: 'development',
+      enum: ["development", "staging", "production"],
+      default: "development",
     },
     isActive: { type: Boolean, default: true },
   },
@@ -38,9 +38,12 @@ const EnvAppSchema = new Schema<IEnvApp>(
         return ret;
       },
     },
-  }
+  },
 );
 
-EnvAppSchema.index({ organizationId: 1, name: 1, environment: 1 }, { unique: true });
+EnvAppSchema.index(
+  { organizationId: 1, name: 1, environment: 1 },
+  { unique: true },
+);
 
-export const EnvApp = mongoose.model<IEnvApp>('EnvApp', EnvAppSchema);
+export const EnvApp = mongoose.model<IEnvApp>("EnvApp", EnvAppSchema);

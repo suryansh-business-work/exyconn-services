@@ -1,16 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Box, Typography, Paper, Alert } from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Analytics, Image, VideoFile, InsertDriveFile, CloudUpload } from '@mui/icons-material';
-import { PageBreadcrumb, Spinner } from '../../components/common';
-import { useOrg } from '../../context/OrgContext';
-import { uploadHistoryApi } from '../../api/imagekitApi';
-import { UploadStats } from '../../types/imagekit';
+import { useState, useEffect, useCallback } from "react";
+import { Box, Typography, Paper, Alert } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import {
+  Analytics,
+  Image,
+  VideoFile,
+  InsertDriveFile,
+  CloudUpload,
+} from "@mui/icons-material";
+import { PageBreadcrumb, Spinner } from "../../components/common";
+import { useOrg } from "../../context/OrgContext";
+import { uploadHistoryApi } from "../../api/imagekitApi";
+import { UploadStats } from "../../types/imagekit";
 
 const formatBytes = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  if (bytes < 1024 * 1024 * 1024)
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 };
 
@@ -24,7 +31,13 @@ interface StatCardProps {
 
 const StatCard = ({ title, value, subtitle, icon, color }: StatCardProps) => (
   <Paper sx={{ p: 2.5 }}>
-    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+      }}
+    >
       <Box>
         <Typography variant="caption" color="text.secondary">
           {title}
@@ -38,7 +51,14 @@ const StatCard = ({ title, value, subtitle, icon, color }: StatCardProps) => (
           </Typography>
         )}
       </Box>
-      <Box sx={{ p: 1, borderRadius: 1, bgcolor: `${color}.light`, color: `${color}.main` }}>
+      <Box
+        sx={{
+          p: 1,
+          borderRadius: 1,
+          bgcolor: `${color}.light`,
+          color: `${color}.main`,
+        }}
+      >
         {icon}
       </Box>
     </Box>
@@ -58,7 +78,7 @@ const ImageKitUsage = () => {
       const data = await uploadHistoryApi.getStats(selectedOrg.id);
       setStats(data);
     } catch {
-      setError('Failed to load usage statistics');
+      setError("Failed to load usage statistics");
     } finally {
       setLoading(false);
     }
@@ -70,7 +90,7 @@ const ImageKitUsage = () => {
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -82,15 +102,18 @@ const ImageKitUsage = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'Storage' },
-          { label: 'ImageKit' },
-          { label: 'Usage' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "Storage" },
+          { label: "ImageKit" },
+          { label: "Usage" },
         ]}
       />
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <Analytics sx={{ fontSize: 32, color: 'primary.main' }} />
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+        <Analytics sx={{ fontSize: 32, color: "primary.main" }} />
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>
             Usage Statistics
@@ -127,7 +150,7 @@ const ImageKitUsage = () => {
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <StatCard
                 title="Images"
-                value={stats.byFileType['image'] || 0}
+                value={stats.byFileType["image"] || 0}
                 icon={<Image />}
                 color="success"
               />
@@ -135,7 +158,7 @@ const ImageKitUsage = () => {
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <StatCard
                 title="Videos"
-                value={stats.byFileType['video'] || 0}
+                value={stats.byFileType["video"] || 0}
                 icon={<VideoFile />}
                 color="warning"
               />
@@ -151,14 +174,17 @@ const ImageKitUsage = () => {
                   <Box
                     key={type}
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
+                      display: "flex",
+                      justifyContent: "space-between",
                       py: 1,
-                      borderBottom: '1px solid',
-                      borderColor: 'divider',
+                      borderBottom: "1px solid",
+                      borderColor: "divider",
                     }}
                   >
-                    <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ textTransform: "capitalize" }}
+                    >
                       {type}
                     </Typography>
                     <Typography variant="body2" fontWeight={500}>
@@ -170,7 +196,7 @@ const ImageKitUsage = () => {
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ py: 2, textAlign: 'center' }}
+                    sx={{ py: 2, textAlign: "center" }}
                   >
                     No data
                   </Typography>
@@ -186,11 +212,11 @@ const ImageKitUsage = () => {
                   <Box
                     key={mode}
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
+                      display: "flex",
+                      justifyContent: "space-between",
                       py: 1,
-                      borderBottom: '1px solid',
-                      borderColor: 'divider',
+                      borderBottom: "1px solid",
+                      borderColor: "divider",
                     }}
                   >
                     <Typography variant="body2">{mode}</Typography>
@@ -203,7 +229,7 @@ const ImageKitUsage = () => {
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ py: 2, textAlign: 'center' }}
+                    sx={{ py: 2, textAlign: "center" }}
                   >
                     No data
                   </Typography>

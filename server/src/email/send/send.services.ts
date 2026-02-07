@@ -1,23 +1,27 @@
-import nodemailer from 'nodemailer';
-import { getSmtpConfig } from '../smtp/smtp.services';
-import { getRenderedTemplate } from '../templates/template.services';
-import { createEmailLog } from '../logs/log.services';
-import { SendEmailInput, SendEmailResult } from './send.validators';
+import nodemailer from "nodemailer";
+import { getSmtpConfig } from "../smtp/smtp.services";
+import { getRenderedTemplate } from "../templates/template.services";
+import { createEmailLog } from "../logs/log.services";
+import { SendEmailInput, SendEmailResult } from "./send.validators";
 
 // Send email using SMTP config and template
 export const sendEmail = async (
   organizationId: string,
   data: SendEmailInput,
-  apiKeyUsed?: string
+  apiKeyUsed?: string,
 ): Promise<SendEmailResult> => {
-  let subject = data.subject || 'Unknown';
+  let subject = data.subject || "Unknown";
 
   try {
     // Get SMTP configuration
     const smtpConfig = await getSmtpConfig(organizationId, data.smtpConfigId);
 
     // Get rendered template with variables
-    const template = await getRenderedTemplate(organizationId, data.templateId, data.variables);
+    const template = await getRenderedTemplate(
+      organizationId,
+      data.templateId,
+      data.variables,
+    );
     subject = data.subject || template.subject;
 
     // Create transporter
@@ -62,7 +66,7 @@ export const sendEmail = async (
       cc: data.cc,
       bcc: data.bcc,
       subject: subject,
-      status: 'sent',
+      status: "sent",
       messageId: info.messageId,
       variables: data.variables,
     });
@@ -77,7 +81,8 @@ export const sendEmail = async (
       sentAt: new Date().toISOString(),
     };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
 
     // Log failed email
     await createEmailLog({
@@ -89,7 +94,7 @@ export const sendEmail = async (
       cc: data.cc,
       bcc: data.bcc,
       subject: subject,
-      status: 'failed',
+      status: "failed",
       error: errorMessage,
       variables: data.variables,
     });
@@ -107,7 +112,10 @@ export const sendEmail = async (
 };
 
 // Test SMTP connection
-export const testSmtpConnection = async (organizationId: string, smtpConfigId: string) => {
+export const testSmtpConnection = async (
+  organizationId: string,
+  smtpConfigId: string,
+) => {
   try {
     const smtpConfig = await getSmtpConfig(organizationId, smtpConfigId);
 
@@ -125,12 +133,15 @@ export const testSmtpConnection = async (organizationId: string, smtpConfigId: s
 
     return {
       success: true,
-      message: 'SMTP connection successful',
+      message: "SMTP connection successful",
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to connect to SMTP server',
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to connect to SMTP server",
     };
   }
 };

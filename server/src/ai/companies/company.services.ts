@@ -1,5 +1,10 @@
-import mongoose from 'mongoose';
-import { AICompany, IAICompany, AIProvider, PROVIDER_MODELS } from './company.models';
+import mongoose from "mongoose";
+import {
+  AICompany,
+  IAICompany,
+  AIProvider,
+  PROVIDER_MODELS,
+} from "./company.models";
 
 interface ListParams {
   page: number;
@@ -33,11 +38,17 @@ export const aiCompanyService = {
     const { page, limit, provider } = params;
     const skip = (page - 1) * limit;
 
-    const query: Record<string, unknown> = { organizationId: new mongoose.Types.ObjectId(orgId) };
+    const query: Record<string, unknown> = {
+      organizationId: new mongoose.Types.ObjectId(orgId),
+    };
     if (provider) query.provider = provider;
 
     const [data, total] = await Promise.all([
-      AICompany.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      AICompany.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
       AICompany.countDocuments(query),
     ]);
 
@@ -45,8 +56,8 @@ export const aiCompanyService = {
       data: data.map((d) => ({
         ...d,
         id: d._id.toString(),
-        apiKey: '••••••••' + d.apiKey.slice(-4),
-        apiSecret: d.apiSecret ? '••••••••' : undefined,
+        apiKey: "••••••••" + d.apiKey.slice(-4),
+        apiSecret: d.apiSecret ? "••••••••" : undefined,
       })),
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
@@ -83,7 +94,7 @@ export const aiCompanyService = {
   update: async (
     orgId: string,
     companyId: string,
-    data: UpdateInput
+    data: UpdateInput,
   ): Promise<IAICompany | null> => {
     return AICompany.findOneAndUpdate(
       {
@@ -91,7 +102,7 @@ export const aiCompanyService = {
         organizationId: new mongoose.Types.ObjectId(orgId),
       },
       { $set: data },
-      { new: true }
+      { new: true },
     );
   },
 
@@ -110,7 +121,7 @@ export const aiCompanyService = {
       AICompany.countDocuments({ organizationId: orgObjectId }),
       AICompany.aggregate([
         { $match: { organizationId: orgObjectId } },
-        { $group: { _id: '$provider', count: { $sum: 1 } } },
+        { $group: { _id: "$provider", count: { $sum: 1 } } },
       ]),
       AICompany.countDocuments({ organizationId: orgObjectId, isActive: true }),
     ]);
@@ -120,6 +131,10 @@ export const aiCompanyService = {
       providerCounts[p._id] = p.count;
     });
 
-    return { totalCompanies: total, activeCompanies: activeCount, byProvider: providerCounts };
+    return {
+      totalCompanies: total,
+      activeCompanies: activeCount,
+      byProvider: providerCounts,
+    };
   },
 };

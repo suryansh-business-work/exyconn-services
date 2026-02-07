@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -19,14 +19,23 @@ import {
   Select,
   FormControl,
   InputLabel,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Refresh, Visibility, CheckCircle, Warning, Error as ErrorIcon } from '@mui/icons-material';
-import { PageBreadcrumb } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { siteCheckHistoryApi, siteMonitorApi } from '../../../api/siteStatusApi';
-import { SiteCheckResult, SiteMonitorConfig } from '../../../types/siteStatus';
-import CheckDetailDialog from './CheckDetailDialog';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import {
+  Refresh,
+  Visibility,
+  CheckCircle,
+  Warning,
+  Error as ErrorIcon,
+} from "@mui/icons-material";
+import { PageBreadcrumb } from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import {
+  siteCheckHistoryApi,
+  siteMonitorApi,
+} from "../../../api/siteStatusApi";
+import { SiteCheckResult, SiteMonitorConfig } from "../../../types/siteStatus";
+import CheckDetailDialog from "./CheckDetailDialog";
 
 const SiteStatusHistory = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
@@ -36,9 +45,11 @@ const SiteStatusHistory = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
-  const [filterMonitor, setFilterMonitor] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
-  const [selectedCheck, setSelectedCheck] = useState<SiteCheckResult | null>(null);
+  const [filterMonitor, setFilterMonitor] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [selectedCheck, setSelectedCheck] = useState<SiteCheckResult | null>(
+    null,
+  );
 
   const fetchHistory = async () => {
     if (!selectedOrg) return;
@@ -51,17 +62,22 @@ const SiteStatusHistory = () => {
             page: page + 1,
             limit: rowsPerPage,
             monitorId: filterMonitor || undefined,
-            status: (filterStatus as 'healthy' | 'warning' | 'error') || undefined,
+            status:
+              (filterStatus as "healthy" | "warning" | "error") || undefined,
           },
-          selectedApiKey?.apiKey
+          selectedApiKey?.apiKey,
         ),
-        siteMonitorApi.list(selectedOrg.id, { limit: 100 }, selectedApiKey?.apiKey),
+        siteMonitorApi.list(
+          selectedOrg.id,
+          { limit: 100 },
+          selectedApiKey?.apiKey,
+        ),
       ]);
       setHistory(historyResult.data);
       setTotal(historyResult.pagination.total);
       setMonitors(monitorsResult.data);
     } catch (err) {
-      console.error('Failed to fetch history:', err);
+      console.error("Failed to fetch history:", err);
     } finally {
       setLoading(false);
     }
@@ -69,22 +85,40 @@ const SiteStatusHistory = () => {
 
   useEffect(() => {
     fetchHistory();
-  }, [selectedOrg, selectedApiKey, page, rowsPerPage, filterMonitor, filterStatus]);
+  }, [
+    selectedOrg,
+    selectedApiKey,
+    page,
+    rowsPerPage,
+    filterMonitor,
+    filterStatus,
+  ]);
 
   const getStatusChip = (status: string) => {
-    if (status === 'healthy')
-      return <Chip icon={<CheckCircle />} label="Healthy" size="small" color="success" />;
-    if (status === 'warning')
-      return <Chip icon={<Warning />} label="Warning" size="small" color="warning" />;
-    return <Chip icon={<ErrorIcon />} label="Error" size="small" color="error" />;
+    if (status === "healthy")
+      return (
+        <Chip
+          icon={<CheckCircle />}
+          label="Healthy"
+          size="small"
+          color="success"
+        />
+      );
+    if (status === "warning")
+      return (
+        <Chip icon={<Warning />} label="Warning" size="small" color="warning" />
+      );
+    return (
+      <Chip icon={<ErrorIcon />} label="Error" size="small" color="error" />
+    );
   };
 
   const getMonitorName = (monitorId: string) =>
-    monitors.find((m) => m.id === monitorId)?.name || 'Unknown';
+    monitors.find((m) => m.id === monitorId)?.name || "Unknown";
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -98,26 +132,34 @@ const SiteStatusHistory = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/dashboard' },
+          { label: "Home", href: "/dashboard" },
           { label: selectedOrg.orgName, href: basePath },
-          { label: 'Site Status', href: `${basePath}/service/site-status/dashboard` },
-          { label: 'History' },
+          {
+            label: "Site Status",
+            href: `${basePath}/service/site-status/dashboard`,
+          },
+          { label: "History" },
         ]}
       />
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           mb: 2,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           gap: 1,
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18 }}>
           Check History
         </Typography>
-        <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={fetchHistory}>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<Refresh />}
+          onClick={fetchHistory}
+        >
           Refresh
         </Button>
       </Box>
@@ -189,7 +231,9 @@ const SiteStatusHistory = () => {
               ) : history.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
-                    <Typography color="text.secondary">No history found</Typography>
+                    <Typography color="text.secondary">
+                      No history found
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -201,13 +245,18 @@ const SiteStatusHistory = () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: 11 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontFamily: "monospace", fontSize: 11 }}
+                      >
                         {check.url}
                       </Typography>
                     </TableCell>
-                    <TableCell align="center">{getStatusChip(check.overallStatus)}</TableCell>
                     <TableCell align="center">
-                      {check.responseTime ? `${check.responseTime}ms` : '-'}
+                      {getStatusChip(check.overallStatus)}
+                    </TableCell>
+                    <TableCell align="center">
+                      {check.responseTime ? `${check.responseTime}ms` : "-"}
                     </TableCell>
                     <TableCell align="center">
                       <Typography variant="body2" sx={{ fontSize: 11 }}>
@@ -216,7 +265,10 @@ const SiteStatusHistory = () => {
                     </TableCell>
                     <TableCell align="right">
                       <Tooltip title="View Details">
-                        <IconButton size="small" onClick={() => setSelectedCheck(check)}>
+                        <IconButton
+                          size="small"
+                          onClick={() => setSelectedCheck(check)}
+                        >
                           <Visibility fontSize="small" />
                         </IconButton>
                       </Tooltip>

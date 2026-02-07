@@ -1,28 +1,41 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Box, Typography, Paper, Alert, Divider } from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Send, Email } from '@mui/icons-material';
-import { Formik, Form } from 'formik';
-import debounce from 'lodash/debounce';
-import { PageBreadcrumb, Spinner, ActionButton } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { smtpConfigApi, emailTemplateApi, emailSendApi } from '../../../api/emailApi';
-import { SmtpConfig, EmailTemplate, SendEmailResult } from '../../../types/email';
-import { sendEmailValidationSchema } from '../../../validation/emailValidation';
-import { SendEmailFormValues, initialFormValues } from './types';
-import ConfigSection from './ConfigSection';
-import RecipientSection from './RecipientSection';
-import EmailPreview from './EmailPreview';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Box, Typography, Paper, Alert, Divider } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { Send, Email } from "@mui/icons-material";
+import { Formik, Form } from "formik";
+import debounce from "lodash/debounce";
+import {
+  PageBreadcrumb,
+  Spinner,
+  ActionButton,
+} from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import {
+  smtpConfigApi,
+  emailTemplateApi,
+  emailSendApi,
+} from "../../../api/emailApi";
+import {
+  SmtpConfig,
+  EmailTemplate,
+  SendEmailResult,
+} from "../../../types/email";
+import { sendEmailValidationSchema } from "../../../validation/emailValidation";
+import { SendEmailFormValues, initialFormValues } from "./types";
+import ConfigSection from "./ConfigSection";
+import RecipientSection from "./RecipientSection";
+import EmailPreview from "./EmailPreview";
 
 const EmailDemo = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
   const [smtpConfigs, setSmtpConfigs] = useState<SmtpConfig[]>([]);
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EmailTemplate | null>(null);
   const [loading, setLoading] = useState(true);
   const [sendResult, setSendResult] = useState<SendEmailResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [previewHtml, setPreviewHtml] = useState('');
+  const [previewHtml, setPreviewHtml] = useState("");
   const [previewLoading, setPreviewLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
@@ -36,7 +49,7 @@ const EmailDemo = () => {
       setSmtpConfigs(smtpResponse.data);
       setTemplates(templatesResponse.data);
     } catch {
-      setError('Failed to load data');
+      setError("Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -48,44 +61,51 @@ const EmailDemo = () => {
 
   const fetchPreview = useMemo(
     () =>
-      debounce(async (mjmlContent: string, variables: Record<string, string>) => {
-        if (!selectedOrg || !mjmlContent) return;
-        setPreviewLoading(true);
-        try {
-          const result = await emailTemplateApi.preview(selectedOrg.id, mjmlContent, variables);
-          setPreviewHtml(result.html);
-        } catch {
-          // Keep existing preview on error
-        } finally {
-          setPreviewLoading(false);
-        }
-      }, 300),
-    [selectedOrg]
+      debounce(
+        async (mjmlContent: string, variables: Record<string, string>) => {
+          if (!selectedOrg || !mjmlContent) return;
+          setPreviewLoading(true);
+          try {
+            const result = await emailTemplateApi.preview(
+              selectedOrg.id,
+              mjmlContent,
+              variables,
+            );
+            setPreviewHtml(result.html);
+          } catch {
+            // Keep existing preview on error
+          } finally {
+            setPreviewLoading(false);
+          }
+        },
+        300,
+      ),
+    [selectedOrg],
   );
 
   const handleTemplateChange = async (
     templateId: string,
-    setFieldValue: (field: string, value: unknown) => void
+    setFieldValue: (field: string, value: unknown) => void,
   ) => {
     if (!selectedOrg) return;
-    setFieldValue('templateId', templateId);
+    setFieldValue("templateId", templateId);
     const template = templates.find((t) => t.id === templateId);
     setSelectedTemplate(template || null);
 
     if (template) {
-      setFieldValue('subject', template.subject);
+      setFieldValue("subject", template.subject);
       const vars: Record<string, string> = {};
       template.variables.forEach((v) => {
-        vars[v.name] = v.defaultValue || '';
+        vars[v.name] = v.defaultValue || "";
       });
-      setFieldValue('variables', vars);
+      setFieldValue("variables", vars);
       if (template.mjmlContent) {
         fetchPreview(template.mjmlContent, vars);
       } else {
-        setPreviewHtml(template.htmlContent || '');
+        setPreviewHtml(template.htmlContent || "");
       }
     } else {
-      setPreviewHtml('');
+      setPreviewHtml("");
     }
   };
 
@@ -93,14 +113,15 @@ const EmailDemo = () => {
     variableName: string,
     value: string,
     currentVariables: Record<string, string>,
-    setFieldValue: (field: string, value: unknown) => void
+    setFieldValue: (field: string, value: unknown) => void,
   ) => {
     const newVariables = { ...currentVariables, [variableName]: value };
     setFieldValue(`variables.${variableName}`, value);
     if (selectedTemplate?.mjmlContent) {
       const previewVars: Record<string, string> = {};
       selectedTemplate.variables.forEach((v) => {
-        previewVars[v.name] = newVariables[v.name] || v.defaultValue || `{{${v.name}}}`;
+        previewVars[v.name] =
+          newVariables[v.name] || v.defaultValue || `{{${v.name}}}`;
       });
       fetchPreview(selectedTemplate.mjmlContent, previewVars);
     }
@@ -123,7 +144,8 @@ const EmailDemo = () => {
       });
       setSendResult(result);
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send email';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to send email";
       const axiosError = err as { response?: { data?: { error?: string } } };
       setError(axiosError.response?.data?.error || errorMessage);
     }
@@ -131,7 +153,7 @@ const EmailDemo = () => {
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -146,15 +168,18 @@ const EmailDemo = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'Communications' },
-          { label: 'Email' },
-          { label: 'Demo' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "Communications" },
+          { label: "Email" },
+          { label: "Demo" },
         ]}
       />
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <Email sx={{ fontSize: 32, color: 'primary.main' }} />
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+        <Email sx={{ fontSize: 32, color: "primary.main" }} />
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>
             Send Demo Email
@@ -171,12 +196,12 @@ const EmailDemo = () => {
       )}
       {sendResult && (
         <Alert
-          severity={sendResult.success ? 'success' : 'error'}
+          severity={sendResult.success ? "success" : "error"}
           sx={{ mb: 2 }}
           onClose={() => setSendResult(null)}
         >
           {sendResult.success ? (
-            <>Email sent successfully to {sendResult.recipient.join(', ')}!</>
+            <>Email sent successfully to {sendResult.recipient.join(", ")}!</>
           ) : (
             <>Failed to send email: {sendResult.error}</>
           )}
@@ -202,7 +227,9 @@ const EmailDemo = () => {
             >
               {({ errors, touched, isSubmitting, values, setFieldValue }) => (
                 <Form>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+                  >
                     <ConfigSection
                       smtpConfigs={smtpConfigs}
                       templates={templates}

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -16,7 +16,7 @@ import {
   TableRow,
   TableCell,
   TablePagination,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Add,
   ArrowBack,
@@ -25,12 +25,12 @@ import {
   Visibility,
   VisibilityOff,
   Refresh,
-} from '@mui/icons-material';
-import { PageBreadcrumb } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { envAppApi, envVariableApi } from '../../../api/envKeysApi';
-import { EnvApp, EnvVariable } from '../../../types/envKeys';
-import EnvVariableDialog from './EnvVariableDialog';
+} from "@mui/icons-material";
+import { PageBreadcrumb } from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import { envAppApi, envVariableApi } from "../../../api/envKeysApi";
+import { EnvApp, EnvVariable } from "../../../types/envKeys";
+import EnvVariableDialog from "./EnvVariableDialog";
 
 const EnvVariablesPage = () => {
   const { appId } = useParams<{ appId: string }>();
@@ -43,7 +43,9 @@ const EnvVariablesPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingVariable, setEditingVariable] = useState<EnvVariable | null>(null);
+  const [editingVariable, setEditingVariable] = useState<EnvVariable | null>(
+    null,
+  );
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
 
   const fetchData = async () => {
@@ -56,14 +58,14 @@ const EnvVariablesPage = () => {
           selectedOrg.id,
           appId,
           { page: page + 1, limit: rowsPerPage },
-          selectedApiKey?.apiKey
+          selectedApiKey?.apiKey,
         ),
       ]);
       setApp(appData);
       setVariables(varResult.data);
       setTotal(varResult.pagination.total);
     } catch (err) {
-      console.error('Failed to fetch data:', err);
+      console.error("Failed to fetch data:", err);
     } finally {
       setLoading(false);
     }
@@ -74,12 +76,17 @@ const EnvVariablesPage = () => {
   }, [selectedOrg, selectedApiKey, appId, page, rowsPerPage]);
 
   const handleDelete = async (variableId: string) => {
-    if (!selectedOrg || !appId || !confirm('Delete this variable?')) return;
+    if (!selectedOrg || !appId || !confirm("Delete this variable?")) return;
     try {
-      await envVariableApi.delete(selectedOrg.id, appId, variableId, selectedApiKey?.apiKey);
+      await envVariableApi.delete(
+        selectedOrg.id,
+        appId,
+        variableId,
+        selectedApiKey?.apiKey,
+      );
       fetchData();
     } catch (err) {
-      console.error('Delete failed:', err);
+      console.error("Delete failed:", err);
     }
   };
 
@@ -98,20 +105,22 @@ const EnvVariablesPage = () => {
         selectedOrg.id,
         appId,
         variableId,
-        selectedApiKey?.apiKey
+        selectedApiKey?.apiKey,
       );
       setVariables((prev) =>
-        prev.map((v) => (v.id === variableId ? { ...v, value: actualValue } : v))
+        prev.map((v) =>
+          v.id === variableId ? { ...v, value: actualValue } : v,
+        ),
       );
       setRevealedIds((prev) => new Set(prev).add(variableId));
     } catch (err) {
-      console.error('Reveal failed:', err);
+      console.error("Reveal failed:", err);
     }
   };
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -125,52 +134,65 @@ const EnvVariablesPage = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/dashboard' },
+          { label: "Home", href: "/dashboard" },
           { label: selectedOrg.orgName, href: basePath },
-          { label: 'Environment Keys', href: `${basePath}/service/env-keys/dashboard` },
-          { label: 'Applications', href: `${basePath}/service/env-keys/applications` },
-          { label: app?.name || 'Variables' },
+          {
+            label: "Environment Keys",
+            href: `${basePath}/service/env-keys/dashboard`,
+          },
+          {
+            label: "Applications",
+            href: `${basePath}/service/env-keys/applications`,
+          },
+          { label: app?.name || "Variables" },
         ]}
       />
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           mb: 2,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           gap: 1,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton
             size="small"
-            onClick={() => navigate(`${basePath}/service/env-keys/applications`)}
+            onClick={() =>
+              navigate(`${basePath}/service/env-keys/applications`)
+            }
           >
             <ArrowBack fontSize="small" />
           </IconButton>
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18 }}>
-              {app?.name || 'Variables'}
+              {app?.name || "Variables"}
             </Typography>
             {app && (
               <Chip
                 label={app.environment}
                 size="small"
                 color={
-                  app.environment === 'production'
-                    ? 'error'
-                    : app.environment === 'staging'
-                      ? 'warning'
-                      : 'info'
+                  app.environment === "production"
+                    ? "error"
+                    : app.environment === "staging"
+                      ? "warning"
+                      : "info"
                 }
                 sx={{ fontSize: 10, mt: 0.5 }}
               />
             )}
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={fetchData}>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Refresh />}
+            onClick={fetchData}
+          >
             Refresh
           </Button>
           <Button
@@ -209,7 +231,9 @@ const EnvVariablesPage = () => {
               ) : variables.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center">
-                    <Typography color="text.secondary">No variables defined</Typography>
+                    <Typography color="text.secondary">
+                      No variables defined
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -218,27 +242,36 @@ const EnvVariablesPage = () => {
                     <TableCell>
                       <Typography
                         variant="body2"
-                        sx={{ fontFamily: 'monospace', fontWeight: 600, fontSize: 12 }}
+                        sx={{
+                          fontFamily: "monospace",
+                          fontWeight: 600,
+                          fontSize: 12,
+                        }}
                       >
                         {variable.key}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Typography
                           variant="body2"
                           sx={{
-                            fontFamily: 'monospace',
+                            fontFamily: "monospace",
                             fontSize: 11,
                             maxWidth: 200,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
                           }}
                         >
                           {variable.value}
                         </Typography>
                         {variable.isSecret && (
-                          <IconButton size="small" onClick={() => handleReveal(variable.id)}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleReveal(variable.id)}
+                          >
                             {revealedIds.has(variable.id) ? (
                               <VisibilityOff fontSize="small" />
                             ) : (
@@ -249,13 +282,22 @@ const EnvVariablesPage = () => {
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: 11 }}>
-                        {variable.description || '-'}
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontSize: 11 }}
+                      >
+                        {variable.description || "-"}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
                       {variable.isSecret && (
-                        <Chip label="Secret" size="small" color="warning" sx={{ fontSize: 10 }} />
+                        <Chip
+                          label="Secret"
+                          size="small"
+                          color="warning"
+                          sx={{ fontSize: 10 }}
+                        />
                       )}
                     </TableCell>
                     <TableCell align="right">

@@ -1,27 +1,29 @@
-import { CodeLanguage, EndpointDefinition } from './types';
+import { CodeLanguage, EndpointDefinition } from "./types";
 
 export const generateCodeExample = (
   endpoint: EndpointDefinition,
   language: CodeLanguage,
   baseUrl: string,
-  apiKey: string
+  apiKey: string,
 ): string => {
   const fullUrl = `${baseUrl}${endpoint.path}`;
-  const bodyJson = endpoint.body ? endpoint.body.replace(/\n/g, '').replace(/\s+/g, ' ') : '';
+  const bodyJson = endpoint.body
+    ? endpoint.body.replace(/\n/g, "").replace(/\s+/g, " ")
+    : "";
 
   switch (language) {
-    case 'curl':
+    case "curl":
       return generateCurl(endpoint, fullUrl, apiKey, bodyJson);
-    case 'javascript':
+    case "javascript":
       return generateJavaScript(endpoint, fullUrl, apiKey);
-    case 'python':
+    case "python":
       return generatePython(endpoint, fullUrl, apiKey);
-    case 'php':
+    case "php":
       return generatePhp(endpoint, fullUrl, apiKey);
-    case 'go':
+    case "go":
       return generateGo(endpoint, fullUrl, apiKey, bodyJson);
     default:
-      return '';
+      return "";
   }
 };
 
@@ -29,7 +31,7 @@ const generateCurl = (
   endpoint: EndpointDefinition,
   url: string,
   apiKey: string,
-  bodyJson: string
+  bodyJson: string,
 ): string => {
   return `curl -X ${endpoint.method} "${url}" \\
   -H "Content-Type: application/json" \\
@@ -37,11 +39,15 @@ const generateCurl = (
     endpoint.body
       ? ` \\
   -d '${bodyJson}'`
-      : ''
+      : ""
   }`;
 };
 
-const generateJavaScript = (endpoint: EndpointDefinition, url: string, apiKey: string): string => {
+const generateJavaScript = (
+  endpoint: EndpointDefinition,
+  url: string,
+  apiKey: string,
+): string => {
   return `const axios = require('axios');
 
 const response = await axios.${endpoint.method.toLowerCase()}(
@@ -49,7 +55,7 @@ const response = await axios.${endpoint.method.toLowerCase()}(
     endpoint.body
       ? `
   ${endpoint.body},`
-      : ''
+      : ""
   }
   {
     headers: {
@@ -62,7 +68,11 @@ const response = await axios.${endpoint.method.toLowerCase()}(
 console.log(response.data);`;
 };
 
-const generatePython = (endpoint: EndpointDefinition, url: string, apiKey: string): string => {
+const generatePython = (
+  endpoint: EndpointDefinition,
+  url: string,
+  apiKey: string,
+): string => {
   return `import requests
 
 response = requests.${endpoint.method.toLowerCase()}(
@@ -70,7 +80,7 @@ response = requests.${endpoint.method.toLowerCase()}(
       endpoint.body
         ? `
     json=${endpoint.body.replace(/"/g, "'")},`
-        : ''
+        : ""
     }
     headers={
         'Content-Type': 'application/json',
@@ -81,7 +91,11 @@ response = requests.${endpoint.method.toLowerCase()}(
 print(response.json())`;
 };
 
-const generatePhp = (endpoint: EndpointDefinition, url: string, apiKey: string): string => {
+const generatePhp = (
+  endpoint: EndpointDefinition,
+  url: string,
+  apiKey: string,
+): string => {
   return `<?php
 $ch = curl_init();
 
@@ -95,7 +109,7 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     endpoint.body
       ? `
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(${endpoint.body.replace(/"/g, "'")}));`
-      : ''
+      : ""
   }
 
 $response = curl_exec($ch);
@@ -109,7 +123,7 @@ const generateGo = (
   endpoint: EndpointDefinition,
   url: string,
   apiKey: string,
-  bodyJson: string
+  bodyJson: string,
 ): string => {
   return `package main
 

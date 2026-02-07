@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 import {
   List,
   ListItem,
@@ -9,32 +9,34 @@ import {
   Tooltip,
   Chip,
   Box,
-} from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
-import { AppDefinition, AppStatus } from '../../data/app-data';
-import { getIcon } from '../../utils/iconMap';
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import { AppDefinition, AppStatus } from "../../data/app-data";
+import { getIcon } from "../../utils/iconMap";
 
 interface SidebarMenuItemProps {
   app: AppDefinition;
   depth?: number;
-  drawerMode: 'expanded' | 'collapsed' | 'icon-only';
+  drawerMode: "expanded" | "collapsed" | "icon-only";
   expandedGroups: Set<string>;
   onToggleGroup: (groupId: string) => void;
   currentPath?: string;
   onNavigate?: (path: string) => void;
 }
 
-const getStatusChipColor = (status: AppStatus): 'success' | 'warning' | 'default' =>
-  status === 'live' ? 'success' : status === 'dev' ? 'warning' : 'default';
+const getStatusChipColor = (
+  status: AppStatus,
+): "success" | "warning" | "default" =>
+  status === "live" ? "success" : status === "dev" ? "warning" : "default";
 
 const getStatusLabel = (status: AppStatus) =>
-  status === 'live' ? 'Live' : status === 'dev' ? 'Dev' : 'Soon';
+  status === "live" ? "Live" : status === "dev" ? "Dev" : "Soon";
 
 const selectedSx = {
-  bgcolor: 'primary.main',
-  color: 'primary.contrastText',
-  '&:hover': { bgcolor: 'primary.dark' },
-  '& .MuiListItemIcon-root': { color: 'primary.contrastText' },
+  bgcolor: "primary.main",
+  color: "primary.contrastText",
+  "&:hover": { bgcolor: "primary.dark" },
+  "& .MuiListItemIcon-root": { color: "primary.contrastText" },
 };
 
 const SidebarMenuItem = ({
@@ -43,7 +45,7 @@ const SidebarMenuItem = ({
   drawerMode,
   expandedGroups,
   onToggleGroup,
-  currentPath = '',
+  currentPath = "",
   onNavigate,
 }: SidebarMenuItemProps) => {
   const IconComponent = getIcon(app.iconName);
@@ -51,14 +53,17 @@ const SidebarMenuItem = ({
   const hasSubItems = Boolean(app.subItems?.length);
   const isExpandable = hasChildren || hasSubItems;
   const isExpanded = expandedGroups.has(app.id);
-  const showText = drawerMode !== 'icon-only';
-  const showChip = drawerMode === 'expanded';
+  const showText = drawerMode !== "icon-only";
+  const showChip = drawerMode === "expanded";
   const isItemActive = app.basePath && currentPath.includes(app.basePath);
   const isChildActive =
-    hasChildren && app.children?.some((c) => c.basePath && currentPath.includes(c.basePath));
+    hasChildren &&
+    app.children?.some((c) => c.basePath && currentPath.includes(c.basePath));
   const isSubItemActive =
     hasSubItems &&
-    app.subItems?.some((s) => currentPath.includes(`${app.basePath}${s.pathSuffix}`));
+    app.subItems?.some((s) =>
+      currentPath.includes(`${app.basePath}${s.pathSuffix}`),
+    );
 
   const handleClick = () => {
     if (isExpandable) onToggleGroup(app.id);
@@ -67,35 +72,42 @@ const SidebarMenuItem = ({
 
   return (
     <Fragment>
-      <ListItem disablePadding sx={{ display: 'block' }}>
-        <Tooltip title={drawerMode === 'icon-only' ? app.name : ''} placement="right">
+      <ListItem disablePadding sx={{ display: "block" }}>
+        <Tooltip
+          title={drawerMode === "icon-only" ? app.name : ""}
+          placement="right"
+        >
           <ListItemButton
             onClick={handleClick}
             selected={Boolean(isItemActive && !hasSubItems && !hasChildren)}
             sx={{
               minHeight: 36,
-              px: drawerMode === 'icon-only' ? 1.5 : 2,
+              px: drawerMode === "icon-only" ? 1.5 : 2,
               pl: showText ? 2 + depth * 1.5 : 1.5,
               py: 0.25,
-              bgcolor: isChildActive || isSubItemActive ? 'action.selected' : 'transparent',
-              '&.Mui-selected': selectedSx,
+              bgcolor:
+                isChildActive || isSubItemActive
+                  ? "action.selected"
+                  : "transparent",
+              "&.Mui-selected": selectedSx,
             }}
           >
             <ListItemIcon
               sx={{
-                minWidth: drawerMode === 'icon-only' ? 0 : 32,
-                mr: drawerMode === 'icon-only' ? 0 : 1,
-                justifyContent: 'center',
+                minWidth: drawerMode === "icon-only" ? 0 : 32,
+                mr: drawerMode === "icon-only" ? 0 : 1,
+                justifyContent: "center",
               }}
             >
+              {/* eslint-disable-next-line react-hooks/static-components */}
               <IconComponent
                 sx={{
                   fontSize: 18,
                   color: isItemActive
-                    ? 'inherit'
-                    : app.status === 'dev'
-                      ? 'primary.main'
-                      : 'text.secondary',
+                    ? "inherit"
+                    : app.status === "dev"
+                      ? "primary.main"
+                      : "text.secondary",
                 }}
               />
             </ListItemIcon>
@@ -120,8 +132,8 @@ const SidebarMenuItem = ({
                 {isExpandable && (
                   <ExpandMore
                     sx={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'none',
-                      transition: 'transform 0.2s',
+                      transform: isExpanded ? "rotate(180deg)" : "none",
+                      transition: "transform 0.2s",
                       fontSize: 16,
                     }}
                   />
@@ -153,28 +165,40 @@ const SidebarMenuItem = ({
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {app.subItems?.map((subItem) => {
-              const isSubActive = currentPath.includes(`${app.basePath}${subItem.pathSuffix}`);
+              const isSubActive = currentPath.includes(
+                `${app.basePath}${subItem.pathSuffix}`,
+              );
               return (
-                <ListItem key={subItem.pathSuffix} disablePadding sx={{ display: 'block' }}>
+                <ListItem
+                  key={subItem.pathSuffix}
+                  disablePadding
+                  sx={{ display: "block" }}
+                >
                   <ListItemButton
-                    onClick={() => onNavigate?.(`${app.basePath}${subItem.pathSuffix}`)}
+                    onClick={() =>
+                      onNavigate?.(`${app.basePath}${subItem.pathSuffix}`)
+                    }
                     disabled={subItem.isDisabled}
                     selected={isSubActive}
                     sx={{
                       minHeight: 32,
                       pl: showText ? 2 + (depth + 1) * 1.5 : 1.5,
                       py: 0.25,
-                      '&.Mui-selected': selectedSx,
+                      "&.Mui-selected": selectedSx,
                     }}
                   >
                     {showText && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', pl: 4 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", pl: 4 }}
+                      >
                         <Box
                           sx={{
                             width: 4,
                             height: 4,
-                            borderRadius: '50%',
-                            bgcolor: isSubActive ? 'primary.contrastText' : 'text.disabled',
+                            borderRadius: "50%",
+                            bgcolor: isSubActive
+                              ? "primary.contrastText"
+                              : "text.disabled",
                             mr: 1.5,
                           }}
                         />

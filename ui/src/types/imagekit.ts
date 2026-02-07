@@ -32,7 +32,11 @@ export interface ImageKitConfigListResponse {
 }
 
 // Upload types
-export type UploadMode = 'single' | 'multiple' | 'single-array' | 'multiple-array';
+export type UploadMode =
+  | "single"
+  | "multiple"
+  | "single-array"
+  | "multiple-array";
 
 export interface UploadedFile {
   id: string;

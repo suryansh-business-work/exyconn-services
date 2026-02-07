@@ -7,13 +7,13 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { aiCompanyApi } from '../../../api/aiApi';
-import { useOrg } from '../../../context/OrgContext';
-import { AICompany, CreateAICompanyInput } from '../../../types/ai';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { aiCompanyApi } from "../../../api/aiApi";
+import { useOrg } from "../../../context/OrgContext";
+import { AICompany, CreateAICompanyInput } from "../../../types/ai";
 
 interface AICompanyDialogProps {
   open: boolean;
@@ -23,25 +23,32 @@ interface AICompanyDialogProps {
 }
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Name is required').min(2).max(100),
-  provider: Yup.string().oneOf(['openai', 'gemini', 'anthropic', 'custom']).required(),
-  apiKey: Yup.string().required('API Key is required'),
-  baseUrl: Yup.string().url('Must be a valid URL'),
+  name: Yup.string().required("Name is required").min(2).max(100),
+  provider: Yup.string()
+    .oneOf(["openai", "gemini", "anthropic", "custom"])
+    .required(),
+  apiKey: Yup.string().required("API Key is required"),
+  baseUrl: Yup.string().url("Must be a valid URL"),
   defaultModel: Yup.string().max(100),
 });
 
-const AICompanyDialog = ({ open, onClose, company, onSaved }: AICompanyDialogProps) => {
+const AICompanyDialog = ({
+  open,
+  onClose,
+  company,
+  onSaved,
+}: AICompanyDialogProps) => {
   const { selectedOrg, selectedApiKey } = useOrg();
   const isEdit = !!company;
 
   const formik = useFormik<CreateAICompanyInput>({
     initialValues: {
-      name: company?.name || '',
-      provider: company?.provider || 'openai',
-      apiKey: '', // Always empty for security
-      apiSecret: '',
-      baseUrl: company?.baseUrl || '',
-      defaultModel: company?.defaultModel || '',
+      name: company?.name || "",
+      provider: company?.provider || "openai",
+      apiKey: "", // Always empty for security
+      apiSecret: "",
+      baseUrl: company?.baseUrl || "",
+      defaultModel: company?.defaultModel || "",
     },
     validationSchema,
     enableReinitialize: true,
@@ -50,18 +57,28 @@ const AICompanyDialog = ({ open, onClose, company, onSaved }: AICompanyDialogPro
       try {
         const data = { ...values };
         // Don't send empty apiKey on edit if not changed
-        if (isEdit && !data.apiKey) delete (data as Record<string, unknown>).apiKey;
+        if (isEdit && !data.apiKey)
+          delete (data as Record<string, unknown>).apiKey;
         if (!data.apiSecret) delete (data as Record<string, unknown>).apiSecret;
 
         if (isEdit && company) {
-          await aiCompanyApi.update(selectedOrg.id, company.id, data, selectedApiKey?.apiKey);
+          await aiCompanyApi.update(
+            selectedOrg.id,
+            company.id,
+            data,
+            selectedApiKey?.apiKey,
+          );
         } else {
-          await aiCompanyApi.create(selectedOrg.id, data, selectedApiKey?.apiKey);
+          await aiCompanyApi.create(
+            selectedOrg.id,
+            data,
+            selectedApiKey?.apiKey,
+          );
         }
         onSaved();
         onClose();
       } catch (err) {
-        console.error('Save failed:', err);
+        console.error("Save failed:", err);
       } finally {
         setSubmitting(false);
       }
@@ -69,16 +86,18 @@ const AICompanyDialog = ({ open, onClose, company, onSaved }: AICompanyDialogPro
   });
 
   const defaultModels: Record<string, string[]> = {
-    openai: ['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo'],
-    gemini: ['gemini-pro', 'gemini-pro-vision'],
-    anthropic: ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
+    openai: ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
+    gemini: ["gemini-pro", "gemini-pro-vision"],
+    anthropic: ["claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
     custom: [],
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={formik.handleSubmit}>
-        <DialogTitle>{isEdit ? 'Edit AI Company' : 'Add AI Company'}</DialogTitle>
+        <DialogTitle>
+          {isEdit ? "Edit AI Company" : "Add AI Company"}
+        </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 0.5 }}>
             <Grid size={12}>
@@ -115,7 +134,9 @@ const AICompanyDialog = ({ open, onClose, company, onSaved }: AICompanyDialogPro
                 fullWidth
                 size="small"
                 type="password"
-                label={isEdit ? 'API Key (leave blank to keep current)' : 'API Key'}
+                label={
+                  isEdit ? "API Key (leave blank to keep current)" : "API Key"
+                }
                 name="apiKey"
                 value={formik.values.apiKey}
                 onChange={formik.handleChange}
@@ -134,7 +155,7 @@ const AICompanyDialog = ({ open, onClose, company, onSaved }: AICompanyDialogPro
                 onChange={formik.handleChange}
               />
             </Grid>
-            {formik.values.provider === 'custom' && (
+            {formik.values.provider === "custom" && (
               <Grid size={12}>
                 <TextField
                   fullWidth
@@ -144,7 +165,9 @@ const AICompanyDialog = ({ open, onClose, company, onSaved }: AICompanyDialogPro
                   placeholder="https://api.example.com"
                   value={formik.values.baseUrl}
                   onChange={formik.handleChange}
-                  error={formik.touched.baseUrl && Boolean(formik.errors.baseUrl)}
+                  error={
+                    formik.touched.baseUrl && Boolean(formik.errors.baseUrl)
+                  }
                   helperText={formik.touched.baseUrl && formik.errors.baseUrl}
                 />
               </Grid>
@@ -173,8 +196,18 @@ const AICompanyDialog = ({ open, onClose, company, onSaved }: AICompanyDialogPro
           <Button onClick={onClose} disabled={formik.isSubmitting}>
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
-            {formik.isSubmitting ? <CircularProgress size={20} /> : isEdit ? 'Update' : 'Create'}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? (
+              <CircularProgress size={20} />
+            ) : isEdit ? (
+              "Update"
+            ) : (
+              "Create"
+            )}
           </Button>
         </DialogActions>
       </form>

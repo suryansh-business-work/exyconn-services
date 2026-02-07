@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
-import { SiteMonitor, ISiteMonitor, ISiteCheckOptions } from './monitor.models';
-import { SiteCheckResult } from '../history/history.models';
-import { siteCheckService } from '../checks/check.services';
+import mongoose from "mongoose";
+import { SiteMonitor, ISiteMonitor, ISiteCheckOptions } from "./monitor.models";
+import { SiteCheckResult } from "../history/history.models";
+import { siteCheckService } from "../checks/check.services";
 
 interface ListParams {
   page: number;
   limit: number;
   search?: string;
   sortBy: string;
-  sortOrder: 'asc' | 'desc';
+  sortOrder: "asc" | "desc";
   isActive?: boolean;
 }
 
@@ -30,11 +30,13 @@ export const monitorService = {
     const { page, limit, search, sortBy, sortOrder, isActive } = params;
     const skip = (page - 1) * limit;
 
-    const query: Record<string, unknown> = { organizationId: new mongoose.Types.ObjectId(orgId) };
+    const query: Record<string, unknown> = {
+      organizationId: new mongoose.Types.ObjectId(orgId),
+    };
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { url: { $regex: search, $options: 'i' } },
+        { name: { $regex: search, $options: "i" } },
+        { url: { $regex: search, $options: "i" } },
       ];
     }
     if (isActive !== undefined) {
@@ -43,7 +45,7 @@ export const monitorService = {
 
     const [data, total] = await Promise.all([
       SiteMonitor.find(query)
-        .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+        .sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
@@ -56,7 +58,10 @@ export const monitorService = {
     };
   },
 
-  get: async (orgId: string, monitorId: string): Promise<ISiteMonitor | null> => {
+  get: async (
+    orgId: string,
+    monitorId: string,
+  ): Promise<ISiteMonitor | null> => {
     return SiteMonitor.findOne({
       _id: new mongoose.Types.ObjectId(monitorId),
       organizationId: new mongoose.Types.ObjectId(orgId),
@@ -74,7 +79,7 @@ export const monitorService = {
   update: async (
     orgId: string,
     monitorId: string,
-    data: UpdateInput
+    data: UpdateInput,
   ): Promise<ISiteMonitor | null> => {
     const updateData: Record<string, unknown> = {};
     if (data.url) updateData.url = data.url;
@@ -92,7 +97,7 @@ export const monitorService = {
         organizationId: new mongoose.Types.ObjectId(orgId),
       },
       { $set: updateData },
-      { new: true }
+      { new: true },
     );
   },
 
@@ -102,7 +107,9 @@ export const monitorService = {
       organizationId: new mongoose.Types.ObjectId(orgId),
     });
     // Also delete history
-    await SiteCheckResult.deleteMany({ monitorId: new mongoose.Types.ObjectId(monitorId) });
+    await SiteCheckResult.deleteMany({
+      monitorId: new mongoose.Types.ObjectId(monitorId),
+    });
     return result.deletedCount > 0;
   },
 
@@ -113,7 +120,7 @@ export const monitorService = {
     });
 
     if (!monitor) {
-      throw new Error('Monitor not found');
+      throw new Error("Monitor not found");
     }
 
     const result = await siteCheckService.runCheck(monitor);

@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
-import { aiChatService } from './chat.services';
+import { Request, Response } from "express";
+import { aiChatService } from "./chat.services";
 
 export const aiChatController = {
   list: async (req: Request, res: Response) => {
     try {
       const orgId = req.params.orgId as string;
-      const { page = '1', limit = '20', companyId } = req.query;
+      const { page = "1", limit = "20", companyId } = req.query;
       const result = await aiChatService.list(orgId, {
         page: Number(page),
         limit: Number(limit),
@@ -13,7 +13,7 @@ export const aiChatController = {
       });
       res.json(result);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to list chats' });
+      res.status(500).json({ error: "Failed to list chats" });
     }
   },
 
@@ -22,10 +22,10 @@ export const aiChatController = {
       const orgId = req.params.orgId as string;
       const chatId = req.params.chatId as string;
       const chat = await aiChatService.get(orgId, chatId);
-      if (!chat) return res.status(404).json({ error: 'Chat not found' });
+      if (!chat) return res.status(404).json({ error: "Chat not found" });
       res.json(chat);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to get chat' });
+      res.status(500).json({ error: "Failed to get chat" });
     }
   },
 
@@ -35,7 +35,7 @@ export const aiChatController = {
       const chat = await aiChatService.create(orgId, req.body);
       res.status(201).json(chat);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to create chat' });
+      res.status(500).json({ error: "Failed to create chat" });
     }
   },
 
@@ -44,10 +44,10 @@ export const aiChatController = {
       const orgId = req.params.orgId as string;
       const chatId = req.params.chatId as string;
       const chat = await aiChatService.update(orgId, chatId, req.body);
-      if (!chat) return res.status(404).json({ error: 'Chat not found' });
+      if (!chat) return res.status(404).json({ error: "Chat not found" });
       res.json(chat);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to update chat' });
+      res.status(500).json({ error: "Failed to update chat" });
     }
   },
 
@@ -56,10 +56,10 @@ export const aiChatController = {
       const orgId = req.params.orgId as string;
       const chatId = req.params.chatId as string;
       const deleted = await aiChatService.delete(orgId, chatId);
-      if (!deleted) return res.status(404).json({ error: 'Chat not found' });
+      if (!deleted) return res.status(404).json({ error: "Chat not found" });
       res.json({ success: true });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to delete chat' });
+      res.status(500).json({ error: "Failed to delete chat" });
     }
   },
 
@@ -72,10 +72,13 @@ export const aiChatController = {
       res.json(result);
     } catch (err) {
       const error = err as Error;
-      if (error.message === 'Chat not found' || error.message === 'AI Company not found') {
+      if (
+        error.message === "Chat not found" ||
+        error.message === "AI Company not found"
+      ) {
         return res.status(404).json({ error: error.message });
       }
-      res.status(500).json({ error: 'Failed to send message' });
+      res.status(500).json({ error: "Failed to send message" });
     }
   },
 
@@ -85,7 +88,7 @@ export const aiChatController = {
       const stats = await aiChatService.getStats(orgId);
       res.json(stats);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to get stats' });
+      res.status(500).json({ error: "Failed to get stats" });
     }
   },
 };

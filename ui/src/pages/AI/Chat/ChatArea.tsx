@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -8,9 +8,9 @@ import {
   CircularProgress,
   InputAdornment,
   keyframes,
-} from '@mui/material';
-import { Send, Settings } from '@mui/icons-material';
-import { AIChat, ChatMessage } from '../../../types/ai';
+} from "@mui/material";
+import { Send, Settings } from "@mui/icons-material";
+import { AIChat, ChatMessage } from "../../../types/ai";
 
 // Typing animation keyframes
 const pulse = keyframes`
@@ -38,11 +38,11 @@ const ChatArea = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat?.messages]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       onSendMessage();
     }
@@ -52,24 +52,34 @@ const ChatArea = ({
     return (
       <Paper
         variant="outlined"
-        sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        sx={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        <Typography color="text.secondary">Select a chat or create a new one</Typography>
+        <Typography color="text.secondary">
+          Select a chat or create a new one
+        </Typography>
       </Paper>
     );
   }
 
   return (
-    <Paper variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Paper
+      variant="outlined"
+      sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+    >
       {/* Header */}
       <Box
         sx={{
           p: 1.5,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <Box>
@@ -86,7 +96,7 @@ const ChatArea = ({
       </Box>
 
       {/* Messages */}
-      <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
+      <Box sx={{ flex: 1, overflow: "auto", p: 2 }}>
         {chat.messages.map((msg: ChatMessage, idx: number) => (
           <MessageBubble key={idx} message={msg} />
         ))}
@@ -95,7 +105,7 @@ const ChatArea = ({
       </Box>
 
       {/* Input */}
-      <Box sx={{ p: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ p: 1.5, borderTop: "1px solid", borderColor: "divider" }}>
         <TextField
           fullWidth
           size="small"
@@ -113,7 +123,11 @@ const ChatArea = ({
                   onClick={onSendMessage}
                   disabled={sending || !message.trim()}
                 >
-                  {sending ? <CircularProgress size={18} /> : <Send fontSize="small" />}
+                  {sending ? (
+                    <CircularProgress size={18} />
+                  ) : (
+                    <Send fontSize="small" />
+                  )}
                 </IconButton>
               </InputAdornment>
             ),
@@ -129,27 +143,43 @@ interface MessageBubbleProps {
 }
 
 const MessageBubble = ({ message }: MessageBubbleProps) => {
-  const isUser = message.role === 'user';
-  const isSystem = message.role === 'system';
+  const isUser = message.role === "user";
+  const isSystem = message.role === "system";
 
   return (
-    <Box sx={{ mb: 2, display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
+    <Box
+      sx={{
+        mb: 2,
+        display: "flex",
+        justifyContent: isUser ? "flex-end" : "flex-start",
+      }}
+    >
       <Paper
         variant="outlined"
         sx={{
           p: 1.5,
-          maxWidth: '70%',
-          bgcolor: isUser ? 'primary.main' : isSystem ? 'grey.100' : 'background.default',
-          color: isUser ? 'white' : 'text.primary',
-          borderStyle: isSystem ? 'dashed' : 'solid',
+          maxWidth: "70%",
+          bgcolor: isUser
+            ? "primary.main"
+            : isSystem
+              ? "grey.100"
+              : "background.default",
+          color: isUser ? "white" : "text.primary",
+          borderStyle: isSystem ? "dashed" : "solid",
         }}
       >
         {isSystem && (
-          <Typography variant="caption" sx={{ fontWeight: 600, display: 'block', mb: 0.5 }}>
+          <Typography
+            variant="caption"
+            sx={{ fontWeight: 600, display: "block", mb: 0.5 }}
+          >
             System
           </Typography>
         )}
-        <Typography variant="body2" sx={{ fontSize: 13, whiteSpace: 'pre-wrap' }}>
+        <Typography
+          variant="body2"
+          sx={{ fontSize: 13, whiteSpace: "pre-wrap" }}
+        >
           {message.content}
         </Typography>
         <Typography variant="caption" sx={{ opacity: 0.7, fontSize: 10 }}>
@@ -162,27 +192,27 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
 
 // AI thinking animation bubble
 const ThinkingBubble = () => (
-  <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-start' }}>
+  <Box sx={{ mb: 2, display: "flex", justifyContent: "flex-start" }}>
     <Paper
       variant="outlined"
       sx={{
         p: 1.5,
-        maxWidth: '70%',
-        bgcolor: 'background.default',
-        display: 'flex',
-        alignItems: 'center',
+        maxWidth: "70%",
+        bgcolor: "background.default",
+        display: "flex",
+        alignItems: "center",
         gap: 1,
       }}
     >
-      <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+      <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
         {[0, 1, 2].map((i) => (
           <Box
             key={i}
             sx={{
               width: 8,
               height: 8,
-              borderRadius: '50%',
-              bgcolor: 'primary.main',
+              borderRadius: "50%",
+              bgcolor: "primary.main",
               animation: `${pulse} 1.4s ease-in-out infinite`,
               animationDelay: `${i * 0.2}s`,
             }}
@@ -191,7 +221,7 @@ const ThinkingBubble = () => (
       </Box>
       <Typography
         variant="body2"
-        sx={{ fontSize: 13, color: 'text.secondary', fontStyle: 'italic' }}
+        sx={{ fontSize: 13, color: "text.secondary", fontStyle: "italic" }}
       >
         AI is thinking...
       </Typography>

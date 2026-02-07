@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IImageKitConfig extends Document {
   organizationId: mongoose.Types.ObjectId;
@@ -16,7 +16,7 @@ const ImageKitConfigSchema = new Schema<IImageKitConfig>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
@@ -47,13 +47,13 @@ const ImageKitConfigSchema = new Schema<IImageKitConfig>(
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 ImageKitConfigSchema.index({ organizationId: 1, name: 1 }, { unique: true });
 ImageKitConfigSchema.index({ organizationId: 1, isDefault: 1 });
 
 export const ImageKitConfigModel = mongoose.model<IImageKitConfig>(
-  'ImageKitConfig',
-  ImageKitConfigSchema
+  "ImageKitConfig",
+  ImageKitConfigSchema,
 );

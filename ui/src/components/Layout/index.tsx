@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import Header from './Header';
-import Sidebar from './Sidebar';
+import { useState } from "react";
+import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
 
-type DrawerMode = 'expanded' | 'collapsed' | 'icon-only';
+type DrawerMode = "expanded" | "collapsed" | "icon-only";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -12,29 +12,29 @@ interface LayoutProps {
   onNavigate?: (path: string) => void;
 }
 
-const Layout = ({ children, currentPath = '' }: LayoutProps) => {
-  const [drawerMode, setDrawerMode] = useState<DrawerMode>('expanded');
+const Layout = ({ children, currentPath = "" }: LayoutProps) => {
+  const [drawerMode, setDrawerMode] = useState<DrawerMode>("expanded");
   const navigate = useNavigate();
 
   const cycleDrawerMode = () => {
     setDrawerMode((prev) => {
       switch (prev) {
-        case 'expanded':
-          return 'collapsed';
-        case 'collapsed':
-          return 'icon-only';
-        case 'icon-only':
-          return 'expanded';
+        case "expanded":
+          return "collapsed";
+        case "collapsed":
+          return "icon-only";
+        case "icon-only":
+          return "expanded";
       }
     });
   };
 
   const handleManageOrganizations = () => {
-    navigate('/manage-organization');
+    navigate("/manage-organization");
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <Header
         drawerMode={drawerMode}
         onToggleDrawer={cycleDrawerMode}
@@ -45,9 +45,9 @@ const Layout = ({ children, currentPath = '' }: LayoutProps) => {
         component="main"
         sx={{
           flexGrow: 1,
-          bgcolor: 'background.default',
-          minHeight: '100vh',
-          pt: '44px',
+          bgcolor: "background.default",
+          minHeight: "100vh",
+          pt: "44px",
         }}
       >
         <Box sx={{ p: 1.5 }}>{children}</Box>

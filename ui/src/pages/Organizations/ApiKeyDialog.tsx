@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -17,11 +17,11 @@ import {
   Box,
   Tooltip,
   Alert,
-} from '@mui/material';
-import { Close, Add, ContentCopy, Delete } from '@mui/icons-material';
-import { useFormik } from 'formik';
-import { apiKeyValidationSchema } from '../../validation/organizationSchema';
-import { Organization, ApiKey } from '../../types/organization';
+} from "@mui/material";
+import { Close, Add, ContentCopy, Delete } from "@mui/icons-material";
+import { useFormik } from "formik";
+import { apiKeyValidationSchema } from "../../validation/organizationSchema";
+import { Organization, ApiKey } from "../../types/organization";
 
 interface ApiKeyDialogProps {
   open: boolean;
@@ -42,7 +42,7 @@ const ApiKeyDialog = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const formik = useFormik({
-    initialValues: { keyName: '' },
+    initialValues: { keyName: "" },
     validationSchema: apiKeyValidationSchema,
     onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
@@ -79,7 +79,12 @@ const ApiKeyDialog = ({
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 1.5 }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          py: 1.5,
+        }}
       >
         <Typography variant="h6" sx={{ fontSize: 16, fontWeight: 600 }}>
           API Keys - {organization?.orgName}
@@ -91,14 +96,23 @@ const ApiKeyDialog = ({
       <Divider />
       <DialogContent sx={{ py: 2 }}>
         {newKey && (
-          <Alert severity="success" sx={{ mb: 2, fontSize: 12 }} onClose={() => setNewKey(null)}>
+          <Alert
+            severity="success"
+            sx={{ mb: 2, fontSize: 12 }}
+            onClose={() => setNewKey(null)}
+          >
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: 12 }}>
               API Key Created!
             </Typography>
-            <Typography variant="caption" sx={{ wordBreak: 'break-all' }}>
-              Save this key now. You won't be able to see it again: <strong>{newKey.apiKey}</strong>
+            <Typography variant="caption" sx={{ wordBreak: "break-all" }}>
+              Save this key now. You won't be able to see it again:{" "}
+              <strong>{newKey.apiKey}</strong>
             </Typography>
-            <IconButton size="small" onClick={() => handleCopy(newKey.apiKey)} sx={{ ml: 1 }}>
+            <IconButton
+              size="small"
+              onClick={() => handleCopy(newKey.apiKey)}
+              sx={{ ml: 1 }}
+            >
               <ContentCopy sx={{ fontSize: 14 }} />
             </IconButton>
           </Alert>
@@ -106,7 +120,7 @@ const ApiKeyDialog = ({
         <Box
           component="form"
           onSubmit={formik.handleSubmit}
-          sx={{ display: 'flex', gap: 1, mb: 2 }}
+          sx={{ display: "flex", gap: 1, mb: 2 }}
         >
           <TextField
             size="small"
@@ -132,16 +146,27 @@ const ApiKeyDialog = ({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontSize: 12, fontWeight: 600 }}>Key Name</TableCell>
-              <TableCell sx={{ fontSize: 12, fontWeight: 600 }}>API Key</TableCell>
-              <TableCell sx={{ fontSize: 12, fontWeight: 600 }}>Created</TableCell>
-              <TableCell sx={{ fontSize: 12, fontWeight: 600, width: 80 }}>Actions</TableCell>
+              <TableCell sx={{ fontSize: 12, fontWeight: 600 }}>
+                Key Name
+              </TableCell>
+              <TableCell sx={{ fontSize: 12, fontWeight: 600 }}>
+                API Key
+              </TableCell>
+              <TableCell sx={{ fontSize: 12, fontWeight: 600 }}>
+                Created
+              </TableCell>
+              <TableCell sx={{ fontSize: 12, fontWeight: 600, width: 80 }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {organization?.orgApiKeys?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} sx={{ textAlign: 'center', py: 3, fontSize: 12 }}>
+                <TableCell
+                  colSpan={4}
+                  sx={{ textAlign: "center", py: 3, fontSize: 12 }}
+                >
                   No API keys yet
                 </TableCell>
               </TableRow>
@@ -149,16 +174,21 @@ const ApiKeyDialog = ({
               organization?.orgApiKeys?.map((key, index) => (
                 <TableRow key={index}>
                   <TableCell sx={{ fontSize: 12 }}>{key.keyName}</TableCell>
-                  <TableCell sx={{ fontSize: 11, fontFamily: 'monospace' }}>
+                  <TableCell sx={{ fontSize: 11, fontFamily: "monospace" }}>
                     {key.apiKey.slice(0, 20)}...
                     <Tooltip title="Copy">
-                      <IconButton size="small" onClick={() => handleCopy(key.apiKey)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleCopy(key.apiKey)}
+                      >
                         <ContentCopy sx={{ fontSize: 14 }} />
                       </IconButton>
                     </Tooltip>
                   </TableCell>
                   <TableCell sx={{ fontSize: 11 }}>
-                    {key.createdAt ? new Date(key.createdAt).toLocaleDateString() : '-'}
+                    {key.createdAt
+                      ? new Date(key.createdAt).toLocaleDateString()
+                      : "-"}
                   </TableCell>
                   <TableCell>
                     <IconButton

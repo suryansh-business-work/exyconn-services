@@ -1,1 +1,1 @@
-export { siteCheckService } from './check.services';
+export { siteCheckService } from "./check.services";

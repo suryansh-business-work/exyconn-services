@@ -8,9 +8,9 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-} from '@mui/material';
-import { Add, Delete } from '@mui/icons-material';
-import { AIChat } from '../../../types/ai';
+} from "@mui/material";
+import { Add, Delete } from "@mui/icons-material";
+import { AIChat } from "../../../types/ai";
 
 interface ChatListProps {
   chats: AIChat[];
@@ -30,15 +30,18 @@ const ChatList = ({
   onNewChat,
 }: ChatListProps) => {
   return (
-    <Paper variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Paper
+      variant="outlined"
+      sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+    >
       <Box
         sx={{
           p: 1.5,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
@@ -48,13 +51,17 @@ const ChatList = ({
           <Add fontSize="small" />
         </IconButton>
       </Box>
-      <List dense sx={{ flex: 1, overflow: 'auto' }}>
+      <List dense sx={{ flex: 1, overflow: "auto" }}>
         {loading ? (
-          <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Box sx={{ p: 2, textAlign: "center" }}>
             <CircularProgress size={20} />
           </Box>
         ) : chats.length === 0 ? (
-          <Typography variant="body2" color="text.secondary" sx={{ p: 2, textAlign: 'center' }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ p: 2, textAlign: "center" }}
+          >
             No chats yet
           </Typography>
         ) : (
@@ -74,8 +81,12 @@ const ChatList = ({
               >
                 <ListItemText
                   primary={chat.title}
-                  secondary={`${chat.model} • ${chat.company?.provider || ''}`}
-                  primaryTypographyProps={{ fontSize: 13, fontWeight: 500, noWrap: true }}
+                  secondary={`${chat.model} • ${chat.company?.provider || ""}`}
+                  primaryTypographyProps={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    noWrap: true,
+                  }}
                   secondaryTypographyProps={{ fontSize: 10 }}
                 />
               </ListItemButton>

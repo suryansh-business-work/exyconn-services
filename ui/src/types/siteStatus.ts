@@ -7,7 +7,7 @@ export interface SiteMonitorConfig {
   isActive: boolean;
   checks: SiteCheckOptions;
   lastCheckedAt?: string;
-  lastStatus?: 'healthy' | 'warning' | 'error';
+  lastStatus?: "healthy" | "warning" | "error";
   lastScreenshotUrl?: string;
   createdAt: string;
   updatedAt: string;
@@ -36,7 +36,7 @@ export interface SiteCheckResult {
   screenshot?: ScreenshotResult;
   pageInfo?: PageInfoResult;
   responseTime?: number; // in ms
-  overallStatus: 'healthy' | 'warning' | 'error';
+  overallStatus: "healthy" | "warning" | "error";
 }
 
 export interface HttpStatusResult {
@@ -109,8 +109,8 @@ export interface SiteMonitorListParams {
   page?: number;
   limit?: number;
   search?: string;
-  sortBy?: 'name' | 'url' | 'createdAt' | 'lastCheckedAt';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "name" | "url" | "createdAt" | "lastCheckedAt";
+  sortOrder?: "asc" | "desc";
   isActive?: boolean;
 }
 
@@ -118,7 +118,7 @@ export interface SiteCheckHistoryParams {
   page?: number;
   limit?: number;
   monitorId?: string;
-  status?: 'healthy' | 'warning' | 'error';
+  status?: "healthy" | "warning" | "error";
   startDate?: string;
   endDate?: string;
 }

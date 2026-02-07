@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
-import { SmtpConfigModel, ISmtpConfig } from './smtp.models';
+import mongoose from "mongoose";
+import { SmtpConfigModel, ISmtpConfig } from "./smtp.models";
 import {
   CreateSmtpConfigInput,
   UpdateSmtpConfigInput,
   ListSmtpConfigsQuery,
-} from './smtp.validators';
+} from "./smtp.validators";
 
 // Transform Mongoose document to plain object
 const transformSmtpConfig = (doc: ISmtpConfig) => ({
@@ -25,16 +25,27 @@ const transformSmtpConfig = (doc: ISmtpConfig) => ({
 });
 
 // Create SMTP config
-export const createSmtpConfig = async (organizationId: string, data: CreateSmtpConfigInput) => {
+export const createSmtpConfig = async (
+  organizationId: string,
+  data: CreateSmtpConfigInput,
+) => {
   // Check for duplicate name within org
-  const existing = await SmtpConfigModel.findOne({ organizationId, name: data.name });
+  const existing = await SmtpConfigModel.findOne({
+    organizationId,
+    name: data.name,
+  });
   if (existing) {
-    throw new Error(`SMTP configuration with name "${data.name}" already exists`);
+    throw new Error(
+      `SMTP configuration with name "${data.name}" already exists`,
+    );
   }
 
   // If this is set as default, unset other defaults
   if (data.isDefault) {
-    await SmtpConfigModel.updateMany({ organizationId, isDefault: true }, { isDefault: false });
+    await SmtpConfigModel.updateMany(
+      { organizationId, isDefault: true },
+      { isDefault: false },
+    );
   }
 
   // If no configs exist, make this the default
@@ -53,7 +64,10 @@ export const createSmtpConfig = async (organizationId: string, data: CreateSmtpC
 };
 
 // Get all SMTP configs for an organization
-export const getSmtpConfigs = async (organizationId: string, query: ListSmtpConfigsQuery) => {
+export const getSmtpConfigs = async (
+  organizationId: string,
+  query: ListSmtpConfigsQuery,
+) => {
   const { page, limit, search, isActive } = query;
   const skip = (page - 1) * limit;
 
@@ -61,9 +75,9 @@ export const getSmtpConfigs = async (organizationId: string, query: ListSmtpConf
 
   if (search) {
     filter.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { host: { $regex: search, $options: 'i' } },
-      { fromEmail: { $regex: search, $options: 'i' } },
+      { name: { $regex: search, $options: "i" } },
+      { host: { $regex: search, $options: "i" } },
+      { fromEmail: { $regex: search, $options: "i" } },
     ];
   }
 
@@ -72,7 +86,10 @@ export const getSmtpConfigs = async (organizationId: string, query: ListSmtpConf
   }
 
   const [configs, total] = await Promise.all([
-    SmtpConfigModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    SmtpConfigModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
     SmtpConfigModel.countDocuments(filter),
   ]);
 
@@ -88,14 +105,17 @@ export const getSmtpConfigs = async (organizationId: string, query: ListSmtpConf
 };
 
 // Get single SMTP config
-export const getSmtpConfig = async (organizationId: string, configId: string) => {
+export const getSmtpConfig = async (
+  organizationId: string,
+  configId: string,
+) => {
   const config = await SmtpConfigModel.findOne({
     _id: configId,
     organizationId,
   });
 
   if (!config) {
-    throw new Error('SMTP configuration not found');
+    throw new Error("SMTP configuration not found");
   }
 
   return transformSmtpConfig(config);
@@ -105,7 +125,7 @@ export const getSmtpConfig = async (organizationId: string, configId: string) =>
 export const updateSmtpConfig = async (
   organizationId: string,
   configId: string,
-  data: UpdateSmtpConfigInput
+  data: UpdateSmtpConfigInput,
 ) => {
   // Check for duplicate name within org (if name is being updated)
   if (data.name) {
@@ -115,7 +135,9 @@ export const updateSmtpConfig = async (
       _id: { $ne: configId },
     });
     if (existing) {
-      throw new Error(`SMTP configuration with name "${data.name}" already exists`);
+      throw new Error(
+        `SMTP configuration with name "${data.name}" already exists`,
+      );
     }
   }
 
@@ -123,32 +145,35 @@ export const updateSmtpConfig = async (
   if (data.isDefault) {
     await SmtpConfigModel.updateMany(
       { organizationId, isDefault: true, _id: { $ne: configId } },
-      { isDefault: false }
+      { isDefault: false },
     );
   }
 
   const config = await SmtpConfigModel.findOneAndUpdate(
     { _id: configId, organizationId },
     { ...data },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   if (!config) {
-    throw new Error('SMTP configuration not found');
+    throw new Error("SMTP configuration not found");
   }
 
   return transformSmtpConfig(config);
 };
 
 // Delete SMTP config
-export const deleteSmtpConfig = async (organizationId: string, configId: string) => {
+export const deleteSmtpConfig = async (
+  organizationId: string,
+  configId: string,
+) => {
   const config = await SmtpConfigModel.findOneAndDelete({
     _id: configId,
     organizationId,
   });
 
   if (!config) {
-    throw new Error('SMTP configuration not found');
+    throw new Error("SMTP configuration not found");
   }
 
   // If deleted config was default, make another one default
@@ -160,7 +185,7 @@ export const deleteSmtpConfig = async (organizationId: string, configId: string)
     }
   }
 
-  return { message: 'SMTP configuration deleted successfully' };
+  return { message: "SMTP configuration deleted successfully" };
 };
 
 // Get default SMTP config for an organization
@@ -172,7 +197,7 @@ export const getDefaultSmtpConfig = async (organizationId: string) => {
   });
 
   if (!config) {
-    throw new Error('No default SMTP configuration found');
+    throw new Error("No default SMTP configuration found");
   }
 
   return transformSmtpConfig(config);

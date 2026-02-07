@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,13 +8,13 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useOrg } from '../../../context/OrgContext';
-import { aiChatApi } from '../../../api/aiApi';
-import { AIChat, AICompany } from '../../../types/ai';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useOrg } from "../../../context/OrgContext";
+import { aiChatApi } from "../../../api/aiApi";
+import { AIChat, AICompany } from "../../../types/ai";
 
 interface NewChatDialogProps {
   open: boolean;
@@ -23,50 +23,65 @@ interface NewChatDialogProps {
   onCreated: (chat: AIChat) => void;
 }
 
-const NewChatDialog = ({ open, onClose, companies, onCreated }: NewChatDialogProps) => {
+const NewChatDialog = ({
+  open,
+  onClose,
+  companies,
+  onCreated,
+}: NewChatDialogProps) => {
   const { selectedOrg, selectedApiKey } = useOrg();
 
   const formik = useFormik({
     initialValues: {
-      companyId: '',
-      title: '',
-      model: '',
+      companyId: "",
+      title: "",
+      model: "",
       maxHistoryMessages: 50,
-      systemPrompt: '',
+      systemPrompt: "",
     },
     validationSchema: Yup.object({
-      companyId: Yup.string().required('Company is required'),
-      title: Yup.string().required('Title is required').min(1).max(200),
-      model: Yup.string().required('Model is required'),
+      companyId: Yup.string().required("Company is required"),
+      title: Yup.string().required("Title is required").min(1).max(200),
+      model: Yup.string().required("Model is required"),
     }),
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       if (!selectedOrg) return;
       try {
-        const chat = await aiChatApi.create(selectedOrg.id, values, selectedApiKey?.apiKey);
+        const chat = await aiChatApi.create(
+          selectedOrg.id,
+          values,
+          selectedApiKey?.apiKey,
+        );
         resetForm();
         onCreated(chat);
       } catch (err) {
-        console.error('Create failed:', err);
+        console.error("Create failed:", err);
       } finally {
         setSubmitting(false);
       }
     },
   });
 
-  const selectedCompany = companies.find((c) => c.id === formik.values.companyId);
+  const selectedCompany = companies.find(
+    (c) => c.id === formik.values.companyId,
+  );
   const availableModels = selectedCompany?.availableModels || [];
 
   // Set default model when company changes
   useEffect(() => {
     if (selectedCompany) {
       // If no model selected or current model not in available models, set default
-      if (!formik.values.model || !availableModels.includes(formik.values.model)) {
-        const defaultModel = selectedCompany.defaultModel || availableModels[0] || '';
-        formik.setFieldValue('model', defaultModel);
+      if (
+        !formik.values.model ||
+        !availableModels.includes(formik.values.model)
+      ) {
+        const defaultModel =
+          selectedCompany.defaultModel || availableModels[0] || "";
+        formik.setFieldValue("model", defaultModel);
       }
     } else {
       // Clear model if no company selected
-      formik.setFieldValue('model', '');
+      formik.setFieldValue("model", "");
     }
   }, [formik.values.companyId, selectedCompany]);
 
@@ -92,7 +107,9 @@ const NewChatDialog = ({ open, onClose, companies, onCreated }: NewChatDialogPro
                 name="companyId"
                 value={formik.values.companyId}
                 onChange={formik.handleChange}
-                error={formik.touched.companyId && Boolean(formik.errors.companyId)}
+                error={
+                  formik.touched.companyId && Boolean(formik.errors.companyId)
+                }
                 helperText={formik.touched.companyId && formik.errors.companyId}
               >
                 {companies
@@ -131,7 +148,8 @@ const NewChatDialog = ({ open, onClose, companies, onCreated }: NewChatDialogPro
                 disabled={!selectedCompany}
                 error={formik.touched.model && Boolean(formik.errors.model)}
                 helperText={
-                  (formik.touched.model && formik.errors.model) || 'Select a company first'
+                  (formik.touched.model && formik.errors.model) ||
+                  "Select a company first"
                 }
               >
                 {availableModels.map((model) => (
@@ -173,8 +191,12 @@ const NewChatDialog = ({ open, onClose, companies, onCreated }: NewChatDialogPro
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
-            {formik.isSubmitting ? <CircularProgress size={20} /> : 'Create'}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? <CircularProgress size={20} /> : "Create"}
           </Button>
         </DialogActions>
       </form>

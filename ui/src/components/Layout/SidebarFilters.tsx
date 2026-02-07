@@ -9,14 +9,19 @@ import {
   MenuItem,
   Divider,
   ListSubheader,
-} from '@mui/material';
-import { Search, FilterList, UnfoldMore, UnfoldLess } from '@mui/icons-material';
-import { AppStatus } from '../../data/app-data';
+} from "@mui/material";
+import {
+  Search,
+  FilterList,
+  UnfoldMore,
+  UnfoldLess,
+} from "@mui/icons-material";
+import { AppStatus } from "../../data/app-data";
 
-type StatusFilter = 'all' | AppStatus;
+type StatusFilter = "all" | AppStatus;
 
 interface SidebarFiltersProps {
-  drawerMode: 'expanded' | 'collapsed' | 'icon-only';
+  drawerMode: "expanded" | "collapsed" | "icon-only";
   searchQuery: string;
   statusFilter: StatusFilter;
   filterAnchorEl: HTMLElement | null;
@@ -28,14 +33,16 @@ interface SidebarFiltersProps {
   onCollapseAll: () => void;
 }
 
-const getStatusChipColor = (status: AppStatus): 'success' | 'warning' | 'default' => {
+const getStatusChipColor = (
+  status: AppStatus,
+): "success" | "warning" | "default" => {
   switch (status) {
-    case 'live':
-      return 'success';
-    case 'dev':
-      return 'warning';
-    case 'soon':
-      return 'default';
+    case "live":
+      return "success";
+    case "dev":
+      return "warning";
+    case "soon":
+      return "default";
   }
 };
 
@@ -51,9 +58,17 @@ const SidebarFilters = ({
   onExpandAll,
   onCollapseAll,
 }: SidebarFiltersProps) => {
-  if (drawerMode === 'icon-only') {
+  if (drawerMode === "icon-only") {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 1, gap: 0.5 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          py: 1,
+          gap: 0.5,
+        }}
+      >
         <Tooltip title="Search" placement="right">
           <IconButton size="small">
             <Search sx={{ fontSize: 18 }} />
@@ -87,29 +102,41 @@ const SidebarFilters = ({
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <Search sx={{ fontSize: 16, color: 'text.secondary' }} />
+              <Search sx={{ fontSize: 16, color: "text.secondary" }} />
             </InputAdornment>
           ),
           sx: { fontSize: 12, height: 28 },
         }}
         sx={{ mb: 0.5 }}
       />
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
           <IconButton size="small" onClick={onFilterMenuOpen} sx={{ p: 0.25 }}>
             <FilterList sx={{ fontSize: 16 }} />
           </IconButton>
-          {statusFilter !== 'all' && (
+          {statusFilter !== "all" && (
             <Chip
-              label={statusFilter === 'live' ? 'Live' : statusFilter === 'dev' ? 'Dev' : 'Soon'}
+              label={
+                statusFilter === "live"
+                  ? "Live"
+                  : statusFilter === "dev"
+                    ? "Dev"
+                    : "Soon"
+              }
               size="small"
               color={getStatusChipColor(statusFilter)}
-              onDelete={() => onStatusFilterChange('all')}
+              onDelete={() => onStatusFilterChange("all")}
               sx={{ height: 18, fontSize: 9 }}
             />
           )}
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.25 }}>
           <Tooltip title="Expand All">
             <IconButton size="small" onClick={onExpandAll} sx={{ p: 0.25 }}>
               <UnfoldMore sx={{ fontSize: 16 }} />
@@ -152,52 +179,71 @@ const FilterMenu = ({
   onCollapseAll,
 }: FilterMenuProps) => (
   <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={onClose}>
-    <ListSubheader sx={{ fontSize: 11, lineHeight: '28px' }}>Filter by Status</ListSubheader>
+    <ListSubheader sx={{ fontSize: 11, lineHeight: "28px" }}>
+      Filter by Status
+    </ListSubheader>
     <MenuItem
       onClick={() => {
-        onStatusFilterChange('all');
+        onStatusFilterChange("all");
         onClose();
       }}
-      selected={statusFilter === 'all'}
+      selected={statusFilter === "all"}
       sx={{ fontSize: 12, py: 0.5 }}
     >
       All
     </MenuItem>
     <MenuItem
       onClick={() => {
-        onStatusFilterChange('live');
+        onStatusFilterChange("live");
         onClose();
       }}
-      selected={statusFilter === 'live'}
+      selected={statusFilter === "live"}
       sx={{ fontSize: 12, py: 0.5 }}
     >
-      <Chip label="Live" size="small" color="success" sx={{ height: 16, fontSize: 9, mr: 1 }} />
+      <Chip
+        label="Live"
+        size="small"
+        color="success"
+        sx={{ height: 16, fontSize: 9, mr: 1 }}
+      />
       Production Ready
     </MenuItem>
     <MenuItem
       onClick={() => {
-        onStatusFilterChange('dev');
+        onStatusFilterChange("dev");
         onClose();
       }}
-      selected={statusFilter === 'dev'}
+      selected={statusFilter === "dev"}
       sx={{ fontSize: 12, py: 0.5 }}
     >
-      <Chip label="Dev" size="small" color="warning" sx={{ height: 16, fontSize: 9, mr: 1 }} />
+      <Chip
+        label="Dev"
+        size="small"
+        color="warning"
+        sx={{ height: 16, fontSize: 9, mr: 1 }}
+      />
       In Development
     </MenuItem>
     <MenuItem
       onClick={() => {
-        onStatusFilterChange('soon');
+        onStatusFilterChange("soon");
         onClose();
       }}
-      selected={statusFilter === 'soon'}
+      selected={statusFilter === "soon"}
       sx={{ fontSize: 12, py: 0.5 }}
     >
-      <Chip label="Soon" size="small" color="default" sx={{ height: 16, fontSize: 9, mr: 1 }} />
+      <Chip
+        label="Soon"
+        size="small"
+        color="default"
+        sx={{ height: 16, fontSize: 9, mr: 1 }}
+      />
       Coming Soon
     </MenuItem>
     <Divider sx={{ my: 0.5 }} />
-    <ListSubheader sx={{ fontSize: 11, lineHeight: '28px' }}>Quick Actions</ListSubheader>
+    <ListSubheader sx={{ fontSize: 11, lineHeight: "28px" }}>
+      Quick Actions
+    </ListSubheader>
     <MenuItem
       onClick={() => {
         onExpandAll();

@@ -1,7 +1,14 @@
-import { MenuItem, FormControl, Select, Typography, Box, SelectChangeEvent } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { APP_DATA, AppDefinition } from '../../data/app-data';
-import { useOrg } from '../../context/OrgContext';
+import {
+  MenuItem,
+  FormControl,
+  Select,
+  Typography,
+  Box,
+  SelectChangeEvent,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { APP_DATA, AppDefinition } from "../../data/app-data";
+import { useOrg } from "../../context/OrgContext";
 
 interface ServiceSelectorProps {
   value: string;
@@ -15,11 +22,11 @@ const getLiveServices = (): AppDefinition[] => {
   APP_DATA.forEach((app) => {
     if (app.isGroup && app.children) {
       app.children.forEach((child) => {
-        if (child.status === 'live') {
+        if (child.status === "live") {
           services.push(child);
         }
       });
-    } else if (app.status === 'live') {
+    } else if (app.status === "live") {
       services.push(app);
     }
   });
@@ -51,8 +58,12 @@ const ServiceSelector = ({ value, onChange }: ServiceSelectorProps) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-      <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ fontWeight: 500 }}
+      >
         Service:
       </Typography>
       <FormControl size="small" sx={{ minWidth: 180 }}>
@@ -61,7 +72,7 @@ const ServiceSelector = ({ value, onChange }: ServiceSelectorProps) => {
           onChange={handleChange}
           displayEmpty
           sx={{
-            '& .MuiSelect-select': { py: 0.75, fontSize: 13 },
+            "& .MuiSelect-select": { py: 0.75, fontSize: 13 },
           }}
         >
           {services.map((service) => (

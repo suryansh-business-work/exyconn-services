@@ -8,14 +8,14 @@
 
 // Determine if we're in development by checking the URL
 const isLocalhost =
-  typeof window !== 'undefined' &&
-  (window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1' ||
-    window.location.hostname.startsWith('192.168.'));
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname.startsWith("192.168."));
 
 // Base URLs for different environments
-const DEV_API_BASE = 'http://localhost:4004';
-const PROD_API_BASE = 'https://exyconn-service-server.exyconn.com';
+const DEV_API_BASE = "http://localhost:4004";
+const PROD_API_BASE = "https://exyconn-service-server.exyconn.com";
 
 // Select the appropriate base URL
 export const API_BASE_URL = isLocalhost ? DEV_API_BASE : PROD_API_BASE;

@@ -1,19 +1,19 @@
-import { Box, Typography } from '@mui/material';
-import { PageBreadcrumb, ApiDocsViewer } from '../../components/common';
-import { useOrg } from '../../context/OrgContext';
-import { EndpointDefinition } from '../../components/common/ApiDocsViewer/types';
-import { API_BASE } from '../../api/config';
+import { Box, Typography } from "@mui/material";
+import { PageBreadcrumb, ApiDocsViewer } from "../../components/common";
+import { useOrg } from "../../context/OrgContext";
+import { EndpointDefinition } from "../../components/common/ApiDocsViewer/types";
+import { API_BASE } from "../../api/config";
 
 const ImageKitApiDocs = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
 
-  const apiKey = selectedApiKey?.apiKey || 'YOUR_API_KEY';
-  const orgId = selectedOrg?.id || 'YOUR_ORG_ID';
+  const apiKey = selectedApiKey?.apiKey || "YOUR_API_KEY";
+  const orgId = selectedOrg?.id || "YOUR_ORG_ID";
   const baseUrl = API_BASE;
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -21,9 +21,10 @@ const ImageKitApiDocs = () => {
 
   const endpoints: EndpointDefinition[] = [
     {
-      method: 'POST',
+      method: "POST",
       path: `/organizations/${orgId}/imagekit/upload/single`,
-      description: 'Upload a single file to ImageKit. Use multipart/form-data with file field.',
+      description:
+        "Upload a single file to ImageKit. Use multipart/form-data with file field.",
       body: `FormData:
 - file: <binary file data>
 - configId: "config_123"
@@ -47,9 +48,10 @@ const ImageKitApiDocs = () => {
 }`,
     },
     {
-      method: 'POST',
+      method: "POST",
       path: `/organizations/${orgId}/imagekit/upload/multiple`,
-      description: 'Upload multiple files at once. Returns array of upload results.',
+      description:
+        "Upload multiple files at once. Returns array of upload results.",
       body: `FormData:
 - files: <binary file data> (multiple)
 - configId: "config_123"
@@ -77,9 +79,9 @@ const ImageKitApiDocs = () => {
 }`,
     },
     {
-      method: 'GET',
+      method: "GET",
       path: `/organizations/${orgId}/imagekit/config`,
-      description: 'List all ImageKit configurations for the organization.',
+      description: "List all ImageKit configurations for the organization.",
       body: null,
       response: `{
   "data": [
@@ -101,9 +103,10 @@ const ImageKitApiDocs = () => {
 }`,
     },
     {
-      method: 'GET',
+      method: "GET",
       path: `/organizations/${orgId}/imagekit/history`,
-      description: 'Get upload history with filtering, sorting, and pagination.',
+      description:
+        "Get upload history with filtering, sorting, and pagination.",
       body: null,
       response: `{
   "data": [
@@ -131,10 +134,10 @@ const ImageKitApiDocs = () => {
 }`,
     },
     {
-      method: 'GET',
+      method: "GET",
       path: `/organizations/${orgId}/imagekit/history/stats`,
       description:
-        'Get upload statistics including total files, storage used, and file type breakdown.',
+        "Get upload statistics including total files, storage used, and file type breakdown.",
       body: null,
       response: `{
   "totalFiles": 1250,
@@ -151,9 +154,9 @@ const ImageKitApiDocs = () => {
 }`,
     },
     {
-      method: 'DELETE',
+      method: "DELETE",
       path: `/organizations/${orgId}/imagekit/history/:fileId`,
-      description: 'Delete a file from ImageKit and remove from history.',
+      description: "Delete a file from ImageKit and remove from history.",
       body: null,
       response: `{
   "success": true,
@@ -166,11 +169,14 @@ const ImageKitApiDocs = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'File Upload' },
-          { label: 'ImageKit' },
-          { label: 'API Docs' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "File Upload" },
+          { label: "ImageKit" },
+          { label: "API Docs" },
         ]}
       />
 
@@ -181,7 +187,14 @@ const ImageKitApiDocs = () => {
         apiKey={apiKey}
         orgId={orgId}
         endpoints={endpoints}
-        tabLabels={['Upload Single', 'Upload Multiple', 'Configs', 'History', 'Stats', 'Delete']}
+        tabLabels={[
+          "Upload Single",
+          "Upload Multiple",
+          "Configs",
+          "History",
+          "Stats",
+          "Delete",
+        ]}
       />
     </Box>
   );

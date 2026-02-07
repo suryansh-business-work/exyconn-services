@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IEnvVariable extends Document {
   organizationId: mongoose.Types.ObjectId;
@@ -15,11 +15,16 @@ const EnvVariableSchema = new Schema<IEnvVariable>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
-    appId: { type: Schema.Types.ObjectId, ref: 'EnvApp', required: true, index: true },
+    appId: {
+      type: Schema.Types.ObjectId,
+      ref: "EnvApp",
+      required: true,
+      index: true,
+    },
     key: { type: String, required: true },
     value: { type: String, required: true },
     isSecret: { type: Boolean, default: false },
@@ -35,14 +40,17 @@ const EnvVariableSchema = new Schema<IEnvVariable>(
         delete ret.__v;
         // Mask secret values
         if (ret.isSecret) {
-          ret.value = '••••••••';
+          ret.value = "••••••••";
         }
         return ret;
       },
     },
-  }
+  },
 );
 
 EnvVariableSchema.index({ appId: 1, key: 1 }, { unique: true });
 
-export const EnvVariable = mongoose.model<IEnvVariable>('EnvVariable', EnvVariableSchema);
+export const EnvVariable = mongoose.model<IEnvVariable>(
+  "EnvVariable",
+  EnvVariableSchema,
+);

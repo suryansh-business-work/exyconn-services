@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -9,19 +9,24 @@ import {
   ToggleButton,
   FormControlLabel,
   Switch,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { CloudUpload, Upload } from '@mui/icons-material';
-import { PageBreadcrumb, Spinner, ActionButton, ChipInput } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { imageKitConfigApi, fileUploadApi } from '../../../api/imagekitApi';
-import { ImageKitConfig, UploadMode } from '../../../types/imagekit';
-import FileDropZone from './FileDropZone';
-import FilePreviewItem from './FilePreviewItem';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { CloudUpload, Upload } from "@mui/icons-material";
+import {
+  PageBreadcrumb,
+  Spinner,
+  ActionButton,
+  ChipInput,
+} from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import { imageKitConfigApi, fileUploadApi } from "../../../api/imagekitApi";
+import { ImageKitConfig, UploadMode } from "../../../types/imagekit";
+import FileDropZone from "./FileDropZone";
+import FilePreviewItem from "./FilePreviewItem";
 
 interface FileWithStatus {
   file: File;
-  status: 'pending' | 'uploading' | 'success' | 'error';
+  status: "pending" | "uploading" | "success" | "error";
   progress: number;
   error?: string;
   uploadedUrl?: string;
@@ -30,9 +35,9 @@ interface FileWithStatus {
 const ImageKitDemo = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
   const [configs, setConfigs] = useState<ImageKitConfig[]>([]);
-  const [selectedConfigId, setSelectedConfigId] = useState('');
-  const [uploadMode, setUploadMode] = useState<UploadMode>('single');
-  const [folder, setFolder] = useState('');
+  const [selectedConfigId, setSelectedConfigId] = useState("");
+  const [uploadMode, setUploadMode] = useState<UploadMode>("single");
+  const [folder, setFolder] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [useUniqueFileName, setUseUniqueFileName] = useState(true);
   const [files, setFiles] = useState<FileWithStatus[]>([]);
@@ -44,14 +49,17 @@ const ImageKitDemo = () => {
     if (!selectedOrg) return;
     setLoading(true);
     try {
-      const response = await imageKitConfigApi.list(selectedOrg.id, { isActive: true });
+      const response = await imageKitConfigApi.list(selectedOrg.id, {
+        isActive: true,
+      });
       setConfigs(response.data);
       if (response.data.length > 0) {
-        const defaultConfig = response.data.find((c) => c.isDefault) || response.data[0];
+        const defaultConfig =
+          response.data.find((c) => c.isDefault) || response.data[0];
         setSelectedConfigId(defaultConfig.id);
       }
     } catch {
-      setError('Failed to load configurations');
+      setError("Failed to load configurations");
     } finally {
       setLoading(false);
     }
@@ -61,12 +69,13 @@ const ImageKitDemo = () => {
     fetchConfigs();
   }, [fetchConfigs]);
 
-  const isMultiple = uploadMode === 'multiple' || uploadMode === 'multiple-array';
+  const isMultiple =
+    uploadMode === "multiple" || uploadMode === "multiple-array";
 
   const handleFilesSelected = (selectedFiles: File[]) => {
     const newFiles = selectedFiles.map((file) => ({
       file,
-      status: 'pending' as const,
+      status: "pending" as const,
       progress: 0,
     }));
     if (isMultiple) {
@@ -93,76 +102,105 @@ const ImageKitDemo = () => {
 
     try {
       if (isMultiple && files.length > 1) {
-        setFiles((prev) => prev.map((f) => ({ ...f, status: 'uploading' as const, progress: 50 })));
+        setFiles((prev) =>
+          prev.map((f) => ({
+            ...f,
+            status: "uploading" as const,
+            progress: 50,
+          })),
+        );
         const result = await fileUploadApi.uploadMultiple(
           selectedOrg.id,
           selectedConfigId,
           files.map((f) => f.file),
-          options
+          options,
         );
         setFiles((prev) =>
           prev.map((f) => {
-            const uploaded = result.files.find((uf) => uf.originalName === f.file.name);
+            const uploaded = result.files.find(
+              (uf) => uf.originalName === f.file.name,
+            );
             const err = result.errors.find((e) => e.fileName === f.file.name);
             return {
               ...f,
-              status: uploaded ? 'success' : 'error',
+              status: uploaded ? "success" : "error",
               progress: 100,
               uploadedUrl: uploaded?.url,
               error: err?.error,
             };
-          })
+          }),
         );
       } else {
         for (let i = 0; i < files.length; i++) {
           setFiles((prev) =>
-            prev.map((f, idx) => (idx === i ? { ...f, status: 'uploading', progress: 50 } : f))
+            prev.map((f, idx) =>
+              idx === i ? { ...f, status: "uploading", progress: 50 } : f,
+            ),
           );
           try {
             const result = await fileUploadApi.uploadSingle(
               selectedOrg.id,
               selectedConfigId,
               files[i].file,
-              options
+              options,
             );
             if (result.success && result.file) {
               setFiles((prev) =>
                 prev.map((f, idx) =>
                   idx === i
-                    ? { ...f, status: 'success', progress: 100, uploadedUrl: result.file!.url }
-                    : f
-                )
+                    ? {
+                        ...f,
+                        status: "success",
+                        progress: 100,
+                        uploadedUrl: result.file!.url,
+                      }
+                    : f,
+                ),
               );
             } else {
               setFiles((prev) =>
                 prev.map((f, idx) =>
-                  idx === i ? { ...f, status: 'error', progress: 100, error: result.error } : f
-                )
+                  idx === i
+                    ? {
+                        ...f,
+                        status: "error",
+                        progress: 100,
+                        error: result.error,
+                      }
+                    : f,
+                ),
               );
             }
           } catch {
             setFiles((prev) =>
               prev.map((f, idx) =>
-                idx === i ? { ...f, status: 'error', progress: 100, error: 'Upload failed' } : f
-              )
+                idx === i
+                  ? {
+                      ...f,
+                      status: "error",
+                      progress: 100,
+                      error: "Upload failed",
+                    }
+                  : f,
+              ),
             );
           }
         }
       }
     } catch {
-      setError('Upload failed');
+      setError("Upload failed");
     } finally {
       setUploading(false);
     }
   };
 
   const clearCompleted = () => {
-    setFiles((prev) => prev.filter((f) => f.status !== 'success'));
+    setFiles((prev) => prev.filter((f) => f.status !== "success"));
   };
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -174,15 +212,18 @@ const ImageKitDemo = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'Storage' },
-          { label: 'ImageKit' },
-          { label: 'Demo' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "Storage" },
+          { label: "ImageKit" },
+          { label: "Demo" },
         ]}
       />
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <CloudUpload sx={{ fontSize: 32, color: 'primary.main' }} />
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+        <CloudUpload sx={{ fontSize: 32, color: "primary.main" }} />
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>
             File Upload Demo
@@ -204,7 +245,7 @@ const ImageKitDemo = () => {
       )}
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 5 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
               select
               size="small"
@@ -260,7 +301,9 @@ const ImageKitDemo = () => {
                   onChange={(e) => setUseUniqueFileName(e.target.checked)}
                 />
               }
-              label={<Typography variant="body2">Use unique file names</Typography>}
+              label={
+                <Typography variant="body2">Use unique file names</Typography>
+              }
             />
           </Box>
         </Grid>
@@ -272,13 +315,17 @@ const ImageKitDemo = () => {
           />
           {files.length > 0 && (
             <Box sx={{ mt: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="subtitle2">{files.length} file(s) selected</Typography>
-                {files.some((f) => f.status === 'success') && (
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+              >
+                <Typography variant="subtitle2">
+                  {files.length} file(s) selected
+                </Typography>
+                {files.some((f) => f.status === "success") && (
                   <Typography
                     variant="caption"
                     color="primary"
-                    sx={{ cursor: 'pointer' }}
+                    sx={{ cursor: "pointer" }}
                     onClick={clearCompleted}
                   >
                     Clear completed
@@ -302,10 +349,14 @@ const ImageKitDemo = () => {
                 startIcon={<Upload />}
                 onClick={handleUpload}
                 loading={uploading}
-                disabled={!selectedConfigId || files.every((f) => f.status === 'success')}
+                disabled={
+                  !selectedConfigId ||
+                  files.every((f) => f.status === "success")
+                }
                 sx={{ mt: 2 }}
               >
-                Upload {files.filter((f) => f.status === 'pending').length} file(s)
+                Upload {files.filter((f) => f.status === "pending").length}{" "}
+                file(s)
               </ActionButton>
             </Box>
           )}

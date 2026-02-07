@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 // SMTP Configuration interface
 export interface ISmtpConfig extends Document {
@@ -22,7 +22,7 @@ const SmtpConfigSchema = new Schema<ISmtpConfig>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
@@ -75,7 +75,7 @@ const SmtpConfigSchema = new Schema<ISmtpConfig>(
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Compound index for unique name per organization
@@ -84,4 +84,7 @@ SmtpConfigSchema.index({ organizationId: 1, name: 1 }, { unique: true });
 // Index for fetching default config
 SmtpConfigSchema.index({ organizationId: 1, isDefault: 1 });
 
-export const SmtpConfigModel = mongoose.model<ISmtpConfig>('SmtpConfig', SmtpConfigSchema);
+export const SmtpConfigModel = mongoose.model<ISmtpConfig>(
+  "SmtpConfig",
+  SmtpConfigSchema,
+);

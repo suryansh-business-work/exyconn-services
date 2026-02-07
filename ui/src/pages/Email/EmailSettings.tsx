@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -22,25 +22,33 @@ import {
   Switch,
   Alert,
   CircularProgress,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Add, Edit, Delete, CheckCircle, Cancel, PlayArrow, Star } from '@mui/icons-material';
-import { Formik, Form, Field } from 'formik';
-import { PageBreadcrumb, Spinner, ActionButton } from '../../components/common';
-import { useOrg } from '../../context/OrgContext';
-import { smtpConfigApi } from '../../api/emailApi';
-import { SmtpConfig, SmtpConfigFormValues } from '../../types/email';
-import { smtpConfigValidationSchema } from '../../validation/emailValidation';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import {
+  Add,
+  Edit,
+  Delete,
+  CheckCircle,
+  Cancel,
+  PlayArrow,
+  Star,
+} from "@mui/icons-material";
+import { Formik, Form, Field } from "formik";
+import { PageBreadcrumb, Spinner, ActionButton } from "../../components/common";
+import { useOrg } from "../../context/OrgContext";
+import { smtpConfigApi } from "../../api/emailApi";
+import { SmtpConfig, SmtpConfigFormValues } from "../../types/email";
+import { smtpConfigValidationSchema } from "../../validation/emailValidation";
 
 const initialFormValues: SmtpConfigFormValues = {
-  name: '',
-  host: '',
+  name: "",
+  host: "",
   port: 587,
   secure: true,
-  username: '',
-  password: '',
-  fromEmail: '',
-  fromName: '',
+  username: "",
+  password: "",
+  fromEmail: "",
+  fromName: "",
   isDefault: false,
   isActive: true,
 };
@@ -53,8 +61,13 @@ const EmailSettings = () => {
   const [editingConfig, setEditingConfig] = useState<SmtpConfig | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [configToDelete, setConfigToDelete] = useState<SmtpConfig | null>(null);
-  const [testingConnection, setTestingConnection] = useState<string | null>(null);
-  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [testingConnection, setTestingConnection] = useState<string | null>(
+    null,
+  );
+  const [testResult, setTestResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchConfigs = useCallback(async () => {
@@ -64,7 +77,7 @@ const EmailSettings = () => {
       const response = await smtpConfigApi.list(selectedOrg.id);
       setConfigs(response.data);
     } catch (err) {
-      setError('Failed to load SMTP configurations');
+      setError("Failed to load SMTP configurations");
     } finally {
       setLoading(false);
     }
@@ -97,7 +110,8 @@ const EmailSettings = () => {
       handleCloseDialog();
       fetchConfigs();
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to save configuration';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to save configuration";
       const axiosError = err as { response?: { data?: { error?: string } } };
       setError(axiosError.response?.data?.error || errorMessage);
     }
@@ -111,7 +125,7 @@ const EmailSettings = () => {
       setConfigToDelete(null);
       fetchConfigs();
     } catch (err) {
-      setError('Failed to delete configuration');
+      setError("Failed to delete configuration");
     }
   };
 
@@ -120,13 +134,18 @@ const EmailSettings = () => {
     setTestingConnection(configId);
     setTestResult(null);
     try {
-      const result = await smtpConfigApi.testConnection(selectedOrg.id, configId);
+      const result = await smtpConfigApi.testConnection(
+        selectedOrg.id,
+        configId,
+      );
       setTestResult({
         success: result.success,
-        message: result.success ? 'Connection successful!' : result.error || 'Connection failed',
+        message: result.success
+          ? "Connection successful!"
+          : result.error || "Connection failed",
       });
     } catch (err) {
-      setTestResult({ success: false, message: 'Failed to test connection' });
+      setTestResult({ success: false, message: "Failed to test connection" });
     } finally {
       setTestingConnection(null);
     }
@@ -134,7 +153,7 @@ const EmailSettings = () => {
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -148,19 +167,33 @@ const EmailSettings = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'Communications' },
-          { label: 'Email' },
-          { label: 'Settings' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "Communications" },
+          { label: "Email" },
+          { label: "Settings" },
         ]}
       />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           SMTP Configurations
         </Typography>
-        <ActionButton variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>
+        <ActionButton
+          variant="contained"
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+        >
           Add Configuration
         </ActionButton>
       </Box>
@@ -173,7 +206,7 @@ const EmailSettings = () => {
 
       {testResult && (
         <Alert
-          severity={testResult.success ? 'success' : 'error'}
+          severity={testResult.success ? "success" : "error"}
           sx={{ mb: 2 }}
           onClose={() => setTestResult(null)}
         >
@@ -182,11 +215,15 @@ const EmailSettings = () => {
       )}
 
       {configs.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
+        <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography color="text.secondary" sx={{ mb: 2 }}>
             No SMTP configurations found
           </Typography>
-          <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => handleOpenDialog()}
+          >
             Add Your First Configuration
           </Button>
         </Paper>
@@ -216,7 +253,12 @@ const EmailSettings = () => {
                   <TableCell>
                     {config.port}
                     {config.secure && (
-                      <Chip label="SSL" size="small" sx={{ ml: 1 }} color="success" />
+                      <Chip
+                        label="SSL"
+                        size="small"
+                        sx={{ ml: 1 }}
+                        color="success"
+                      />
                     )}
                   </TableCell>
                   <TableCell>
@@ -243,7 +285,9 @@ const EmailSettings = () => {
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    {config.isDefault && <Star sx={{ color: 'warning.main', fontSize: 20 }} />}
+                    {config.isDefault && (
+                      <Star sx={{ color: "warning.main", fontSize: 20 }} />
+                    )}
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Test Connection">
@@ -260,7 +304,10 @@ const EmailSettings = () => {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Edit">
-                      <IconButton size="small" onClick={() => handleOpenDialog(config)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleOpenDialog(config)}
+                      >
                         <Edit />
                       </IconButton>
                     </Tooltip>
@@ -285,9 +332,14 @@ const EmailSettings = () => {
       )}
 
       {/* Create/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle>
-          {editingConfig ? 'Edit SMTP Configuration' : 'Add SMTP Configuration'}
+          {editingConfig ? "Edit SMTP Configuration" : "Add SMTP Configuration"}
         </DialogTitle>
         <Formik
           initialValues={
@@ -323,7 +375,7 @@ const EmailSettings = () => {
                       error={touched.name && Boolean(errors.name)}
                       helperText={
                         (touched.name && errors.name) ||
-                        'A friendly name to identify this configuration'
+                        "A friendly name to identify this configuration"
                       }
                     />
                   </Grid>
@@ -334,7 +386,9 @@ const EmailSettings = () => {
                       label="SMTP Host"
                       fullWidth
                       error={touched.host && Boolean(errors.host)}
-                      helperText={(touched.host && errors.host) || 'e.g., smtp.gmail.com'}
+                      helperText={
+                        (touched.host && errors.host) || "e.g., smtp.gmail.com"
+                      }
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 4 }}>
@@ -345,7 +399,9 @@ const EmailSettings = () => {
                       type="number"
                       fullWidth
                       error={touched.port && Boolean(errors.port)}
-                      helperText={(touched.port && errors.port) || 'Usually 587 or 465'}
+                      helperText={
+                        (touched.port && errors.port) || "Usually 587 or 465"
+                      }
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -376,7 +432,10 @@ const EmailSettings = () => {
                       label="From Email"
                       fullWidth
                       error={touched.fromEmail && Boolean(errors.fromEmail)}
-                      helperText={(touched.fromEmail && errors.fromEmail) || 'Sender email address'}
+                      helperText={
+                        (touched.fromEmail && errors.fromEmail) ||
+                        "Sender email address"
+                      }
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -386,16 +445,21 @@ const EmailSettings = () => {
                       label="From Name"
                       fullWidth
                       error={touched.fromName && Boolean(errors.fromName)}
-                      helperText={(touched.fromName && errors.fromName) || 'Sender display name'}
+                      helperText={
+                        (touched.fromName && errors.fromName) ||
+                        "Sender display name"
+                      }
                     />
                   </Grid>
                   <Grid size={12}>
-                    <Box sx={{ display: 'flex', gap: 3 }}>
+                    <Box sx={{ display: "flex", gap: 3 }}>
                       <FormControlLabel
                         control={
                           <Switch
                             checked={values.secure}
-                            onChange={(e) => setFieldValue('secure', e.target.checked)}
+                            onChange={(e) =>
+                              setFieldValue("secure", e.target.checked)
+                            }
                           />
                         }
                         label="Use SSL/TLS"
@@ -404,7 +468,9 @@ const EmailSettings = () => {
                         control={
                           <Switch
                             checked={values.isActive}
-                            onChange={(e) => setFieldValue('isActive', e.target.checked)}
+                            onChange={(e) =>
+                              setFieldValue("isActive", e.target.checked)
+                            }
                           />
                         }
                         label="Active"
@@ -413,7 +479,9 @@ const EmailSettings = () => {
                         control={
                           <Switch
                             checked={values.isDefault}
-                            onChange={(e) => setFieldValue('isDefault', e.target.checked)}
+                            onChange={(e) =>
+                              setFieldValue("isDefault", e.target.checked)
+                            }
                           />
                         }
                         label="Set as Default"
@@ -424,8 +492,12 @@ const EmailSettings = () => {
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleCloseDialog}>Cancel</Button>
-                <ActionButton type="submit" variant="contained" loading={isSubmitting}>
-                  {editingConfig ? 'Update' : 'Create'}
+                <ActionButton
+                  type="submit"
+                  variant="contained"
+                  loading={isSubmitting}
+                >
+                  {editingConfig ? "Update" : "Create"}
                 </ActionButton>
               </DialogActions>
             </Form>
@@ -434,11 +506,15 @@ const EmailSettings = () => {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+      <Dialog
+        open={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+      >
         <DialogTitle>Delete SMTP Configuration</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete "{configToDelete?.name}"? This action cannot be undone.
+            Are you sure you want to delete "{configToDelete?.name}"? This
+            action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>

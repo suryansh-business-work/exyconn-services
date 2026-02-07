@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const listHistorySchema = z.object({
   query: z.object({
@@ -12,11 +12,13 @@ export const listHistorySchema = z.object({
       .transform((val) => (val ? parseInt(val, 10) : 10)),
     search: z.string().optional(),
     fileType: z.string().optional(),
-    uploadMode: z.enum(['single', 'multiple', 'single-array', 'multiple-array']).optional(),
+    uploadMode: z
+      .enum(["single", "multiple", "single-array", "multiple-array"])
+      .optional(),
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     configId: z.string().optional(),
   }),
 });
 
-export type ListHistoryQuery = z.infer<typeof listHistorySchema>['query'];
+export type ListHistoryQuery = z.infer<typeof listHistorySchema>["query"];

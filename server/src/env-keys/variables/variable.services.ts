@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { EnvVariable, IEnvVariable } from './variable.models';
+import mongoose from "mongoose";
+import { EnvVariable, IEnvVariable } from "./variable.models";
 
 interface ListParams {
   page: number;
@@ -47,8 +47,8 @@ export const envVariableService = {
     };
     if (search) {
       query.$or = [
-        { key: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
+        { key: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
       ];
     }
 
@@ -61,13 +61,17 @@ export const envVariableService = {
       data: data.map((d) => ({
         ...d,
         id: d._id.toString(),
-        value: d.isSecret ? '••••••••' : d.value,
+        value: d.isSecret ? "••••••••" : d.value,
       })),
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
   },
 
-  get: async (orgId: string, appId: string, variableId: string): Promise<IEnvVariable | null> => {
+  get: async (
+    orgId: string,
+    appId: string,
+    variableId: string,
+  ): Promise<IEnvVariable | null> => {
     const orgObjectId = toObjectId(orgId);
     const appObjectId = toObjectId(appId);
     const varObjectId = toObjectId(variableId);
@@ -83,7 +87,7 @@ export const envVariableService = {
   getActualValue: async (
     orgId: string,
     appId: string,
-    variableId: string
+    variableId: string,
   ): Promise<string | null> => {
     const orgObjectId = toObjectId(orgId);
     const appObjectId = toObjectId(appId);
@@ -98,10 +102,14 @@ export const envVariableService = {
     return variable?.value || null;
   },
 
-  create: async (orgId: string, appId: string, data: CreateInput): Promise<IEnvVariable> => {
+  create: async (
+    orgId: string,
+    appId: string,
+    data: CreateInput,
+  ): Promise<IEnvVariable> => {
     const orgObjectId = toObjectId(orgId);
     const appObjectId = toObjectId(appId);
-    if (!orgObjectId || !appObjectId) throw new Error('Invalid IDs');
+    if (!orgObjectId || !appObjectId) throw new Error("Invalid IDs");
 
     const variable = new EnvVariable({
       organizationId: orgObjectId,
@@ -115,7 +123,7 @@ export const envVariableService = {
     orgId: string,
     appId: string,
     variableId: string,
-    data: UpdateInput
+    data: UpdateInput,
   ): Promise<IEnvVariable | null> => {
     const orgObjectId = toObjectId(orgId);
     const appObjectId = toObjectId(appId);
@@ -129,11 +137,15 @@ export const envVariableService = {
         appId: appObjectId,
       },
       { $set: data },
-      { new: true }
+      { new: true },
     );
   },
 
-  delete: async (orgId: string, appId: string, variableId: string): Promise<boolean> => {
+  delete: async (
+    orgId: string,
+    appId: string,
+    variableId: string,
+  ): Promise<boolean> => {
     const orgObjectId = toObjectId(orgId);
     const appObjectId = toObjectId(appId);
     const varObjectId = toObjectId(variableId);
@@ -150,11 +162,11 @@ export const envVariableService = {
   bulkCreate: async (
     orgId: string,
     appId: string,
-    variables: CreateInput[]
+    variables: CreateInput[],
   ): Promise<IEnvVariable[]> => {
     const orgObjectId = toObjectId(orgId);
     const appObjectId = toObjectId(appId);
-    if (!orgObjectId || !appObjectId) throw new Error('Invalid IDs');
+    if (!orgObjectId || !appObjectId) throw new Error("Invalid IDs");
 
     const docs = variables.map((v) => ({
       organizationId: orgObjectId,
@@ -164,7 +176,10 @@ export const envVariableService = {
     return EnvVariable.insertMany(docs, { ordered: false });
   },
 
-  getAllForApp: async (orgId: string, appId: string): Promise<Record<string, string>> => {
+  getAllForApp: async (
+    orgId: string,
+    appId: string,
+  ): Promise<Record<string, string>> => {
     const orgObjectId = toObjectId(orgId);
     const appObjectId = toObjectId(appId);
     if (!orgObjectId || !appObjectId) return {};

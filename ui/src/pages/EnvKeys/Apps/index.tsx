@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -18,20 +18,27 @@ import {
   TableRow,
   TableCell,
   TablePagination,
-} from '@mui/material';
-import { Add, Search, Delete, Edit, Visibility, Refresh } from '@mui/icons-material';
-import { PageBreadcrumb } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { envAppApi } from '../../../api/envKeysApi';
-import { EnvApp } from '../../../types/envKeys';
-import EnvAppDialog from './EnvAppDialog';
+} from "@mui/material";
+import {
+  Add,
+  Search,
+  Delete,
+  Edit,
+  Visibility,
+  Refresh,
+} from "@mui/icons-material";
+import { PageBreadcrumb } from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import { envAppApi } from "../../../api/envKeysApi";
+import { EnvApp } from "../../../types/envKeys";
+import EnvAppDialog from "./EnvAppDialog";
 
 const EnvAppsPage = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
   const navigate = useNavigate();
   const [apps, setApps] = useState<EnvApp[]>([]);
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
@@ -45,12 +52,12 @@ const EnvAppsPage = () => {
       const result = await envAppApi.list(
         selectedOrg.id,
         { page: page + 1, limit: rowsPerPage, search },
-        selectedApiKey?.apiKey
+        selectedApiKey?.apiKey,
       );
       setApps(result.data);
       setTotal(result.pagination.total);
     } catch (err) {
-      console.error('Failed to fetch apps:', err);
+      console.error("Failed to fetch apps:", err);
     } finally {
       setLoading(false);
     }
@@ -61,24 +68,28 @@ const EnvAppsPage = () => {
   }, [selectedOrg, selectedApiKey, page, rowsPerPage, search]);
 
   const handleDelete = async (appId: string) => {
-    if (!selectedOrg || !confirm('Delete this application and all its variables?')) return;
+    if (
+      !selectedOrg ||
+      !confirm("Delete this application and all its variables?")
+    )
+      return;
     try {
       await envAppApi.delete(selectedOrg.id, appId, selectedApiKey?.apiKey);
       fetchApps();
     } catch (err) {
-      console.error('Delete failed:', err);
+      console.error("Delete failed:", err);
     }
   };
 
   const getEnvColor = (env: string) => {
-    if (env === 'production') return 'error';
-    if (env === 'staging') return 'warning';
-    return 'info';
+    if (env === "production") return "error";
+    if (env === "staging") return "warning";
+    return "info";
   };
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -92,26 +103,29 @@ const EnvAppsPage = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/dashboard' },
+          { label: "Home", href: "/dashboard" },
           { label: selectedOrg.orgName, href: basePath },
-          { label: 'Environment Keys', href: `${basePath}/service/env-keys/dashboard` },
-          { label: 'Applications' },
+          {
+            label: "Environment Keys",
+            href: `${basePath}/service/env-keys/dashboard`,
+          },
+          { label: "Applications" },
         ]}
       />
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           mb: 2,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           gap: 1,
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18 }}>
           Applications
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: "flex", gap: 1 }}>
           <TextField
             size="small"
             placeholder="Search..."
@@ -126,7 +140,12 @@ const EnvAppsPage = () => {
             }}
             sx={{ width: 200 }}
           />
-          <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={fetchApps}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Refresh />}
+            onClick={fetchApps}
+          >
             Refresh
           </Button>
           <Button
@@ -165,7 +184,9 @@ const EnvAppsPage = () => {
               ) : apps.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center">
-                    <Typography color="text.secondary">No applications found</Typography>
+                    <Typography color="text.secondary">
+                      No applications found
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -177,8 +198,12 @@ const EnvAppsPage = () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: 12 }}>
-                        {app.description || '-'}
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontSize: 12 }}
+                      >
+                        {app.description || "-"}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
@@ -190,7 +215,11 @@ const EnvAppsPage = () => {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <Chip label={app.variableCount || 0} size="small" variant="outlined" />
+                      <Chip
+                        label={app.variableCount || 0}
+                        size="small"
+                        variant="outlined"
+                      />
                     </TableCell>
                     <TableCell align="right">
                       <Tooltip title="View Variables">
@@ -198,7 +227,7 @@ const EnvAppsPage = () => {
                           size="small"
                           onClick={() =>
                             navigate(
-                              `${basePath}/service/env-keys/applications/${app.id}/variables`
+                              `${basePath}/service/env-keys/applications/${app.id}/variables`,
                             )
                           }
                         >
@@ -217,7 +246,11 @@ const EnvAppsPage = () => {
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete">
-                        <IconButton size="small" color="error" onClick={() => handleDelete(app.id)}>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => handleDelete(app.id)}
+                        >
                           <Delete fontSize="small" />
                         </IconButton>
                       </Tooltip>

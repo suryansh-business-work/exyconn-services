@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -21,13 +21,20 @@ import {
   DialogActions,
   Button,
   Alert,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Visibility, CheckCircle, Error, Schedule, History, Refresh } from '@mui/icons-material';
-import { PageBreadcrumb, Spinner, ActionButton } from '../../components/common';
-import { useOrg } from '../../context/OrgContext';
-import { emailLogApi } from '../../api/emailApi';
-import { EmailLog, EmailStats } from '../../types/email';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import {
+  Visibility,
+  CheckCircle,
+  Error,
+  Schedule,
+  History,
+  Refresh,
+} from "@mui/icons-material";
+import { PageBreadcrumb, Spinner, ActionButton } from "../../components/common";
+import { useOrg } from "../../context/OrgContext";
+import { emailLogApi } from "../../api/emailApi";
+import { EmailLog, EmailStats } from "../../types/email";
 
 const EmailHistory = () => {
   const { selectedOrg } = useOrg();
@@ -38,7 +45,7 @@ const EmailHistory = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [total, setTotal] = useState(0);
-  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>("");
   const [selectedLog, setSelectedLog] = useState<EmailLog | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
@@ -50,7 +57,7 @@ const EmailHistory = () => {
         emailLogApi.list(selectedOrg.id, {
           page: page + 1,
           limit: rowsPerPage,
-          status: statusFilter as 'sent' | 'failed' | 'pending' | undefined,
+          status: statusFilter as "sent" | "failed" | "pending" | undefined,
         }),
         emailLogApi.getStats(selectedOrg.id),
       ]);
@@ -58,7 +65,7 @@ const EmailHistory = () => {
       setTotal(logsResponse.pagination.total);
       setStats(statsResponse);
     } catch (err) {
-      setError('Failed to load email logs');
+      setError("Failed to load email logs");
     } finally {
       setLoading(false);
     }
@@ -72,7 +79,9 @@ const EmailHistory = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -84,33 +93,35 @@ const EmailHistory = () => {
 
   const getStatusIcon = (status: string): React.ReactElement | undefined => {
     switch (status) {
-      case 'sent':
-        return <CheckCircle sx={{ fontSize: 16, color: 'success.main' }} />;
-      case 'failed':
-        return <Error sx={{ fontSize: 16, color: 'error.main' }} />;
-      case 'pending':
-        return <Schedule sx={{ fontSize: 16, color: 'warning.main' }} />;
+      case "sent":
+        return <CheckCircle sx={{ fontSize: 16, color: "success.main" }} />;
+      case "failed":
+        return <Error sx={{ fontSize: 16, color: "error.main" }} />;
+      case "pending":
+        return <Schedule sx={{ fontSize: 16, color: "warning.main" }} />;
       default:
         return undefined;
     }
   };
 
-  const getStatusColor = (status: string): 'success' | 'error' | 'warning' | 'default' => {
+  const getStatusColor = (
+    status: string,
+  ): "success" | "error" | "warning" | "default" => {
     switch (status) {
-      case 'sent':
-        return 'success';
-      case 'failed':
-        return 'error';
-      case 'pending':
-        return 'warning';
+      case "sent":
+        return "success";
+      case "failed":
+        return "error";
+      case "pending":
+        return "warning";
       default:
-        return 'default';
+        return "default";
     }
   };
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -120,16 +131,19 @@ const EmailHistory = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'Communications' },
-          { label: 'Email' },
-          { label: 'History' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "Communications" },
+          { label: "Email" },
+          { label: "History" },
         ]}
       />
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <History sx={{ fontSize: 32, color: 'primary.main' }} />
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+        <History sx={{ fontSize: 32, color: "primary.main" }} />
         <Box sx={{ flex: 1 }}>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>
             Email History
@@ -158,7 +172,7 @@ const EmailHistory = () => {
       {stats && (
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid size={{ xs: 6, sm: 3 }}>
-            <Paper sx={{ p: 2, textAlign: 'center' }}>
+            <Paper sx={{ p: 2, textAlign: "center" }}>
               <Typography variant="h4" sx={{ fontWeight: 600 }}>
                 {stats.total}
               </Typography>
@@ -168,8 +182,18 @@ const EmailHistory = () => {
             </Paper>
           </Grid>
           <Grid size={{ xs: 6, sm: 3 }}>
-            <Paper sx={{ p: 2, textAlign: 'center', borderTop: 3, borderColor: 'success.main' }}>
-              <Typography variant="h4" sx={{ fontWeight: 600, color: 'success.main' }}>
+            <Paper
+              sx={{
+                p: 2,
+                textAlign: "center",
+                borderTop: 3,
+                borderColor: "success.main",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 600, color: "success.main" }}
+              >
                 {stats.sent}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -178,8 +202,18 @@ const EmailHistory = () => {
             </Paper>
           </Grid>
           <Grid size={{ xs: 6, sm: 3 }}>
-            <Paper sx={{ p: 2, textAlign: 'center', borderTop: 3, borderColor: 'error.main' }}>
-              <Typography variant="h4" sx={{ fontWeight: 600, color: 'error.main' }}>
+            <Paper
+              sx={{
+                p: 2,
+                textAlign: "center",
+                borderTop: 3,
+                borderColor: "error.main",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 600, color: "error.main" }}
+              >
                 {stats.failed}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -188,8 +222,18 @@ const EmailHistory = () => {
             </Paper>
           </Grid>
           <Grid size={{ xs: 6, sm: 3 }}>
-            <Paper sx={{ p: 2, textAlign: 'center', borderTop: 3, borderColor: 'warning.main' }}>
-              <Typography variant="h4" sx={{ fontWeight: 600, color: 'warning.main' }}>
+            <Paper
+              sx={{
+                p: 2,
+                textAlign: "center",
+                borderTop: 3,
+                borderColor: "warning.main",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 600, color: "warning.main" }}
+              >
                 {stats.pending}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -201,7 +245,7 @@ const EmailHistory = () => {
       )}
 
       {/* Filters */}
-      <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+      <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
         <TextField
           select
           size="small"
@@ -223,7 +267,7 @@ const EmailHistory = () => {
       {loading ? (
         <Spinner />
       ) : logs.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
+        <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography color="text.secondary">No email logs found</Typography>
         </Paper>
       ) : (
@@ -266,7 +310,10 @@ const EmailHistory = () => {
                     </TableCell>
                     <TableCell align="right">
                       <Tooltip title="View Details">
-                        <IconButton size="small" onClick={() => handleViewDetails(log)}>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleViewDetails(log)}
+                        >
                           <Visibility />
                         </IconButton>
                       </Tooltip>
@@ -298,7 +345,9 @@ const EmailHistory = () => {
         <DialogTitle>Email Log Details</DialogTitle>
         <DialogContent>
           {selectedLog && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
+            >
               <Box>
                 <Typography variant="caption" color="text.secondary">
                   Recipient
@@ -345,7 +394,7 @@ const EmailHistory = () => {
                   <Typography variant="caption" color="text.secondary">
                     Message ID
                   </Typography>
-                  <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                  <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
                     {selectedLog.messageId}
                   </Typography>
                 </Box>
@@ -365,7 +414,7 @@ const EmailHistory = () => {
                   <Typography variant="caption" color="text.secondary">
                     API Key Used
                   </Typography>
-                  <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                  <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
                     {selectedLog.apiKeyUsed.substring(0, 20)}...
                   </Typography>
                 </Box>
@@ -375,10 +424,24 @@ const EmailHistory = () => {
                   <Typography variant="caption" color="text.secondary">
                     Variables
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                    {Object.entries(selectedLog.variables).map(([key, value]) => (
-                      <Chip key={key} label={`${key}: ${value}`} size="small" variant="outlined" />
-                    ))}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 0.5,
+                      flexWrap: "wrap",
+                      mt: 0.5,
+                    }}
+                  >
+                    {Object.entries(selectedLog.variables).map(
+                      ([key, value]) => (
+                        <Chip
+                          key={key}
+                          label={`${key}: ${value}`}
+                          size="small"
+                          variant="outlined"
+                        />
+                      ),
+                    )}
                   </Box>
                 </Box>
               )}
@@ -386,7 +449,9 @@ const EmailHistory = () => {
                 <Typography variant="caption" color="text.secondary">
                   Sent At
                 </Typography>
-                <Typography>{new Date(selectedLog.sentAt).toLocaleString()}</Typography>
+                <Typography>
+                  {new Date(selectedLog.sentAt).toLocaleString()}
+                </Typography>
               </Box>
             </Box>
           )}

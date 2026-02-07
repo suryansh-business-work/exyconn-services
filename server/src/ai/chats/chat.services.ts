@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import { AIChat, IAIChat, IChatMessage } from './chat.models';
-import { aiCompanyService } from '../companies/company.services';
-import { aiProviderClient } from '../providers';
+import mongoose from "mongoose";
+import { AIChat, IAIChat, IChatMessage } from "./chat.models";
+import { aiCompanyService } from "../companies/company.services";
+import { aiProviderClient } from "../providers";
 
 interface ListParams {
   page: number;
@@ -30,7 +30,9 @@ export const aiChatService = {
     const { page, limit, companyId } = params;
     const skip = (page - 1) * limit;
 
-    const query: Record<string, unknown> = { organizationId: new mongoose.Types.ObjectId(orgId) };
+    const query: Record<string, unknown> = {
+      organizationId: new mongoose.Types.ObjectId(orgId),
+    };
     if (companyId) query.companyId = new mongoose.Types.ObjectId(companyId);
 
     const [data, total] = await Promise.all([
@@ -41,10 +43,10 @@ export const aiChatService = {
         { $limit: limit },
         {
           $lookup: {
-            from: 'aicompanies',
-            localField: 'companyId',
-            foreignField: '_id',
-            as: 'companyInfo',
+            from: "aicompanies",
+            localField: "companyId",
+            foreignField: "_id",
+            as: "companyInfo",
           },
         },
         {
@@ -56,8 +58,8 @@ export const aiChatService = {
             maxHistoryMessages: 1,
             createdAt: 1,
             updatedAt: 1,
-            messageCount: { $size: '$messages' },
-            company: { $arrayElemAt: ['$companyInfo', 0] },
+            messageCount: { $size: "$messages" },
+            company: { $arrayElemAt: ["$companyInfo", 0] },
           },
         },
       ]),
@@ -74,7 +76,9 @@ export const aiChatService = {
         createdAt: d.createdAt,
         updatedAt: d.updatedAt,
         messageCount: d.messageCount,
-        company: d.company ? { name: d.company.name, provider: d.company.provider } : null,
+        company: d.company
+          ? { name: d.company.name, provider: d.company.provider }
+          : null,
       })),
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
@@ -84,7 +88,7 @@ export const aiChatService = {
     return AIChat.findOne({
       _id: new mongoose.Types.ObjectId(chatId),
       organizationId: new mongoose.Types.ObjectId(orgId),
-    }).populate('companyId', 'name provider');
+    }).populate("companyId", "name provider");
   },
 
   create: async (orgId: string, data: CreateInput): Promise<IAIChat> => {
@@ -94,7 +98,7 @@ export const aiChatService = {
     if (data.systemPrompt) {
       const tokenCount = estimateTokens(data.systemPrompt);
       messages.push({
-        role: 'system',
+        role: "system",
         content: data.systemPrompt,
         timestamp: new Date(),
         tokenCount,
@@ -114,14 +118,18 @@ export const aiChatService = {
     return chat.save();
   },
 
-  update: async (orgId: string, chatId: string, data: UpdateInput): Promise<IAIChat | null> => {
+  update: async (
+    orgId: string,
+    chatId: string,
+    data: UpdateInput,
+  ): Promise<IAIChat | null> => {
     return AIChat.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(chatId),
         organizationId: new mongoose.Types.ObjectId(orgId),
       },
       { $set: data },
-      { new: true }
+      { new: true },
     );
   },
 
@@ -136,15 +144,15 @@ export const aiChatService = {
   addMessage: async (
     orgId: string,
     chatId: string,
-    role: IChatMessage['role'],
-    content: string
+    role: IChatMessage["role"],
+    content: string,
   ) => {
     const chat = await AIChat.findOne({
       _id: new mongoose.Types.ObjectId(chatId),
       organizationId: new mongoose.Types.ObjectId(orgId),
     });
 
-    if (!chat) throw new Error('Chat not found');
+    if (!chat) throw new Error("Chat not found");
 
     const tokenCount = estimateTokens(content);
     const newMessage: IChatMessage = {
@@ -158,14 +166,17 @@ export const aiChatService = {
     chat.totalTokens += tokenCount;
 
     // Trim history if exceeds max (keep system message if exists)
-    const systemMessages = chat.messages.filter((m) => m.role === 'system');
-    const otherMessages = chat.messages.filter((m) => m.role !== 'system');
+    const systemMessages = chat.messages.filter((m) => m.role === "system");
+    const otherMessages = chat.messages.filter((m) => m.role !== "system");
 
     if (otherMessages.length > chat.maxHistoryMessages) {
       const trimmedTokens = otherMessages
         .slice(0, -chat.maxHistoryMessages)
         .reduce((sum, m) => sum + (m.tokenCount || 0), 0);
-      chat.messages = [...systemMessages, ...otherMessages.slice(-chat.maxHistoryMessages)];
+      chat.messages = [
+        ...systemMessages,
+        ...otherMessages.slice(-chat.maxHistoryMessages),
+      ];
       chat.totalTokens -= trimmedTokens;
     }
 
@@ -176,25 +187,33 @@ export const aiChatService = {
   sendMessage: async (
     orgId: string,
     chatId: string,
-    userMessage: string
+    userMessage: string,
   ): Promise<{ userMessage: IChatMessage; assistantMessage: IChatMessage }> => {
     const chat = await AIChat.findOne({
       _id: new mongoose.Types.ObjectId(chatId),
       organizationId: new mongoose.Types.ObjectId(orgId),
     });
 
-    if (!chat) throw new Error('Chat not found');
+    if (!chat) throw new Error("Chat not found");
 
     // Get company credentials
-    const company = await aiCompanyService.getWithCredentials(orgId, chat.companyId.toString());
-    if (!company) throw new Error('AI Company not found');
+    const company = await aiCompanyService.getWithCredentials(
+      orgId,
+      chat.companyId.toString(),
+    );
+    if (!company) throw new Error("AI Company not found");
 
     // Add user message first
-    const userMsg = await aiChatService.addMessage(orgId, chatId, 'user', userMessage);
+    const userMsg = await aiChatService.addMessage(
+      orgId,
+      chatId,
+      "user",
+      userMessage,
+    );
 
     // Reload chat with updated messages
     const updatedChat = await AIChat.findById(chatId);
-    if (!updatedChat) throw new Error('Chat not found');
+    if (!updatedChat) throw new Error("Chat not found");
 
     // Call actual AI provider API
     try {
@@ -206,27 +225,28 @@ export const aiChatService = {
           baseUrl: company.baseUrl,
         },
         updatedChat.aiModel,
-        updatedChat.messages
+        updatedChat.messages,
       );
 
       const assistantMsg = await aiChatService.addMessage(
         orgId,
         chatId,
-        'assistant',
-        response.content
+        "assistant",
+        response.content,
       );
 
       return { userMessage: userMsg, assistantMessage: assistantMsg };
     } catch (error) {
       // On AI error, still return user message but with error as assistant
-      const errorMessage = error instanceof Error ? error.message : 'AI request failed';
-      console.error('AI Provider Error:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : "AI request failed";
+      console.error("AI Provider Error:", error);
 
       const assistantMsg = await aiChatService.addMessage(
         orgId,
         chatId,
-        'assistant',
-        `⚠️ AI Error: ${errorMessage}`
+        "assistant",
+        `⚠️ AI Error: ${errorMessage}`,
       );
 
       return { userMessage: userMsg, assistantMessage: assistantMsg };
@@ -240,12 +260,12 @@ export const aiChatService = {
       AIChat.countDocuments({ organizationId: orgObjectId }),
       AIChat.aggregate([
         { $match: { organizationId: orgObjectId } },
-        { $project: { messageCount: { $size: '$messages' } } },
-        { $group: { _id: null, total: { $sum: '$messageCount' } } },
+        { $project: { messageCount: { $size: "$messages" } } },
+        { $group: { _id: null, total: { $sum: "$messageCount" } } },
       ]),
       AIChat.aggregate([
         { $match: { organizationId: orgObjectId } },
-        { $group: { _id: null, total: { $sum: '$totalTokens' } } },
+        { $group: { _id: null, total: { $sum: "$totalTokens" } } },
       ]),
     ]);
 

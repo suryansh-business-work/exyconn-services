@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { historyService } from './history.services';
+import { Request, Response, NextFunction } from "express";
+import { historyService } from "./history.services";
 
 export const historyController = {
   list: async (req: Request, res: Response, next: NextFunction) => {
@@ -11,7 +11,7 @@ export const historyController = {
         page: Number(page) || 1,
         limit: Number(limit) || 10,
         monitorId: monitorId as string,
-        status: status as 'healthy' | 'warning' | 'error',
+        status: status as "healthy" | "warning" | "error",
         startDate: startDate as string,
         endDate: endDate as string,
       });
@@ -29,7 +29,7 @@ export const historyController = {
       const check = await historyService.get(orgId, checkId);
 
       if (!check) {
-        return res.status(404).json({ error: 'Check result not found' });
+        return res.status(404).json({ error: "Check result not found" });
       }
 
       res.json(check);

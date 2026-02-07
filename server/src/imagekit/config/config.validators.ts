@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createConfigSchema = z.object({
   body: z.object({
@@ -8,7 +8,10 @@ export const createConfigSchema = z.object({
     urlEndpoint: z
       .string()
       .url()
-      .regex(/^https:\/\/ik\.imagekit\.io\//, 'Must be a valid ImageKit URL endpoint'),
+      .regex(
+        /^https:\/\/ik\.imagekit\.io\//,
+        "Must be a valid ImageKit URL endpoint",
+      ),
     isDefault: z.boolean().optional(),
     isActive: z.boolean().optional(),
   }),
@@ -43,10 +46,10 @@ export const listConfigSchema = z.object({
     isActive: z
       .string()
       .optional()
-      .transform((val) => val === 'true'),
+      .transform((val) => val === "true"),
   }),
 });
 
-export type CreateConfigInput = z.infer<typeof createConfigSchema>['body'];
-export type UpdateConfigInput = z.infer<typeof updateConfigSchema>['body'];
-export type ListConfigQuery = z.infer<typeof listConfigSchema>['query'];
+export type CreateConfigInput = z.infer<typeof createConfigSchema>["body"];
+export type UpdateConfigInput = z.infer<typeof updateConfigSchema>["body"];
+export type ListConfigQuery = z.infer<typeof listConfigSchema>["query"];

@@ -6,13 +6,13 @@ import {
   Button,
   TextField,
   CircularProgress,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useOrg } from '../../../context/OrgContext';
-import { aiChatApi } from '../../../api/aiApi';
-import { AIChat } from '../../../types/ai';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useOrg } from "../../../context/OrgContext";
+import { aiChatApi } from "../../../api/aiApi";
+import { AIChat } from "../../../types/ai";
 
 interface ChatSettingsDialogProps {
   open: boolean;
@@ -21,7 +21,12 @@ interface ChatSettingsDialogProps {
   onUpdated: () => void;
 }
 
-const ChatSettingsDialog = ({ open, onClose, chat, onUpdated }: ChatSettingsDialogProps) => {
+const ChatSettingsDialog = ({
+  open,
+  onClose,
+  chat,
+  onUpdated,
+}: ChatSettingsDialogProps) => {
   const { selectedOrg, selectedApiKey } = useOrg();
 
   const formik = useFormik({
@@ -30,17 +35,22 @@ const ChatSettingsDialog = ({ open, onClose, chat, onUpdated }: ChatSettingsDial
       maxHistoryMessages: chat.maxHistoryMessages,
     },
     validationSchema: Yup.object({
-      title: Yup.string().required('Title is required').min(1).max(200),
+      title: Yup.string().required("Title is required").min(1).max(200),
       maxHistoryMessages: Yup.number().min(1).max(200),
     }),
     enableReinitialize: true,
     onSubmit: async (values, { setSubmitting }) => {
       if (!selectedOrg) return;
       try {
-        await aiChatApi.update(selectedOrg.id, chat.id, values, selectedApiKey?.apiKey);
+        await aiChatApi.update(
+          selectedOrg.id,
+          chat.id,
+          values,
+          selectedApiKey?.apiKey,
+        );
         onUpdated();
       } catch (err) {
-        console.error('Update failed:', err);
+        console.error("Update failed:", err);
       } finally {
         setSubmitting(false);
       }
@@ -82,8 +92,12 @@ const ChatSettingsDialog = ({ open, onClose, chat, onUpdated }: ChatSettingsDial
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
-            {formik.isSubmitting ? <CircularProgress size={20} /> : 'Update'}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? <CircularProgress size={20} /> : "Update"}
           </Button>
         </DialogActions>
       </form>

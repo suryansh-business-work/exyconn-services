@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
-import { aiCompanyService } from './company.services';
-import { AIProvider } from './company.models';
+import { Request, Response } from "express";
+import { aiCompanyService } from "./company.services";
+import { AIProvider } from "./company.models";
 
 export const aiCompanyController = {
   list: async (req: Request, res: Response) => {
     try {
       const orgId = req.params.orgId as string;
-      const { page = '1', limit = '10', provider } = req.query;
+      const { page = "1", limit = "10", provider } = req.query;
       const result = await aiCompanyService.list(orgId, {
         page: Number(page),
         limit: Number(limit),
@@ -14,7 +14,7 @@ export const aiCompanyController = {
       });
       res.json(result);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to list companies' });
+      res.status(500).json({ error: "Failed to list companies" });
     }
   },
 
@@ -23,10 +23,10 @@ export const aiCompanyController = {
       const orgId = req.params.orgId as string;
       const companyId = req.params.companyId as string;
       const company = await aiCompanyService.get(orgId, companyId);
-      if (!company) return res.status(404).json({ error: 'Company not found' });
+      if (!company) return res.status(404).json({ error: "Company not found" });
       res.json(company);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to get company' });
+      res.status(500).json({ error: "Failed to get company" });
     }
   },
 
@@ -37,9 +37,11 @@ export const aiCompanyController = {
       res.status(201).json(company);
     } catch (err) {
       if ((err as { code?: number }).code === 11000) {
-        return res.status(400).json({ error: 'Company with this name already exists' });
+        return res
+          .status(400)
+          .json({ error: "Company with this name already exists" });
       }
-      res.status(500).json({ error: 'Failed to create company' });
+      res.status(500).json({ error: "Failed to create company" });
     }
   },
 
@@ -48,10 +50,10 @@ export const aiCompanyController = {
       const orgId = req.params.orgId as string;
       const companyId = req.params.companyId as string;
       const company = await aiCompanyService.update(orgId, companyId, req.body);
-      if (!company) return res.status(404).json({ error: 'Company not found' });
+      if (!company) return res.status(404).json({ error: "Company not found" });
       res.json(company);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to update company' });
+      res.status(500).json({ error: "Failed to update company" });
     }
   },
 
@@ -60,10 +62,10 @@ export const aiCompanyController = {
       const orgId = req.params.orgId as string;
       const companyId = req.params.companyId as string;
       const deleted = await aiCompanyService.delete(orgId, companyId);
-      if (!deleted) return res.status(404).json({ error: 'Company not found' });
+      if (!deleted) return res.status(404).json({ error: "Company not found" });
       res.json({ success: true });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to delete company' });
+      res.status(500).json({ error: "Failed to delete company" });
     }
   },
 
@@ -73,7 +75,7 @@ export const aiCompanyController = {
       const stats = await aiCompanyService.getStats(orgId);
       res.json(stats);
     } catch (err) {
-      res.status(500).json({ error: 'Failed to get stats' });
+      res.status(500).json({ error: "Failed to get stats" });
     }
   },
 };

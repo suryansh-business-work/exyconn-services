@@ -1,7 +1,7 @@
-import ImageKit from 'imagekit';
-import mongoose from 'mongoose';
-import { configService, IImageKitConfig } from '../config';
-import { historyService, UploadMode } from '../history';
+import ImageKit from "imagekit";
+import mongoose from "mongoose";
+import { configService, IImageKitConfig } from "../config";
+import { historyService, UploadMode } from "../history";
 
 interface UploadOptions {
   folder?: string;
@@ -37,19 +37,23 @@ interface UploadedFileResult {
 
 interface BulkUploadResult {
   success: boolean;
-  files: UploadedFileResult['file'][];
+  files: UploadedFileResult["file"][];
   errors: Array<{ fileName: string; error: string }>;
   totalUploaded: number;
   totalFailed: number;
 }
 
 const getFileType = (mimeType: string): string => {
-  if (mimeType.startsWith('image/')) return 'image';
-  if (mimeType.startsWith('video/')) return 'video';
-  if (mimeType.startsWith('audio/')) return 'audio';
-  if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text'))
-    return 'document';
-  return 'other';
+  if (mimeType.startsWith("image/")) return "image";
+  if (mimeType.startsWith("video/")) return "video";
+  if (mimeType.startsWith("audio/")) return "audio";
+  if (
+    mimeType.includes("pdf") ||
+    mimeType.includes("document") ||
+    mimeType.includes("text")
+  )
+    return "document";
+  return "other";
 };
 
 const createImageKitClient = (config: IImageKitConfig) => {
@@ -65,12 +69,12 @@ export const uploadService = {
     orgId: string,
     configId: string,
     file: Express.Multer.File,
-    options: UploadOptions = {}
+    options: UploadOptions = {},
   ): Promise<UploadedFileResult> {
     try {
       const config = await configService.getById(orgId, configId);
       if (!config) {
-        return { success: false, error: 'Configuration not found' };
+        return { success: false, error: "Configuration not found" };
       }
 
       const imagekit = createImageKitClient(config);
@@ -78,7 +82,7 @@ export const uploadService = {
       const uploadResponse = await imagekit.upload({
         file: file.buffer,
         fileName: file.originalname,
-        folder: options.folder || '/',
+        folder: options.folder || "/",
         tags: options.tags,
         useUniqueFileName: options.useUniqueFileName ?? true,
       });
@@ -99,7 +103,7 @@ export const uploadService = {
         fileId: uploadResponse.fileId,
         filePath: uploadResponse.filePath,
         tags: options.tags,
-        uploadMode: options.uploadMode || 'single',
+        uploadMode: options.uploadMode || "single",
       });
 
       return {
@@ -121,14 +125,14 @@ export const uploadService = {
           fileId: uploadResponse.fileId,
           filePath: uploadResponse.filePath,
           tags: options.tags,
-          uploadMode: options.uploadMode || 'single',
+          uploadMode: options.uploadMode || "single",
         },
       };
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error("Upload error:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed',
+        error: error instanceof Error ? error.message : "Upload failed",
       };
     }
   },
@@ -137,7 +141,7 @@ export const uploadService = {
     orgId: string,
     configId: string,
     files: Express.Multer.File[],
-    options: UploadOptions = {}
+    options: UploadOptions = {},
   ): Promise<BulkUploadResult> {
     const results: BulkUploadResult = {
       success: true,
@@ -148,7 +152,7 @@ export const uploadService = {
     };
 
     const groupId = new mongoose.Types.ObjectId().toString();
-    const uploadMode = options.uploadMode || 'multiple';
+    const uploadMode = options.uploadMode || "multiple";
 
     for (const file of files) {
       const result = await this.uploadSingle(orgId, configId, file, {
@@ -162,7 +166,7 @@ export const uploadService = {
       } else {
         results.errors.push({
           fileName: file.originalname,
-          error: result.error || 'Unknown error',
+          error: result.error || "Unknown error",
         });
         results.totalFailed++;
       }
@@ -172,7 +176,11 @@ export const uploadService = {
     return results;
   },
 
-  async deleteFile(orgId: string, configId: string, fileId: string): Promise<boolean> {
+  async deleteFile(
+    orgId: string,
+    configId: string,
+    fileId: string,
+  ): Promise<boolean> {
     try {
       const config = await configService.getById(orgId, configId);
       if (!config) return false;
@@ -181,7 +189,7 @@ export const uploadService = {
       await imagekit.deleteFile(fileId);
       return true;
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error("Delete error:", error);
       return false;
     }
   },

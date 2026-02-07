@@ -1,6 +1,10 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
-export type UploadMode = 'single' | 'multiple' | 'single-array' | 'multiple-array';
+export type UploadMode =
+  | "single"
+  | "multiple"
+  | "single-array"
+  | "multiple-array";
 
 export interface IUploadedFile extends Document {
   organizationId: mongoose.Types.ObjectId;
@@ -28,13 +32,13 @@ const UploadedFileSchema = new Schema<IUploadedFile>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
     configId: {
       type: Schema.Types.ObjectId,
-      ref: 'ImageKitConfig',
+      ref: "ImageKitConfig",
       required: true,
     },
     apiKeyUsed: {
@@ -78,17 +82,20 @@ const UploadedFileSchema = new Schema<IUploadedFile>(
     tags: [String],
     uploadMode: {
       type: String,
-      enum: ['single', 'multiple', 'single-array', 'multiple-array'],
-      default: 'single',
+      enum: ["single", "multiple", "single-array", "multiple-array"],
+      default: "single",
     },
     groupId: String,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 UploadedFileSchema.index({ organizationId: 1, createdAt: -1 });
 UploadedFileSchema.index({ organizationId: 1, fileType: 1 });
 UploadedFileSchema.index({ organizationId: 1, uploadMode: 1 });
-UploadedFileSchema.index({ fileName: 'text', originalName: 'text' });
+UploadedFileSchema.index({ fileName: "text", originalName: "text" });
 
-export const UploadedFileModel = mongoose.model<IUploadedFile>('UploadedFile', UploadedFileSchema);
+export const UploadedFileModel = mongoose.model<IUploadedFile>(
+  "UploadedFile",
+  UploadedFileSchema,
+);

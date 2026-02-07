@@ -1,7 +1,7 @@
-export type CodeLanguage = 'curl' | 'javascript' | 'python' | 'php' | 'go';
+export type CodeLanguage = "curl" | "javascript" | "python" | "php" | "go";
 
 export interface EndpointDefinition {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   path: string;
   description: string;
   body: string | null;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/static-components */
 import {
   Dialog,
   DialogTitle,
@@ -8,8 +9,8 @@ import {
   Box,
   Chip,
   Paper,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import {
   CheckCircle,
   Warning,
@@ -20,8 +21,8 @@ import {
   Image,
   Info,
   Speed,
-} from '@mui/icons-material';
-import { SiteCheckResult } from '../../../types/siteStatus';
+} from "@mui/icons-material";
+import { SiteCheckResult } from "../../../types/siteStatus";
 
 interface CheckDetailDialogProps {
   open: boolean;
@@ -29,18 +30,22 @@ interface CheckDetailDialogProps {
   check: SiteCheckResult | null;
 }
 
-const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => {
+const CheckDetailDialog = ({
+  open,
+  onClose,
+  check,
+}: CheckDetailDialogProps) => {
   if (!check) return null;
 
   const getStatusColor = (status: string) => {
-    if (status === 'healthy') return 'success';
-    if (status === 'warning') return 'warning';
-    return 'error';
+    if (status === "healthy") return "success";
+    if (status === "warning") return "warning";
+    return "error";
   };
 
   const getStatusIcon = (status: string) => {
-    if (status === 'healthy') return <CheckCircle color="success" />;
-    if (status === 'warning') return <Warning color="warning" />;
+    if (status === "healthy") return <CheckCircle color="success" />;
+    if (status === "warning") return <Warning color="warning" />;
     return <ErrorIcon color="error" />;
   };
 
@@ -54,7 +59,7 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
     children: React.ReactNode;
   }) => (
     <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
         {icon}
         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
           {title}
@@ -64,8 +69,14 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
     </Paper>
   );
 
-  const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5 }}>
+  const InfoRow = ({
+    label,
+    value,
+  }: {
+    label: string;
+    value: React.ReactNode;
+  }) => (
+    <Box sx={{ display: "flex", justifyContent: "space-between", py: 0.5 }}>
       <Typography variant="body2" color="text.secondary">
         {label}
       </Typography>
@@ -78,7 +89,7 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           {getStatusIcon(check.overallStatus)}
           <Box>
             <Typography variant="h6">Check Details</Typography>
@@ -90,7 +101,7 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
             label={check.overallStatus.toUpperCase()}
             color={getStatusColor(check.overallStatus)}
             size="small"
-            sx={{ ml: 'auto' }}
+            sx={{ ml: "auto" }}
           />
         </Box>
       </DialogTitle>
@@ -105,7 +116,11 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
             <Grid size={{ xs: 12, md: 6 }}>
               <SectionCard
                 title="HTTP Status"
-                icon={<CheckCircle color={check.httpStatus.isOk ? 'success' : 'error'} />}
+                icon={
+                  <CheckCircle
+                    color={check.httpStatus.isOk ? "success" : "error"}
+                  />
+                }
               >
                 <InfoRow
                   label="Status Code"
@@ -113,11 +128,14 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
                     <Chip
                       label={check.httpStatus.statusCode}
                       size="small"
-                      color={check.httpStatus.isOk ? 'success' : 'error'}
+                      color={check.httpStatus.isOk ? "success" : "error"}
                     />
                   }
                 />
-                <InfoRow label="Status Text" value={check.httpStatus.statusText} />
+                <InfoRow
+                  label="Status Text"
+                  value={check.httpStatus.statusText}
+                />
               </SectionCard>
             </Grid>
           )}
@@ -125,7 +143,10 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
           {/* Response Time */}
           {check.responseTime !== undefined && (
             <Grid size={{ xs: 12, md: 6 }}>
-              <SectionCard title="Response Time" icon={<Speed color="primary" />}>
+              <SectionCard
+                title="Response Time"
+                icon={<Speed color="primary" />}
+              >
                 <InfoRow label="Time" value={`${check.responseTime}ms`} />
                 <InfoRow
                   label="Performance"
@@ -148,16 +169,32 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
             <Grid size={{ xs: 12, md: 6 }}>
               <SectionCard
                 title="SSL Certificate"
-                icon={<Security color={check.sslCertificate.valid ? 'success' : 'error'} />}
+                icon={
+                  <Security
+                    color={check.sslCertificate.valid ? "success" : "error"}
+                  />
+                }
               >
-                <InfoRow label="Valid" value={check.sslCertificate.valid ? 'Yes' : 'No'} />
-                <InfoRow label="Issuer" value={check.sslCertificate.issuer || 'N/A'} />
-                <InfoRow label="Subject" value={check.sslCertificate.subject || 'N/A'} />
+                <InfoRow
+                  label="Valid"
+                  value={check.sslCertificate.valid ? "Yes" : "No"}
+                />
+                <InfoRow
+                  label="Issuer"
+                  value={check.sslCertificate.issuer || "N/A"}
+                />
+                <InfoRow
+                  label="Subject"
+                  value={check.sslCertificate.subject || "N/A"}
+                />
                 <InfoRow
                   label="Expires In"
                   value={`${check.sslCertificate.daysUntilExpiry} days`}
                 />
-                <InfoRow label="Protocol" value={check.sslCertificate.protocol} />
+                <InfoRow
+                  label="Protocol"
+                  value={check.sslCertificate.protocol}
+                />
               </SectionCard>
             </Grid>
           )}
@@ -166,10 +203,22 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
           {check.dnsRecords && (
             <Grid size={{ xs: 12, md: 6 }}>
               <SectionCard title="DNS Records" icon={<Dns color="info" />}>
-                <InfoRow label="A Records" value={check.dnsRecords.aRecords.length || 0} />
-                <InfoRow label="AAAA Records" value={check.dnsRecords.aaaaRecords.length || 0} />
-                <InfoRow label="NS Records" value={check.dnsRecords.nsRecords.length || 0} />
-                <InfoRow label="TXT Records" value={check.dnsRecords.txtRecords.length || 0} />
+                <InfoRow
+                  label="A Records"
+                  value={check.dnsRecords.aRecords.length || 0}
+                />
+                <InfoRow
+                  label="AAAA Records"
+                  value={check.dnsRecords.aaaaRecords.length || 0}
+                />
+                <InfoRow
+                  label="NS Records"
+                  value={check.dnsRecords.nsRecords.length || 0}
+                />
+                <InfoRow
+                  label="TXT Records"
+                  value={check.dnsRecords.txtRecords.length || 0}
+                />
               </SectionCard>
             </Grid>
           )}
@@ -180,7 +229,11 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
               <SectionCard title="MX Records" icon={<Email color="info" />}>
                 {check.mxRecords.records.length > 0 ? (
                   check.mxRecords.records.map((r, i) => (
-                    <InfoRow key={i} label={`Priority ${r.priority}`} value={r.exchange} />
+                    <InfoRow
+                      key={i}
+                      label={`Priority ${r.priority}`}
+                      value={r.exchange}
+                    />
                   ))
                 ) : (
                   <Typography variant="body2" color="text.secondary">
@@ -194,15 +247,27 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
           {/* Page Info */}
           {check.pageInfo && (
             <Grid size={12}>
-              <SectionCard title="Page Information" icon={<Info color="primary" />}>
-                <InfoRow label="Title" value={check.pageInfo.title || 'N/A'} />
+              <SectionCard
+                title="Page Information"
+                icon={<Info color="primary" />}
+              >
+                <InfoRow label="Title" value={check.pageInfo.title || "N/A"} />
                 <InfoRow
                   label="Description"
-                  value={check.pageInfo.description?.substring(0, 100) || 'N/A'}
+                  value={check.pageInfo.description?.substring(0, 100) || "N/A"}
                 />
-                <InfoRow label="Language" value={check.pageInfo.language || 'N/A'} />
-                <InfoRow label="Charset" value={check.pageInfo.charset || 'N/A'} />
-                <InfoRow label="Load Time" value={`${check.pageInfo.loadTime}ms`} />
+                <InfoRow
+                  label="Language"
+                  value={check.pageInfo.language || "N/A"}
+                />
+                <InfoRow
+                  label="Charset"
+                  value={check.pageInfo.charset || "N/A"}
+                />
+                <InfoRow
+                  label="Load Time"
+                  value={`${check.pageInfo.loadTime}ms`}
+                />
                 {check.pageInfo.generator && (
                   <InfoRow label="Generator" value={check.pageInfo.generator} />
                 )}
@@ -218,7 +283,7 @@ const CheckDetailDialog = ({ open, onClose, check }: CheckDetailDialogProps) => 
                   component="img"
                   src={check.screenshot.url}
                   alt="Screenshot"
-                  sx={{ width: '100%', borderRadius: 1 }}
+                  sx={{ width: "100%", borderRadius: 1 }}
                 />
               </SectionCard>
             </Grid>

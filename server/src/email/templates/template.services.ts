@@ -1,12 +1,12 @@
-import mongoose from 'mongoose';
-import mjml2html from 'mjml';
-import { EmailTemplateModel, IEmailTemplate } from './template.models';
+import mongoose from "mongoose";
+import mjml2html from "mjml";
+import { EmailTemplateModel, IEmailTemplate } from "./template.models";
 import {
   CreateEmailTemplateInput,
   UpdateEmailTemplateInput,
   ListEmailTemplatesQuery,
   PreviewTemplateInput,
-} from './template.validators';
+} from "./template.validators";
 
 // Transform Mongoose document to plain object
 const transformEmailTemplate = (doc: IEmailTemplate) => ({
@@ -24,17 +24,20 @@ const transformEmailTemplate = (doc: IEmailTemplate) => ({
 });
 
 // Compile MJML to HTML
-const compileMjml = (mjmlContent: string, variables: Record<string, string> = {}) => {
+const compileMjml = (
+  mjmlContent: string,
+  variables: Record<string, string> = {},
+) => {
   // Replace variables in MJML content
   let processedContent = mjmlContent;
   for (const [key, value] of Object.entries(variables)) {
-    const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+    const regex = new RegExp(`{{\\s*${key}\\s*}}`, "g");
     processedContent = processedContent.replace(regex, value);
   }
 
   // Compile MJML to HTML
   const result = mjml2html(processedContent, {
-    validationLevel: 'soft',
+    validationLevel: "soft",
     minify: false,
   });
 
@@ -47,10 +50,13 @@ const compileMjml = (mjmlContent: string, variables: Record<string, string> = {}
 // Create Email Template
 export const createEmailTemplate = async (
   organizationId: string,
-  data: CreateEmailTemplateInput
+  data: CreateEmailTemplateInput,
 ) => {
   // Check for duplicate name within org
-  const existing = await EmailTemplateModel.findOne({ organizationId, name: data.name });
+  const existing = await EmailTemplateModel.findOne({
+    organizationId,
+    name: data.name,
+  });
   if (existing) {
     throw new Error(`Email template with name "${data.name}" already exists`);
   }
@@ -58,7 +64,9 @@ export const createEmailTemplate = async (
   // Compile MJML to HTML
   const { html, errors } = compileMjml(data.mjmlContent);
   if (errors.length > 0) {
-    throw new Error(`MJML compilation errors: ${errors.map((e) => e.message).join(', ')}`);
+    throw new Error(
+      `MJML compilation errors: ${errors.map((e) => e.message).join(", ")}`,
+    );
   }
 
   const template = new EmailTemplateModel({
@@ -72,7 +80,10 @@ export const createEmailTemplate = async (
 };
 
 // Get all Email Templates for an organization
-export const getEmailTemplates = async (organizationId: string, query: ListEmailTemplatesQuery) => {
+export const getEmailTemplates = async (
+  organizationId: string,
+  query: ListEmailTemplatesQuery,
+) => {
   const { page, limit, search, isActive } = query;
   const skip = (page - 1) * limit;
 
@@ -80,9 +91,9 @@ export const getEmailTemplates = async (organizationId: string, query: ListEmail
 
   if (search) {
     filter.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { description: { $regex: search, $options: 'i' } },
-      { subject: { $regex: search, $options: 'i' } },
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+      { subject: { $regex: search, $options: "i" } },
     ];
   }
 
@@ -91,7 +102,10 @@ export const getEmailTemplates = async (organizationId: string, query: ListEmail
   }
 
   const [templates, total] = await Promise.all([
-    EmailTemplateModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    EmailTemplateModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
     EmailTemplateModel.countDocuments(filter),
   ]);
 
@@ -107,14 +121,17 @@ export const getEmailTemplates = async (organizationId: string, query: ListEmail
 };
 
 // Get single Email Template
-export const getEmailTemplate = async (organizationId: string, templateId: string) => {
+export const getEmailTemplate = async (
+  organizationId: string,
+  templateId: string,
+) => {
   const template = await EmailTemplateModel.findOne({
     _id: templateId,
     organizationId,
   });
 
   if (!template) {
-    throw new Error('Email template not found');
+    throw new Error("Email template not found");
   }
 
   return transformEmailTemplate(template);
@@ -124,7 +141,7 @@ export const getEmailTemplate = async (organizationId: string, templateId: strin
 export const updateEmailTemplate = async (
   organizationId: string,
   templateId: string,
-  data: UpdateEmailTemplateInput
+  data: UpdateEmailTemplateInput,
 ) => {
   // Check for duplicate name within org (if name is being updated)
   if (data.name) {
@@ -143,7 +160,9 @@ export const updateEmailTemplate = async (
   if (data.mjmlContent) {
     const { html, errors } = compileMjml(data.mjmlContent);
     if (errors.length > 0) {
-      throw new Error(`MJML compilation errors: ${errors.map((e) => e.message).join(', ')}`);
+      throw new Error(
+        `MJML compilation errors: ${errors.map((e) => e.message).join(", ")}`,
+      );
     }
     htmlContent = html;
   }
@@ -151,28 +170,31 @@ export const updateEmailTemplate = async (
   const template = await EmailTemplateModel.findOneAndUpdate(
     { _id: templateId, organizationId },
     { ...data, ...(htmlContent ? { htmlContent } : {}) },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   if (!template) {
-    throw new Error('Email template not found');
+    throw new Error("Email template not found");
   }
 
   return transformEmailTemplate(template);
 };
 
 // Delete Email Template
-export const deleteEmailTemplate = async (organizationId: string, templateId: string) => {
+export const deleteEmailTemplate = async (
+  organizationId: string,
+  templateId: string,
+) => {
   const template = await EmailTemplateModel.findOneAndDelete({
     _id: templateId,
     organizationId,
   });
 
   if (!template) {
-    throw new Error('Email template not found');
+    throw new Error("Email template not found");
   }
 
-  return { message: 'Email template deleted successfully' };
+  return { message: "Email template deleted successfully" };
 };
 
 // Preview MJML template (compile and return HTML)
@@ -193,7 +215,7 @@ export const previewTemplate = async (data: PreviewTemplateInput) => {
 export const getRenderedTemplate = async (
   organizationId: string,
   templateId: string,
-  variables: Record<string, string>
+  variables: Record<string, string>,
 ) => {
   const template = await getEmailTemplate(organizationId, templateId);
 
@@ -209,7 +231,7 @@ export const getRenderedTemplate = async (
 
   // Then, override with provided variables (if not empty)
   for (const [key, value] of Object.entries(variables)) {
-    if (value && value.trim() !== '') {
+    if (value && value.trim() !== "") {
       mergedVariables[key] = value;
     }
   }
@@ -218,13 +240,15 @@ export const getRenderedTemplate = async (
   const { html, errors } = compileMjml(template.mjmlContent, mergedVariables);
 
   if (errors.length > 0) {
-    throw new Error(`MJML compilation errors: ${errors.map((e) => e.message).join(', ')}`);
+    throw new Error(
+      `MJML compilation errors: ${errors.map((e) => e.message).join(", ")}`,
+    );
   }
 
   // Process subject with variables
   let processedSubject = template.subject;
   for (const [key, value] of Object.entries(mergedVariables)) {
-    const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+    const regex = new RegExp(`{{\\s*${key}\\s*}}`, "g");
     processedSubject = processedSubject.replace(regex, value);
   }
 

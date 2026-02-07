@@ -11,16 +11,19 @@ import {
   Box,
   Divider,
   CircularProgress,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { useFormik } from 'formik';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useFormik } from "formik";
 import {
   createSiteMonitorSchema,
   defaultCheckOptions,
-} from '../../../validation/siteStatusValidation';
-import { siteMonitorApi } from '../../../api/siteStatusApi';
-import { useOrg } from '../../../context/OrgContext';
-import { SiteMonitorConfig, CreateSiteMonitorInput } from '../../../types/siteStatus';
+} from "../../../validation/siteStatusValidation";
+import { siteMonitorApi } from "../../../api/siteStatusApi";
+import { useOrg } from "../../../context/OrgContext";
+import {
+  SiteMonitorConfig,
+  CreateSiteMonitorInput,
+} from "../../../types/siteStatus";
 
 interface SiteMonitorDialogProps {
   open: boolean;
@@ -29,14 +32,19 @@ interface SiteMonitorDialogProps {
   onSaved: () => void;
 }
 
-const SiteMonitorDialog = ({ open, onClose, monitor, onSaved }: SiteMonitorDialogProps) => {
+const SiteMonitorDialog = ({
+  open,
+  onClose,
+  monitor,
+  onSaved,
+}: SiteMonitorDialogProps) => {
   const { selectedOrg, selectedApiKey } = useOrg();
   const isEdit = !!monitor;
 
   const formik = useFormik<CreateSiteMonitorInput>({
     initialValues: {
-      url: monitor?.url || '',
-      name: monitor?.name || '',
+      url: monitor?.url || "",
+      name: monitor?.name || "",
       checks: monitor?.checks || defaultCheckOptions,
     },
     validationSchema: createSiteMonitorSchema,
@@ -45,14 +53,23 @@ const SiteMonitorDialog = ({ open, onClose, monitor, onSaved }: SiteMonitorDialo
       if (!selectedOrg) return;
       try {
         if (isEdit && monitor) {
-          await siteMonitorApi.update(selectedOrg.id, monitor.id, values, selectedApiKey?.apiKey);
+          await siteMonitorApi.update(
+            selectedOrg.id,
+            monitor.id,
+            values,
+            selectedApiKey?.apiKey,
+          );
         } else {
-          await siteMonitorApi.create(selectedOrg.id, values, selectedApiKey?.apiKey);
+          await siteMonitorApi.create(
+            selectedOrg.id,
+            values,
+            selectedApiKey?.apiKey,
+          );
         }
         onSaved();
         onClose();
       } catch (err) {
-        console.error('Save failed:', err);
+        console.error("Save failed:", err);
       } finally {
         setSubmitting(false);
       }
@@ -61,30 +78,46 @@ const SiteMonitorDialog = ({ open, onClose, monitor, onSaved }: SiteMonitorDialo
 
   const checkOptions = [
     {
-      key: 'httpStatus',
-      label: 'HTTP Status (200 OK)',
-      description: 'Check if site returns a successful HTTP response',
+      key: "httpStatus",
+      label: "HTTP Status (200 OK)",
+      description: "Check if site returns a successful HTTP response",
     },
     {
-      key: 'sslCertificate',
-      label: 'SSL Certificate',
-      description: 'Verify SSL certificate validity and expiry',
+      key: "sslCertificate",
+      label: "SSL Certificate",
+      description: "Verify SSL certificate validity and expiry",
     },
     {
-      key: 'dnsRecords',
-      label: 'DNS Records',
-      description: 'Retrieve A, AAAA, NS, TXT, CNAME records',
+      key: "dnsRecords",
+      label: "DNS Records",
+      description: "Retrieve A, AAAA, NS, TXT, CNAME records",
     },
-    { key: 'mxRecords', label: 'MX Records', description: 'Check mail server configuration' },
-    { key: 'screenshot', label: 'Screenshot', description: 'Capture a screenshot of the page' },
-    { key: 'pageInfo', label: 'Page Info', description: 'Extract title, description, meta tags' },
-    { key: 'responseTime', label: 'Response Time', description: 'Measure server response time' },
+    {
+      key: "mxRecords",
+      label: "MX Records",
+      description: "Check mail server configuration",
+    },
+    {
+      key: "screenshot",
+      label: "Screenshot",
+      description: "Capture a screenshot of the page",
+    },
+    {
+      key: "pageInfo",
+      label: "Page Info",
+      description: "Extract title, description, meta tags",
+    },
+    {
+      key: "responseTime",
+      label: "Response Time",
+      description: "Measure server response time",
+    },
   ] as const;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={formik.handleSubmit}>
-        <DialogTitle>{isEdit ? 'Edit Monitor' : 'Add New Monitor'}</DialogTitle>
+        <DialogTitle>{isEdit ? "Edit Monitor" : "Add New Monitor"}</DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 0.5 }}>
             <Grid size={12}>
@@ -127,7 +160,10 @@ const SiteMonitorDialog = ({ open, onClose, monitor, onSaved }: SiteMonitorDialo
                         size="small"
                         checked={formik.values.checks[opt.key]}
                         onChange={(e) =>
-                          formik.setFieldValue(`checks.${opt.key}`, e.target.checked)
+                          formik.setFieldValue(
+                            `checks.${opt.key}`,
+                            e.target.checked,
+                          )
                         }
                       />
                     }
@@ -136,7 +172,7 @@ const SiteMonitorDialog = ({ open, onClose, monitor, onSaved }: SiteMonitorDialo
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ display: 'block', ml: 4, mt: -0.5 }}
+                    sx={{ display: "block", ml: 4, mt: -0.5 }}
                   >
                     {opt.description}
                   </Typography>
@@ -149,8 +185,18 @@ const SiteMonitorDialog = ({ open, onClose, monitor, onSaved }: SiteMonitorDialo
           <Button onClick={onClose} disabled={formik.isSubmitting}>
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
-            {formik.isSubmitting ? <CircularProgress size={20} /> : isEdit ? 'Update' : 'Create'}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? (
+              <CircularProgress size={20} />
+            ) : isEdit ? (
+              "Update"
+            ) : (
+              "Create"
+            )}
           </Button>
         </DialogActions>
       </form>

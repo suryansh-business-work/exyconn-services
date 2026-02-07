@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -16,13 +16,13 @@ import {
   TableCell,
   TablePagination,
   Switch,
-} from '@mui/material';
-import { Add, Delete, Edit, Refresh } from '@mui/icons-material';
-import { PageBreadcrumb } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { aiCompanyApi } from '../../../api/aiApi';
-import { AICompany } from '../../../types/ai';
-import AICompanyDialog from './AICompanyDialog';
+} from "@mui/material";
+import { Add, Delete, Edit, Refresh } from "@mui/icons-material";
+import { PageBreadcrumb } from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import { aiCompanyApi } from "../../../api/aiApi";
+import { AICompany } from "../../../types/ai";
+import AICompanyDialog from "./AICompanyDialog";
 
 const AICompaniesPage = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
@@ -41,12 +41,12 @@ const AICompaniesPage = () => {
       const result = await aiCompanyApi.list(
         selectedOrg.id,
         { page: page + 1, limit: rowsPerPage },
-        selectedApiKey?.apiKey
+        selectedApiKey?.apiKey,
       );
       setCompanies(result.data);
       setTotal(result.pagination.total);
     } catch (err) {
-      console.error('Failed to fetch companies:', err);
+      console.error("Failed to fetch companies:", err);
     } finally {
       setLoading(false);
     }
@@ -57,12 +57,16 @@ const AICompaniesPage = () => {
   }, [selectedOrg, selectedApiKey, page, rowsPerPage]);
 
   const handleDelete = async (companyId: string) => {
-    if (!selectedOrg || !confirm('Delete this AI company?')) return;
+    if (!selectedOrg || !confirm("Delete this AI company?")) return;
     try {
-      await aiCompanyApi.delete(selectedOrg.id, companyId, selectedApiKey?.apiKey);
+      await aiCompanyApi.delete(
+        selectedOrg.id,
+        companyId,
+        selectedApiKey?.apiKey,
+      );
       fetchCompanies();
     } catch (err) {
-      console.error('Delete failed:', err);
+      console.error("Delete failed:", err);
     }
   };
 
@@ -73,24 +77,24 @@ const AICompaniesPage = () => {
         selectedOrg.id,
         company.id,
         { isActive: !company.isActive },
-        selectedApiKey?.apiKey
+        selectedApiKey?.apiKey,
       );
       fetchCompanies();
     } catch (err) {
-      console.error('Toggle failed:', err);
+      console.error("Toggle failed:", err);
     }
   };
 
   const getProviderColor = (provider: string) => {
-    if (provider === 'openai') return 'success';
-    if (provider === 'gemini') return 'primary';
-    if (provider === 'anthropic') return 'warning';
-    return 'default';
+    if (provider === "openai") return "success";
+    if (provider === "gemini") return "primary";
+    if (provider === "anthropic") return "warning";
+    return "default";
   };
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -104,27 +108,32 @@ const AICompaniesPage = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/dashboard' },
+          { label: "Home", href: "/dashboard" },
           { label: selectedOrg.orgName, href: basePath },
-          { label: 'AI', href: `${basePath}/service/ai/dashboard` },
-          { label: 'Companies' },
+          { label: "AI", href: `${basePath}/service/ai/dashboard` },
+          { label: "Companies" },
         ]}
       />
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           mb: 2,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           gap: 1,
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18 }}>
           AI Companies
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={fetchCompanies}>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Refresh />}
+            onClick={fetchCompanies}
+          >
             Refresh
           </Button>
           <Button
@@ -164,7 +173,9 @@ const AICompaniesPage = () => {
               ) : companies.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
-                    <Typography color="text.secondary">No companies found</Typography>
+                    <Typography color="text.secondary">
+                      No companies found
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -180,17 +191,20 @@ const AICompaniesPage = () => {
                         label={company.provider}
                         size="small"
                         color={getProviderColor(company.provider)}
-                        sx={{ textTransform: 'capitalize', fontSize: 10 }}
+                        sx={{ textTransform: "capitalize", fontSize: 10 }}
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: 11 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontFamily: "monospace", fontSize: 11 }}
+                      >
                         {company.apiKey}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" sx={{ fontSize: 12 }}>
-                        {company.defaultModel || '-'}
+                        {company.defaultModel || "-"}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">

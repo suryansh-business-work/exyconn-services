@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -7,42 +7,48 @@ import {
   useParams,
   useNavigate,
   useLocation,
-} from 'react-router-dom';
-import Layout from './components/Layout';
-import ErrorBoundary from './components/ErrorBoundary';
-import { VersionFooter } from './components/VersionFooter';
-import { OrgProvider, useOrg } from './context/OrgContext';
-import OrganizationsPage from './pages/Organizations';
-import DashboardPage from './pages/Dashboard';
-import NotFoundPage from './pages/NotFound';
-import WelcomePage from './pages/Welcome';
+} from "react-router-dom";
+import Layout from "./components/Layout";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { VersionFooter } from "./components/VersionFooter";
+import { OrgProvider, useOrg } from "./context/OrgContext";
+import OrganizationsPage from "./pages/Organizations";
+import DashboardPage from "./pages/Dashboard";
+import NotFoundPage from "./pages/NotFound";
+import WelcomePage from "./pages/Welcome";
 import {
   EmailSettings,
   EmailTemplates,
   EmailDemo,
   EmailHistory,
   EmailApiDocs,
-} from './pages/Email';
+} from "./pages/Email";
 import {
   ImageKitSettings,
   ImageKitDemo,
   ImageKitHistory,
   ImageKitUsage,
   ImageKitApiDocs,
-} from './pages/ImageKit';
+} from "./pages/ImageKit";
 import {
   SiteStatusMonitors,
   SiteStatusHistory,
   SiteStatusDashboard,
   SiteStatusApiDocs,
-} from './pages/SiteStatus';
+} from "./pages/SiteStatus";
 import {
   EnvKeysDashboard,
   EnvKeysAppsPage,
   EnvKeysVariablesPage,
   EnvKeysApiDocs,
-} from './pages/EnvKeys';
-import { AIDashboard, AICompaniesPage, AIChatPage, AIHistoryPage, AIApiDocs } from './pages/AI';
+} from "./pages/EnvKeys";
+import {
+  AIDashboard,
+  AICompaniesPage,
+  AIChatPage,
+  AIHistoryPage,
+  AIApiDocs,
+} from "./pages/AI";
 
 // Wrapper component to sync URL org and apiKey with context
 const OrgRouteWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -68,13 +74,16 @@ const OrgRouteWrapper = ({ children }: { children: React.ReactNode }) => {
         // Sync API key if provided in URL and different
         if (apiKey && org.orgApiKeys?.length) {
           const key = org.orgApiKeys.find((k) => k.apiKey === apiKey);
-          if (key && (!selectedApiKey || selectedApiKey.apiKey !== key.apiKey)) {
+          if (
+            key &&
+            (!selectedApiKey || selectedApiKey.apiKey !== key.apiKey)
+          ) {
             selectApiKey(key);
           }
         }
       } else {
         // Invalid org ID, redirect to dashboard
-        navigate('/dashboard', { replace: true });
+        navigate("/dashboard", { replace: true });
       }
     }
   }, [
@@ -103,7 +112,7 @@ const AppRoutes = () => {
   };
 
   const handleCreateOrganization = () => {
-    navigate('/manage-organization');
+    navigate("/manage-organization");
   };
 
   const handleOrgCreated = async () => {
@@ -111,7 +120,11 @@ const AppRoutes = () => {
   };
 
   // Show welcome page if no organizations and on dashboard
-  if (!isLoading && organizations.length === 0 && location.pathname === '/dashboard') {
+  if (
+    !isLoading &&
+    organizations.length === 0 &&
+    location.pathname === "/dashboard"
+  ) {
     return (
       <Layout currentPath={location.pathname} onNavigate={handleNavigate}>
         <WelcomePage onCreateOrganization={handleCreateOrganization} />
@@ -127,7 +140,9 @@ const AppRoutes = () => {
         <Route path="/dashboard/:serviceSlug" element={<DashboardPage />} />
         <Route
           path="/welcome"
-          element={<WelcomePage onCreateOrganization={handleCreateOrganization} />}
+          element={
+            <WelcomePage onCreateOrganization={handleCreateOrganization} />
+          }
         />
         <Route
           path="/manage-organization"
@@ -574,7 +589,9 @@ const AppRoutes = () => {
 
         <Route
           path="*"
-          element={<NotFoundPage onNavigateHome={() => handleNavigate('/dashboard')} />}
+          element={
+            <NotFoundPage onNavigateHome={() => handleNavigate("/dashboard")} />
+          }
         />
       </Routes>
     </Layout>

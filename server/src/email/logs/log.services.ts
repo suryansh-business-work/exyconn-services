@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import { EmailLogModel, IEmailLog, EmailLogStatus } from './log.models';
-import { ListEmailLogsQuery } from './log.validators';
+import mongoose from "mongoose";
+import { EmailLogModel, IEmailLog, EmailLogStatus } from "./log.models";
+import { ListEmailLogsQuery } from "./log.validators";
 
 // Transform Mongoose document to plain object
 const transformEmailLog = (doc: IEmailLog) => {
@@ -8,7 +8,7 @@ const transformEmailLog = (doc: IEmailLog) => {
   let variables: Record<string, string> = {};
   if (doc.variables instanceof Map) {
     variables = Object.fromEntries(doc.variables);
-  } else if (doc.variables && typeof doc.variables === 'object') {
+  } else if (doc.variables && typeof doc.variables === "object") {
     variables = doc.variables as Record<string, string>;
   }
 
@@ -66,8 +66,12 @@ export const createEmailLog = async (data: {
 };
 
 // Get email logs for an organization
-export const getEmailLogs = async (organizationId: string, query: ListEmailLogsQuery) => {
-  const { page, limit, status, recipient, startDate, endDate, apiKeyUsed } = query;
+export const getEmailLogs = async (
+  organizationId: string,
+  query: ListEmailLogsQuery,
+) => {
+  const { page, limit, status, recipient, startDate, endDate, apiKeyUsed } =
+    query;
   const skip = (page - 1) * limit;
 
   const filter: Record<string, unknown> = {
@@ -79,7 +83,7 @@ export const getEmailLogs = async (organizationId: string, query: ListEmailLogsQ
   }
 
   if (recipient) {
-    filter.recipient = { $regex: recipient, $options: 'i' };
+    filter.recipient = { $regex: recipient, $options: "i" };
   }
 
   if (apiKeyUsed) {
@@ -101,8 +105,8 @@ export const getEmailLogs = async (organizationId: string, query: ListEmailLogsQ
       .sort({ sentAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('smtpConfigId', 'name')
-      .populate('templateId', 'name'),
+      .populate("smtpConfigId", "name")
+      .populate("templateId", "name"),
     EmailLogModel.countDocuments(filter),
   ]);
 
@@ -125,14 +129,17 @@ export const getEmailLog = async (organizationId: string, logId: string) => {
   });
 
   if (!log) {
-    throw new Error('Email log not found');
+    throw new Error("Email log not found");
   }
 
   return transformEmailLog(log);
 };
 
 // Get email stats for an organization (optionally filtered by API key)
-export const getEmailStats = async (organizationId: string, apiKeyUsed?: string) => {
+export const getEmailStats = async (
+  organizationId: string,
+  apiKeyUsed?: string,
+) => {
   const matchFilter: Record<string, unknown> = {
     organizationId: new mongoose.Types.ObjectId(organizationId),
   };
@@ -145,7 +152,7 @@ export const getEmailStats = async (organizationId: string, apiKeyUsed?: string)
     { $match: matchFilter },
     {
       $group: {
-        _id: '$status',
+        _id: "$status",
         count: { $sum: 1 },
       },
     },
@@ -167,7 +174,10 @@ export const getEmailStats = async (organizationId: string, apiKeyUsed?: string)
 };
 
 // Get analytics data for dashboard
-export const getEmailAnalytics = async (organizationId: string, apiKeyUsed?: string) => {
+export const getEmailAnalytics = async (
+  organizationId: string,
+  apiKeyUsed?: string,
+) => {
   const matchFilter: Record<string, unknown> = {
     organizationId: new mongoose.Types.ObjectId(organizationId),
   };
@@ -192,38 +202,38 @@ export const getEmailAnalytics = async (organizationId: string, apiKeyUsed?: str
       {
         $group: {
           _id: {
-            date: { $dateToString: { format: '%Y-%m-%d', date: '$sentAt' } },
-            status: '$status',
+            date: { $dateToString: { format: "%Y-%m-%d", date: "$sentAt" } },
+            status: "$status",
           },
           count: { $sum: 1 },
         },
       },
-      { $sort: { '_id.date': 1 } },
+      { $sort: { "_id.date": 1 } },
     ]),
     // Template usage stats
     EmailLogModel.aggregate([
       { $match: matchFilter },
       {
         $group: {
-          _id: '$templateId',
+          _id: "$templateId",
           count: { $sum: 1 },
-          sent: { $sum: { $cond: [{ $eq: ['$status', 'sent'] }, 1, 0] } },
-          failed: { $sum: { $cond: [{ $eq: ['$status', 'failed'] }, 1, 0] } },
+          sent: { $sum: { $cond: [{ $eq: ["$status", "sent"] }, 1, 0] } },
+          failed: { $sum: { $cond: [{ $eq: ["$status", "failed"] }, 1, 0] } },
         },
       },
       {
         $lookup: {
-          from: 'emailtemplates',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'template',
+          from: "emailtemplates",
+          localField: "_id",
+          foreignField: "_id",
+          as: "template",
         },
       },
-      { $unwind: { path: '$template', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$template", preserveNullAndEmptyArrays: true } },
       {
         $project: {
-          templateId: '$_id',
-          templateName: { $ifNull: ['$template.name', 'Unknown Template'] },
+          templateId: "$_id",
+          templateName: { $ifNull: ["$template.name", "Unknown Template"] },
           count: 1,
           sent: 1,
           failed: 1,
@@ -237,7 +247,7 @@ export const getEmailAnalytics = async (organizationId: string, apiKeyUsed?: str
       { $match: matchFilter },
       {
         $group: {
-          _id: '$status',
+          _id: "$status",
           count: { $sum: 1 },
         },
       },
@@ -255,10 +265,13 @@ export const getEmailAnalytics = async (organizationId: string, apiKeyUsed?: str
     if (!dailyChartData[date]) {
       dailyChartData[date] = { date, sent: 0, failed: 0, pending: 0 };
     }
-    dailyChartData[date][stat._id.status as 'sent' | 'failed' | 'pending'] = stat.count;
+    dailyChartData[date][stat._id.status as "sent" | "failed" | "pending"] =
+      stat.count;
   });
 
-  const chartData = Object.values(dailyChartData).sort((a, b) => a.date.localeCompare(b.date));
+  const chartData = Object.values(dailyChartData).sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
 
   // Calculate totals
   let total = 0,
@@ -268,9 +281,9 @@ export const getEmailAnalytics = async (organizationId: string, apiKeyUsed?: str
   statusStats.forEach((stat) => {
     const count = stat.count;
     total += count;
-    if (stat._id === 'sent') sent = count;
-    else if (stat._id === 'failed') failed = count;
-    else if (stat._id === 'pending') pending = count;
+    if (stat._id === "sent") sent = count;
+    else if (stat._id === "failed") failed = count;
+    else if (stat._id === "pending") pending = count;
   });
 
   return {
@@ -279,7 +292,7 @@ export const getEmailAnalytics = async (organizationId: string, apiKeyUsed?: str
       sent,
       failed,
       pending,
-      successRate: total > 0 ? ((sent / total) * 100).toFixed(1) : '0',
+      successRate: total > 0 ? ((sent / total) * 100).toFixed(1) : "0",
     },
     dailyStats: chartData,
     templateStats,

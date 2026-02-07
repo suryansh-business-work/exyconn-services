@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Box } from '@mui/material';
-import Header from './Header';
-import Sidebar from './Sidebar';
+import { useState } from "react";
+import { Box } from "@mui/material";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
 
-type DrawerMode = 'expanded' | 'collapsed' | 'icon-only';
+type DrawerMode = "expanded" | "collapsed" | "icon-only";
 
 interface OrgLayoutProps {
   children?: React.ReactNode;
@@ -12,24 +12,29 @@ interface OrgLayoutProps {
   orgId: string;
 }
 
-const OrgLayout = ({ children, currentPath = '', onNavigate, orgId }: OrgLayoutProps) => {
-  const [drawerMode, setDrawerMode] = useState<DrawerMode>('expanded');
+const OrgLayout = ({
+  children,
+  currentPath = "",
+  onNavigate,
+  orgId,
+}: OrgLayoutProps) => {
+  const [drawerMode, setDrawerMode] = useState<DrawerMode>("expanded");
 
   const cycleDrawerMode = () => {
     setDrawerMode((prev) => {
       switch (prev) {
-        case 'expanded':
-          return 'collapsed';
-        case 'collapsed':
-          return 'icon-only';
-        case 'icon-only':
-          return 'expanded';
+        case "expanded":
+          return "collapsed";
+        case "collapsed":
+          return "icon-only";
+        case "icon-only":
+          return "expanded";
       }
     });
   };
 
   const handleManageOrganizations = () => {
-    onNavigate?.('/organizations');
+    onNavigate?.("/organizations");
   };
 
   // For org layout, sidebar navigation should prepend /organization/:orgId
@@ -38,7 +43,7 @@ const OrgLayout = ({ children, currentPath = '', onNavigate, orgId }: OrgLayoutP
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <Header
         drawerMode={drawerMode}
         onToggleDrawer={cycleDrawerMode}
@@ -54,9 +59,9 @@ const OrgLayout = ({ children, currentPath = '', onNavigate, orgId }: OrgLayoutP
         component="main"
         sx={{
           flexGrow: 1,
-          bgcolor: 'background.default',
-          minHeight: '100vh',
-          pt: '44px',
+          bgcolor: "background.default",
+          minHeight: "100vh",
+          pt: "44px",
         }}
       >
         <Box sx={{ p: 1.5 }}>{children}</Box>

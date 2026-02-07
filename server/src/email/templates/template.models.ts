@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 // Template variable interface
 export interface ITemplateVariable {
@@ -28,7 +28,7 @@ const TemplateVariableSchema = new Schema<ITemplateVariable>(
     description: { type: String, maxlength: 200 },
     defaultValue: { type: String, maxlength: 500 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // Email Template schema
@@ -36,7 +36,7 @@ const EmailTemplateSchema = new Schema<IEmailTemplate>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
@@ -71,16 +71,20 @@ const EmailTemplateSchema = new Schema<IEmailTemplate>(
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Compound index for unique name per organization
 EmailTemplateSchema.index({ organizationId: 1, name: 1 }, { unique: true });
 
 // Text search index
-EmailTemplateSchema.index({ name: 'text', description: 'text', subject: 'text' });
+EmailTemplateSchema.index({
+  name: "text",
+  description: "text",
+  subject: "text",
+});
 
 export const EmailTemplateModel = mongoose.model<IEmailTemplate>(
-  'EmailTemplate',
-  EmailTemplateSchema
+  "EmailTemplate",
+  EmailTemplateSchema,
 );

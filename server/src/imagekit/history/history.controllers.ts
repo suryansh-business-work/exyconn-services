@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { historyService } from './history.services';
-import { ListHistoryQuery } from './history.validators';
+import { Request, Response } from "express";
+import { historyService } from "./history.services";
+import { ListHistoryQuery } from "./history.validators";
 
 const transformFile = (file: Record<string, unknown>) => ({
   id: file._id,
@@ -32,12 +32,14 @@ export const historyController = {
       const query = req.query as unknown as ListHistoryQuery;
       const result = await historyService.list(orgId, query);
       res.json({
-        data: result.data.map((f) => transformFile(f as unknown as Record<string, unknown>)),
+        data: result.data.map((f) =>
+          transformFile(f as unknown as Record<string, unknown>),
+        ),
         pagination: result.pagination,
       });
     } catch (error) {
-      console.error('Error listing upload history:', error);
-      res.status(500).json({ error: 'Failed to list upload history' });
+      console.error("Error listing upload history:", error);
+      res.status(500).json({ error: "Failed to list upload history" });
     }
   },
 
@@ -47,12 +49,12 @@ export const historyController = {
       const fileId = req.params.fileId as string;
       const file = await historyService.getById(orgId, fileId);
       if (!file) {
-        return res.status(404).json({ error: 'File not found' });
+        return res.status(404).json({ error: "File not found" });
       }
       res.json(transformFile(file as unknown as Record<string, unknown>));
     } catch (error) {
-      console.error('Error getting file:', error);
-      res.status(500).json({ error: 'Failed to get file' });
+      console.error("Error getting file:", error);
+      res.status(500).json({ error: "Failed to get file" });
     }
   },
 
@@ -62,8 +64,8 @@ export const historyController = {
       const stats = await historyService.getStats(orgId);
       res.json(stats);
     } catch (error) {
-      console.error('Error getting stats:', error);
-      res.status(500).json({ error: 'Failed to get stats' });
+      console.error("Error getting stats:", error);
+      res.status(500).json({ error: "Failed to get stats" });
     }
   },
 
@@ -73,12 +75,12 @@ export const historyController = {
       const fileId = req.params.fileId as string;
       const deleted = await historyService.delete(orgId, fileId);
       if (!deleted) {
-        return res.status(404).json({ error: 'File not found' });
+        return res.status(404).json({ error: "File not found" });
       }
       res.status(204).send();
     } catch (error) {
-      console.error('Error deleting file:', error);
-      res.status(500).json({ error: 'Failed to delete file' });
+      console.error("Error deleting file:", error);
+      res.status(500).json({ error: "Failed to delete file" });
     }
   },
 };

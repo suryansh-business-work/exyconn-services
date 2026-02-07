@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -20,7 +20,7 @@ import {
   Switch,
   Dialog,
   DialogContent,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Add,
   Search,
@@ -30,29 +30,30 @@ import {
   CheckCircle,
   Warning,
   Error as ErrorIcon,
-} from '@mui/icons-material';
-import { PageBreadcrumb } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { siteMonitorApi } from '../../../api/siteStatusApi';
-import { SiteMonitorConfig } from '../../../types/siteStatus';
-import SiteMonitorDialog from './SiteMonitorDialog';
+} from "@mui/icons-material";
+import { PageBreadcrumb } from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import { siteMonitorApi } from "../../../api/siteStatusApi";
+import { SiteMonitorConfig } from "../../../types/siteStatus";
+import SiteMonitorDialog from "./SiteMonitorDialog";
 
 const SiteStatusMonitors = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
   const [monitors, setMonitors] = useState<SiteMonitorConfig[]>([]);
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingMonitor, setEditingMonitor] = useState<SiteMonitorConfig | null>(null);
+  const [editingMonitor, setEditingMonitor] =
+    useState<SiteMonitorConfig | null>(null);
   const [checkingId, setCheckingId] = useState<string | null>(null);
   const [screenshotDialog, setScreenshotDialog] = useState<{
     open: boolean;
     url: string;
     name: string;
-  }>({ open: false, url: '', name: '' });
+  }>({ open: false, url: "", name: "" });
 
   const fetchMonitors = async () => {
     if (!selectedOrg) return;
@@ -61,12 +62,12 @@ const SiteStatusMonitors = () => {
       const result = await siteMonitorApi.list(
         selectedOrg.id,
         { page: page + 1, limit: rowsPerPage, search },
-        selectedApiKey?.apiKey
+        selectedApiKey?.apiKey,
       );
       setMonitors(result.data);
       setTotal(result.pagination.total);
     } catch (err) {
-      console.error('Failed to fetch monitors:', err);
+      console.error("Failed to fetch monitors:", err);
     } finally {
       setLoading(false);
     }
@@ -80,22 +81,34 @@ const SiteStatusMonitors = () => {
     if (!selectedOrg) return;
     setCheckingId(monitorId);
     try {
-      await siteMonitorApi.checkNow(selectedOrg.id, monitorId, selectedApiKey?.apiKey);
+      await siteMonitorApi.checkNow(
+        selectedOrg.id,
+        monitorId,
+        selectedApiKey?.apiKey,
+      );
       fetchMonitors();
     } catch (err) {
-      console.error('Check failed:', err);
+      console.error("Check failed:", err);
     } finally {
       setCheckingId(null);
     }
   };
 
   const handleDelete = async (monitorId: string) => {
-    if (!selectedOrg || !confirm('Are you sure you want to delete this monitor?')) return;
+    if (
+      !selectedOrg ||
+      !confirm("Are you sure you want to delete this monitor?")
+    )
+      return;
     try {
-      await siteMonitorApi.delete(selectedOrg.id, monitorId, selectedApiKey?.apiKey);
+      await siteMonitorApi.delete(
+        selectedOrg.id,
+        monitorId,
+        selectedApiKey?.apiKey,
+      );
       fetchMonitors();
     } catch (err) {
-      console.error('Delete failed:', err);
+      console.error("Delete failed:", err);
     }
   };
 
@@ -106,24 +119,26 @@ const SiteStatusMonitors = () => {
         selectedOrg.id,
         monitor.id,
         { isActive: !monitor.isActive },
-        selectedApiKey?.apiKey
+        selectedApiKey?.apiKey,
       );
       fetchMonitors();
     } catch (err) {
-      console.error('Toggle failed:', err);
+      console.error("Toggle failed:", err);
     }
   };
 
   const getStatusIcon = (status?: string) => {
-    if (status === 'healthy') return <CheckCircle fontSize="small" color="success" />;
-    if (status === 'warning') return <Warning fontSize="small" color="warning" />;
-    if (status === 'error') return <ErrorIcon fontSize="small" color="error" />;
+    if (status === "healthy")
+      return <CheckCircle fontSize="small" color="success" />;
+    if (status === "warning")
+      return <Warning fontSize="small" color="warning" />;
+    if (status === "error") return <ErrorIcon fontSize="small" color="error" />;
     return <Chip label="Pending" size="small" variant="outlined" />;
   };
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -137,26 +152,29 @@ const SiteStatusMonitors = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/dashboard' },
+          { label: "Home", href: "/dashboard" },
           { label: selectedOrg.orgName, href: basePath },
-          { label: 'Site Status', href: `${basePath}/service/site-status/dashboard` },
-          { label: 'Monitors' },
+          {
+            label: "Site Status",
+            href: `${basePath}/service/site-status/dashboard`,
+          },
+          { label: "Monitors" },
         ]}
       />
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           mb: 2,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           gap: 1,
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18 }}>
           Site Monitors
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: "flex", gap: 1 }}>
           <TextField
             size="small"
             placeholder="Search..."
@@ -171,7 +189,12 @@ const SiteStatusMonitors = () => {
             }}
             sx={{ width: 200 }}
           />
-          <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={fetchMonitors}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Refresh />}
+            onClick={fetchMonitors}
+          >
             Refresh
           </Button>
           <Button
@@ -212,7 +235,9 @@ const SiteStatusMonitors = () => {
               ) : monitors.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
-                    <Typography color="text.secondary">No monitors found</Typography>
+                    <Typography color="text.secondary">
+                      No monitors found
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -224,11 +249,16 @@ const SiteStatusMonitors = () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: 12 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontFamily: "monospace", fontSize: 12 }}
+                      >
                         {monitor.url}
                       </Typography>
                     </TableCell>
-                    <TableCell align="center">{getStatusIcon(monitor.lastStatus)}</TableCell>
+                    <TableCell align="center">
+                      {getStatusIcon(monitor.lastStatus)}
+                    </TableCell>
                     <TableCell align="center">
                       {monitor.lastScreenshotUrl ? (
                         <Box
@@ -238,19 +268,19 @@ const SiteStatusMonitors = () => {
                           onClick={() =>
                             setScreenshotDialog({
                               open: true,
-                              url: monitor.lastScreenshotUrl || '',
+                              url: monitor.lastScreenshotUrl || "",
                               name: monitor.name,
                             })
                           }
                           sx={{
                             width: 60,
                             height: 40,
-                            objectFit: 'cover',
+                            objectFit: "cover",
                             borderRadius: 1,
-                            cursor: 'pointer',
-                            border: '1px solid',
-                            borderColor: 'divider',
-                            '&:hover': { opacity: 0.8 },
+                            cursor: "pointer",
+                            border: "1px solid",
+                            borderColor: "divider",
+                            "&:hover": { opacity: 0.8 },
                           }}
                         />
                       ) : (
@@ -270,7 +300,7 @@ const SiteStatusMonitors = () => {
                       <Typography variant="body2" sx={{ fontSize: 11 }}>
                         {monitor.lastCheckedAt
                           ? new Date(monitor.lastCheckedAt).toLocaleString()
-                          : 'Never'}
+                          : "Never"}
                       </Typography>
                     </TableCell>
                     <TableCell align="right">
@@ -338,11 +368,11 @@ const SiteStatusMonitors = () => {
       {/* Screenshot Fullscreen Dialog */}
       <Dialog
         open={screenshotDialog.open}
-        onClose={() => setScreenshotDialog({ open: false, url: '', name: '' })}
+        onClose={() => setScreenshotDialog({ open: false, url: "", name: "" })}
         maxWidth="lg"
         fullWidth
       >
-        <DialogContent sx={{ p: 1, textAlign: 'center' }}>
+        <DialogContent sx={{ p: 1, textAlign: "center" }}>
           <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
             {screenshotDialog.name}
           </Typography>
@@ -351,7 +381,7 @@ const SiteStatusMonitors = () => {
               component="img"
               src={screenshotDialog.url}
               alt={screenshotDialog.name}
-              sx={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: 1 }}
+              sx={{ maxWidth: "100%", maxHeight: "80vh", borderRadius: 1 }}
             />
           )}
         </DialogContent>

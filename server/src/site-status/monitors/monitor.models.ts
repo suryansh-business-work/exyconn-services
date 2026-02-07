@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ISiteCheckOptions {
   httpStatus: boolean;
@@ -17,7 +17,7 @@ export interface ISiteMonitor extends Document {
   isActive: boolean;
   checks: ISiteCheckOptions;
   lastCheckedAt?: Date;
-  lastStatus?: 'healthy' | 'warning' | 'error';
+  lastStatus?: "healthy" | "warning" | "error";
   lastScreenshotUrl?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -33,14 +33,14 @@ const SiteCheckOptionsSchema = new Schema<ISiteCheckOptions>(
     pageInfo: { type: Boolean, default: true },
     responseTime: { type: Boolean, default: true },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const SiteMonitorSchema = new Schema<ISiteMonitor>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
@@ -49,7 +49,7 @@ const SiteMonitorSchema = new Schema<ISiteMonitor>(
     isActive: { type: Boolean, default: true },
     checks: { type: SiteCheckOptionsSchema, required: true },
     lastCheckedAt: { type: Date },
-    lastStatus: { type: String, enum: ['healthy', 'warning', 'error'] },
+    lastStatus: { type: String, enum: ["healthy", "warning", "error"] },
     lastScreenshotUrl: { type: String },
   },
   {
@@ -63,10 +63,13 @@ const SiteMonitorSchema = new Schema<ISiteMonitor>(
         return ret;
       },
     },
-  }
+  },
 );
 
 SiteMonitorSchema.index({ organizationId: 1, url: 1 }, { unique: true });
 SiteMonitorSchema.index({ organizationId: 1, name: 1 });
 
-export const SiteMonitor = mongoose.model<ISiteMonitor>('SiteMonitor', SiteMonitorSchema);
+export const SiteMonitor = mongoose.model<ISiteMonitor>(
+  "SiteMonitor",
+  SiteMonitorSchema,
+);

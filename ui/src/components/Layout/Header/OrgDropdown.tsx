@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Box,
   Menu,
@@ -10,9 +10,14 @@ import {
   ListItemIcon,
   ListItemText,
   CircularProgress,
-} from '@mui/material';
-import { KeyboardArrowDown, Search, Settings, Business } from '@mui/icons-material';
-import { Organization } from '../../../types/organization';
+} from "@mui/material";
+import {
+  KeyboardArrowDown,
+  Search,
+  Settings,
+  Business,
+} from "@mui/icons-material";
+import { Organization } from "../../../types/organization";
 
 interface OrgDropdownProps {
   organizations: Organization[];
@@ -35,22 +40,22 @@ const OrgDropdown = ({
   onSelect,
   onManage,
 }: OrgDropdownProps) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredOrgs = organizations.filter(
     (org) =>
       org.orgName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      org.orgSlug.toLowerCase().includes(searchQuery.toLowerCase())
+      org.orgSlug.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const displayText =
     organizations.length === 0
-      ? 'No Organization - Please create'
-      : selectedOrg?.orgName || 'Select Organization';
+      ? "No Organization - Please create"
+      : selectedOrg?.orgName || "Select Organization";
 
   const handleClose = () => {
     onClose();
-    setSearchQuery('');
+    setSearchQuery("");
   };
 
   return (
@@ -58,20 +63,22 @@ const OrgDropdown = ({
       <Box
         onClick={onOpen}
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer',
+          display: "flex",
+          alignItems: "center",
+          cursor: "pointer",
           px: 1.5,
           py: 0.5,
           borderRadius: 1,
-          '&:hover': { bgcolor: 'action.hover' },
+          "&:hover": { bgcolor: "action.hover" },
         }}
       >
-        <Business sx={{ fontSize: 18, mr: 1, color: 'text.secondary' }} />
+        <Business sx={{ fontSize: 18, mr: 1, color: "text.secondary" }} />
         <Typography variant="body2" sx={{ fontSize: 13, fontWeight: 500 }}>
           {displayText}
         </Typography>
-        <KeyboardArrowDown sx={{ fontSize: 18, ml: 0.5, color: 'text.secondary' }} />
+        <KeyboardArrowDown
+          sx={{ fontSize: 18, ml: 0.5, color: "text.secondary" }}
+        />
       </Box>
       <Menu
         anchorEl={anchorEl}
@@ -98,9 +105,9 @@ const OrgDropdown = ({
           />
         </Box>
         <Divider />
-        <Box sx={{ maxHeight: 250, overflow: 'auto' }}>
+        <Box sx={{ maxHeight: 250, overflow: "auto" }}>
           {isLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
               <CircularProgress size={20} />
             </Box>
           ) : filteredOrgs.length === 0 ? (
@@ -142,7 +149,10 @@ const OrgDropdown = ({
           <ListItemIcon sx={{ minWidth: 32 }}>
             <Settings sx={{ fontSize: 18 }} />
           </ListItemIcon>
-          <ListItemText primary="Manage Organizations" primaryTypographyProps={{ fontSize: 12 }} />
+          <ListItemText
+            primary="Manage Organizations"
+            primaryTypographyProps={{ fontSize: 12 }}
+          />
         </MenuItem>
       </Menu>
     </>

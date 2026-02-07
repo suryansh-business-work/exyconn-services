@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,8 +15,8 @@ import {
   Box,
   Typography,
   Collapse,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import {
   Edit,
   Delete,
@@ -24,8 +24,8 @@ import {
   KeyboardArrowUp,
   ContentCopy,
   Check,
-} from '@mui/icons-material';
-import { Organization } from '../../types/organization';
+} from "@mui/icons-material";
+import { Organization } from "../../types/organization";
 
 interface OrganizationTableProps {
   organizations: Organization[];
@@ -33,7 +33,7 @@ interface OrganizationTableProps {
   page: number;
   limit: number;
   sortBy: string;
-  sortOrder: 'asc' | 'desc';
+  sortOrder: "asc" | "desc";
   isLoading?: boolean;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
@@ -56,9 +56,17 @@ const ApiKeyCopyButton = ({ apiKey }: ApiKeyCopyButtonProps) => {
   };
 
   return (
-    <Tooltip title={copied ? 'Copied!' : 'Copy API Key'}>
-      <IconButton size="small" onClick={handleCopy} color={copied ? 'success' : 'default'}>
-        {copied ? <Check sx={{ fontSize: 14 }} /> : <ContentCopy sx={{ fontSize: 14 }} />}
+    <Tooltip title={copied ? "Copied!" : "Copy API Key"}>
+      <IconButton
+        size="small"
+        onClick={handleCopy}
+        color={copied ? "success" : "default"}
+      >
+        {copied ? (
+          <Check sx={{ fontSize: 14 }} />
+        ) : (
+          <ContentCopy sx={{ fontSize: 14 }} />
+        )}
       </IconButton>
     </Tooltip>
   );
@@ -78,7 +86,10 @@ const OrganizationRow = ({ org, onEdit, onDelete }: OrganizationRowProps) => {
       <TableRow
         hover
         onClick={() => setOpen(!open)}
-        sx={{ cursor: 'pointer', '& > *': { borderBottom: open ? 'none' : undefined } }}
+        sx={{
+          cursor: "pointer",
+          "& > *": { borderBottom: open ? "none" : undefined },
+        }}
       >
         <TableCell sx={{ width: 40, py: 1 }}>
           <IconButton
@@ -101,19 +112,25 @@ const OrganizationRow = ({ org, onEdit, onDelete }: OrganizationRowProps) => {
               {org.orgName}
             </Typography>
             {org.orgDescription && (
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ fontSize: 10 }}
+              >
                 {org.orgDescription.slice(0, 50)}
-                {org.orgDescription.length > 50 ? '...' : ''}
+                {org.orgDescription.length > 50 ? "..." : ""}
               </Typography>
             )}
           </Box>
         </TableCell>
-        <TableCell sx={{ fontSize: 11, fontFamily: 'monospace' }}>{org.orgSlug}</TableCell>
+        <TableCell sx={{ fontSize: 11, fontFamily: "monospace" }}>
+          {org.orgSlug}
+        </TableCell>
         <TableCell>
           <Chip
             label={org.orgType}
             size="small"
-            color={org.orgType === 'Service' ? 'primary' : 'secondary'}
+            color={org.orgType === "Service" ? "primary" : "secondary"}
             sx={{ height: 20, fontSize: 10 }}
           />
         </TableCell>
@@ -125,16 +142,22 @@ const OrganizationRow = ({ org, onEdit, onDelete }: OrganizationRowProps) => {
             sx={{ height: 20, fontSize: 10 }}
           />
         </TableCell>
-        <TableCell sx={{ fontSize: 11 }}>{new Date(org.createdAt).toLocaleDateString()}</TableCell>
+        <TableCell sx={{ fontSize: 11 }}>
+          {new Date(org.createdAt).toLocaleDateString()}
+        </TableCell>
         <TableCell onClick={(e) => e.stopPropagation()}>
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <Box sx={{ display: "flex", gap: 0.5 }}>
             <Tooltip title="Edit">
               <IconButton size="small" onClick={() => onEdit(org)}>
                 <Edit sx={{ fontSize: 16 }} />
               </IconButton>
             </Tooltip>
             <Tooltip title="Delete">
-              <IconButton size="small" color="error" onClick={() => onDelete(org)}>
+              <IconButton
+                size="small"
+                color="error"
+                onClick={() => onDelete(org)}
+              >
                 <Delete sx={{ fontSize: 16 }} />
               </IconButton>
             </Tooltip>
@@ -147,42 +170,74 @@ const OrganizationRow = ({ org, onEdit, onDelete }: OrganizationRowProps) => {
             <Box sx={{ py: 2, px: 2 }}>
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="subtitle2" sx={{ fontSize: 12, fontWeight: 600, mb: 1 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontSize: 12, fontWeight: 600, mb: 1 }}
+                  >
                     Organization Details
                   </Typography>
-                  <Box sx={{ bgcolor: 'background.default', p: 1.5, borderRadius: 1 }}>
-                    <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                      <Typography variant="caption" color="text.secondary" sx={{ width: 80 }}>
+                  <Box
+                    sx={{
+                      bgcolor: "background.default",
+                      p: 1.5,
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ width: 80 }}
+                      >
                         Name:
                       </Typography>
                       <Typography variant="caption" sx={{ fontWeight: 500 }}>
                         {org.orgName}
                       </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                      <Typography variant="caption" color="text.secondary" sx={{ width: 80 }}>
+                    <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ width: 80 }}
+                      >
                         Slug:
                       </Typography>
-                      <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontFamily: "monospace" }}
+                      >
                         {org.orgSlug}
                       </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                      <Typography variant="caption" color="text.secondary" sx={{ width: 80 }}>
+                    <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ width: 80 }}
+                      >
                         Type:
                       </Typography>
                       <Typography variant="caption">{org.orgType}</Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                      <Typography variant="caption" color="text.secondary" sx={{ width: 80 }}>
+                    <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ width: 80 }}
+                      >
                         Created:
                       </Typography>
                       <Typography variant="caption">
                         {new Date(org.createdAt).toLocaleString()}
                       </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <Typography variant="caption" color="text.secondary" sx={{ width: 80 }}>
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ width: 80 }}
+                      >
                         Updated:
                       </Typography>
                       <Typography variant="caption">
@@ -191,25 +246,41 @@ const OrganizationRow = ({ org, onEdit, onDelete }: OrganizationRowProps) => {
                     </Box>
                     {org.orgDescription && (
                       <Box
-                        sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}
+                        sx={{
+                          mt: 1.5,
+                          pt: 1.5,
+                          borderTop: "1px solid",
+                          borderColor: "divider",
+                        }}
                       >
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          sx={{ display: 'block', mb: 0.5 }}
+                          sx={{ display: "block", mb: 0.5 }}
                         >
                           Description:
                         </Typography>
-                        <Typography variant="caption">{org.orgDescription}</Typography>
+                        <Typography variant="caption">
+                          {org.orgDescription}
+                        </Typography>
                       </Box>
                     )}
                   </Box>
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="subtitle2" sx={{ fontSize: 12, fontWeight: 600, mb: 1 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontSize: 12, fontWeight: 600, mb: 1 }}
+                  >
                     API Keys ({org.orgApiKeys?.length || 0})
                   </Typography>
-                  <Box sx={{ bgcolor: 'background.default', p: 1.5, borderRadius: 1 }}>
+                  <Box
+                    sx={{
+                      bgcolor: "background.default",
+                      p: 1.5,
+                      borderRadius: 1,
+                    }}
+                  >
                     {!org.orgApiKeys || org.orgApiKeys.length === 0 ? (
                       <Typography variant="caption" color="text.secondary">
                         No API keys configured
@@ -219,25 +290,28 @@ const OrganizationRow = ({ org, onEdit, onDelete }: OrganizationRowProps) => {
                         <Box
                           key={index}
                           sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
                             py: 0.75,
-                            borderBottom: index < org.orgApiKeys.length - 1 ? '1px solid' : 'none',
-                            borderColor: 'divider',
+                            borderBottom:
+                              index < org.orgApiKeys.length - 1
+                                ? "1px solid"
+                                : "none",
+                            borderColor: "divider",
                           }}
                         >
                           <Box sx={{ flex: 1, minWidth: 0 }}>
                             <Typography
                               variant="caption"
-                              sx={{ fontWeight: 500, display: 'block' }}
+                              sx={{ fontWeight: 500, display: "block" }}
                             >
                               {key.keyName}
                             </Typography>
                             <Typography
                               variant="caption"
                               color="text.secondary"
-                              sx={{ fontFamily: 'monospace', fontSize: 10 }}
+                              sx={{ fontFamily: "monospace", fontSize: 10 }}
                             >
                               {key.apiKey.slice(0, 24)}...
                             </Typography>
@@ -272,17 +346,17 @@ const OrganizationTable = ({
   onDelete,
 }: OrganizationTableProps) => {
   const columns = [
-    { id: 'expand', label: '', sortable: false },
-    { id: 'orgName', label: 'Name', sortable: true },
-    { id: 'orgSlug', label: 'Slug', sortable: true },
-    { id: 'orgType', label: 'Type', sortable: true },
-    { id: 'orgApiKeys', label: 'API Keys', sortable: false },
-    { id: 'createdAt', label: 'Created', sortable: true },
-    { id: 'actions', label: 'Actions', sortable: false },
+    { id: "expand", label: "", sortable: false },
+    { id: "orgName", label: "Name", sortable: true },
+    { id: "orgSlug", label: "Slug", sortable: true },
+    { id: "orgType", label: "Type", sortable: true },
+    { id: "orgApiKeys", label: "API Keys", sortable: false },
+    { id: "createdAt", label: "Created", sortable: true },
+    { id: "actions", label: "Actions", sortable: false },
   ];
 
   return (
-    <Paper variant="outlined" sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper variant="outlined" sx={{ width: "100%", overflow: "hidden" }}>
       <TableContainer>
         <Table size="small" stickyHeader>
           <TableHead>
@@ -294,13 +368,18 @@ const OrganizationTable = ({
                     fontSize: 12,
                     fontWeight: 600,
                     py: 1,
-                    width: col.id === 'expand' ? 40 : col.id === 'actions' ? 100 : undefined,
+                    width:
+                      col.id === "expand"
+                        ? 40
+                        : col.id === "actions"
+                          ? 100
+                          : undefined,
                   }}
                 >
                   {col.sortable ? (
                     <TableSortLabel
                       active={sortBy === col.id}
-                      direction={sortBy === col.id ? sortOrder : 'asc'}
+                      direction={sortBy === col.id ? sortOrder : "asc"}
                       onClick={() => onSortChange(col.id)}
                       sx={{ fontSize: 12 }}
                     >
@@ -316,7 +395,7 @@ const OrganizationTable = ({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
+                <TableCell colSpan={7} sx={{ textAlign: "center", py: 4 }}>
                   <Typography variant="body2" color="text.secondary">
                     Loading...
                   </Typography>
@@ -324,7 +403,7 @@ const OrganizationTable = ({
               </TableRow>
             ) : organizations.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
+                <TableCell colSpan={7} sx={{ textAlign: "center", py: 4 }}>
                   <Typography variant="body2" color="text.secondary">
                     No organizations found
                   </Typography>
@@ -332,7 +411,12 @@ const OrganizationTable = ({
               </TableRow>
             ) : (
               organizations.map((org) => (
-                <OrganizationRow key={org.id} org={org} onEdit={onEdit} onDelete={onDelete} />
+                <OrganizationRow
+                  key={org.id}
+                  org={org}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                />
               ))
             )}
           </TableBody>
@@ -347,9 +431,10 @@ const OrganizationTable = ({
         onPageChange={(_, newPage) => onPageChange(newPage + 1)}
         onRowsPerPageChange={(e) => onLimitChange(parseInt(e.target.value, 10))}
         sx={{
-          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-            fontSize: 12,
-          },
+          "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+            {
+              fontSize: 12,
+            },
         }}
       />
     </Paper>

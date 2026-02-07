@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IHttpStatusResult {
   statusCode: number;
@@ -60,12 +60,12 @@ export interface ISiteCheckResult extends Document {
   screenshot?: IScreenshotResult;
   pageInfo?: IPageInfoResult;
   responseTime?: number;
-  overallStatus: 'healthy' | 'warning' | 'error';
+  overallStatus: "healthy" | "warning" | "error";
 }
 
 const HttpStatusResultSchema = new Schema<IHttpStatusResult>(
   { statusCode: Number, statusText: String, isOk: Boolean },
-  { _id: false }
+  { _id: false },
 );
 
 const SslCertificateResultSchema = new Schema<ISslCertificateResult>(
@@ -78,7 +78,7 @@ const SslCertificateResultSchema = new Schema<ISslCertificateResult>(
     daysUntilExpiry: Number,
     protocol: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const DnsRecordsResultSchema = new Schema<IDnsRecordsResult>(
@@ -89,17 +89,23 @@ const DnsRecordsResultSchema = new Schema<IDnsRecordsResult>(
     txtRecords: [String],
     cnameRecords: [String],
   },
-  { _id: false }
+  { _id: false },
 );
 
 const MxRecordsResultSchema = new Schema<IMxRecordsResult>(
   { records: [{ exchange: String, priority: Number }] },
-  { _id: false }
+  { _id: false },
 );
 
 const ScreenshotResultSchema = new Schema<IScreenshotResult>(
-  { url: String, thumbnailUrl: String, capturedAt: Date, width: Number, height: Number },
-  { _id: false }
+  {
+    url: String,
+    thumbnailUrl: String,
+    capturedAt: Date,
+    width: Number,
+    height: Number,
+  },
+  { _id: false },
 );
 
 const PageInfoResultSchema = new Schema<IPageInfoResult>(
@@ -114,18 +120,23 @@ const PageInfoResultSchema = new Schema<IPageInfoResult>(
     generator: String,
     loadTime: Number,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const SiteCheckResultSchema = new Schema<ISiteCheckResult>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
-    monitorId: { type: Schema.Types.ObjectId, ref: 'SiteMonitor', required: true, index: true },
+    monitorId: {
+      type: Schema.Types.ObjectId,
+      ref: "SiteMonitor",
+      required: true,
+      index: true,
+    },
     url: { type: String, required: true },
     timestamp: { type: Date, default: Date.now, index: true },
     httpStatus: HttpStatusResultSchema,
@@ -135,7 +146,11 @@ const SiteCheckResultSchema = new Schema<ISiteCheckResult>(
     screenshot: ScreenshotResultSchema,
     pageInfo: PageInfoResultSchema,
     responseTime: Number,
-    overallStatus: { type: String, enum: ['healthy', 'warning', 'error'], required: true },
+    overallStatus: {
+      type: String,
+      enum: ["healthy", "warning", "error"],
+      required: true,
+    },
   },
   {
     timestamps: false,
@@ -148,13 +163,13 @@ const SiteCheckResultSchema = new Schema<ISiteCheckResult>(
         return ret;
       },
     },
-  }
+  },
 );
 
 SiteCheckResultSchema.index({ organizationId: 1, timestamp: -1 });
 SiteCheckResultSchema.index({ monitorId: 1, timestamp: -1 });
 
 export const SiteCheckResult = mongoose.model<ISiteCheckResult>(
-  'SiteCheckResult',
-  SiteCheckResultSchema
+  "SiteCheckResult",
+  SiteCheckResultSchema,
 );

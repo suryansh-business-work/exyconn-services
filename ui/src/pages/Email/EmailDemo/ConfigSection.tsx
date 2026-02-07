@@ -1,8 +1,8 @@
-import { Box, TextField, MenuItem, Typography, Chip } from '@mui/material';
-import { Settings, Description } from '@mui/icons-material';
-import { Field, FormikErrors, FormikTouched } from 'formik';
-import { SmtpConfig, EmailTemplate } from '../../../types/email';
-import { SendEmailFormValues } from './types';
+import { Box, TextField, MenuItem, Typography, Chip } from "@mui/material";
+import { Settings, Description } from "@mui/icons-material";
+import { Field, FormikErrors, FormikTouched } from "formik";
+import { SmtpConfig, EmailTemplate } from "../../../types/email";
+import { SendEmailFormValues } from "./types";
 
 interface ConfigSectionProps {
   smtpConfigs: SmtpConfig[];
@@ -16,13 +16,13 @@ interface ConfigSectionProps {
   setFieldValue: (field: string, value: unknown) => void;
   onTemplateChange: (
     templateId: string,
-    setFieldValue: (field: string, value: unknown) => void
+    setFieldValue: (field: string, value: unknown) => void,
   ) => void;
   onVariableChange: (
     variableName: string,
     value: string,
     currentVariables: Record<string, string>,
-    setFieldValue: (field: string, value: unknown) => void
+    setFieldValue: (field: string, value: unknown) => void,
   ) => void;
 }
 
@@ -43,7 +43,7 @@ const ConfigSection = ({
     <>
       {/* SMTP Configuration */}
       <Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
           <Settings fontSize="small" color="primary" />
           <Typography variant="subtitle2">SMTP Configuration</Typography>
         </Box>
@@ -72,7 +72,7 @@ const ConfigSection = ({
 
       {/* Email Template */}
       <Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
           <Description fontSize="small" color="primary" />
           <Typography variant="subtitle2">Email Template</Typography>
         </Box>
@@ -108,24 +108,32 @@ const ConfigSection = ({
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Template Variables
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {selectedTemplate.variables.map((variable) => (
               <TextField
                 key={variable.name}
                 label={variable.name}
-                value={values.variables[variable.name] || ''}
+                value={values.variables[variable.name] || ""}
                 placeholder={variable.defaultValue || `Enter ${variable.name}`}
                 onChange={(e) =>
-                  onVariableChange(variable.name, e.target.value, values.variables, setFieldValue)
+                  onVariableChange(
+                    variable.name,
+                    e.target.value,
+                    values.variables,
+                    setFieldValue,
+                  )
                 }
                 fullWidth
                 size="small"
                 helperText={
-                  variable.defaultValue ? `Default: ${variable.defaultValue}` : variable.description
+                  variable.defaultValue
+                    ? `Default: ${variable.defaultValue}`
+                    : variable.description
                 }
                 InputProps={{
                   endAdornment:
-                    variable.defaultValue && !values.variables[variable.name] ? (
+                    variable.defaultValue &&
+                    !values.variables[variable.name] ? (
                       <Chip
                         label="default"
                         size="small"

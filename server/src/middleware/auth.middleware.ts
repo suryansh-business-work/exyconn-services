@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { organizationsService } from '../organizations/organizations.services';
+import { Request, Response, NextFunction } from "express";
+import { organizationsService } from "../organizations/organizations.services";
 
 export interface AuthenticatedRequest extends Request {
   orgId?: string;
@@ -14,13 +14,15 @@ export interface AuthenticatedRequest extends Request {
 export const validateApiKey = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
-    const apiKey = req.headers['x-api-key'] as string;
+    const apiKey = req.headers["x-api-key"] as string;
 
     if (!apiKey) {
-      res.status(401).json({ error: 'API key is required', code: 'MISSING_API_KEY' });
+      res
+        .status(401)
+        .json({ error: "API key is required", code: "MISSING_API_KEY" });
       return;
     }
 
@@ -28,7 +30,9 @@ export const validateApiKey = async (
     const org = await organizationsService.findByApiKey(apiKey);
 
     if (!org) {
-      res.status(401).json({ error: 'Invalid API key', code: 'INVALID_API_KEY' });
+      res
+        .status(401)
+        .json({ error: "Invalid API key", code: "INVALID_API_KEY" });
       return;
     }
 
@@ -39,7 +43,7 @@ export const validateApiKey = async (
 
     next();
   } catch (error) {
-    res.status(500).json({ error: 'Authentication error', code: 'AUTH_ERROR' });
+    res.status(500).json({ error: "Authentication error", code: "AUTH_ERROR" });
   }
 };
 
@@ -49,10 +53,10 @@ export const validateApiKey = async (
 export const optionalApiKey = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
-    const apiKey = req.headers['x-api-key'] as string;
+    const apiKey = req.headers["x-api-key"] as string;
 
     if (apiKey) {
       const org = await organizationsService.findByApiKey(apiKey);
@@ -75,20 +79,25 @@ export const optionalApiKey = async (
 export const validateOrgSlug = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const orgSlug = req.params.orgSlug as string;
 
     if (!orgSlug) {
-      res.status(400).json({ error: 'Organization slug is required', code: 'MISSING_ORG_SLUG' });
+      res.status(400).json({
+        error: "Organization slug is required",
+        code: "MISSING_ORG_SLUG",
+      });
       return;
     }
 
     const org = await organizationsService.getOrganizationBySlug(orgSlug);
 
     if (!org) {
-      res.status(404).json({ error: 'Organization not found', code: 'ORG_NOT_FOUND' });
+      res
+        .status(404)
+        .json({ error: "Organization not found", code: "ORG_NOT_FOUND" });
       return;
     }
 
@@ -97,6 +106,8 @@ export const validateOrgSlug = async (
 
     next();
   } catch (error) {
-    res.status(500).json({ error: 'Validation error', code: 'VALIDATION_ERROR' });
+    res
+      .status(500)
+      .json({ error: "Validation error", code: "VALIDATION_ERROR" });
   }
 };

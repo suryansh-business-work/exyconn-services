@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Box, Paper, Typography, Skeleton } from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Email, CloudUpload, Check, Error as ErrorIcon, TrendingUp } from '@mui/icons-material';
-import { emailLogApi, EmailAnalytics } from '../../api/emailApi';
-import { uploadHistoryApi } from '../../api/imagekitApi';
-import { UploadStats } from '../../types/imagekit';
+import { useEffect, useState } from "react";
+import { Box, Paper, Typography, Skeleton } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import {
+  Email,
+  CloudUpload,
+  Check,
+  Error as ErrorIcon,
+  TrendingUp,
+} from "@mui/icons-material";
+import { emailLogApi, EmailAnalytics } from "../../api/emailApi";
+import { uploadHistoryApi } from "../../api/imagekitApi";
+import { UploadStats } from "../../types/imagekit";
 
 interface ServiceStatsProps {
   serviceId: string;
@@ -29,16 +35,16 @@ const ServiceStats = ({ serviceId, orgId, apiKey }: ServiceStatsProps) => {
       if (!orgId) return;
       setLoading(true);
       try {
-        if (serviceId === 'all' || serviceId === 'email') {
+        if (serviceId === "all" || serviceId === "email") {
           const data = await emailLogApi.getAnalytics(orgId, apiKey);
           setEmailStats(data);
         }
-        if (serviceId === 'all' || serviceId === 'imagekit') {
+        if (serviceId === "all" || serviceId === "imagekit") {
           const data = await uploadHistoryApi.getStats(orgId);
           setImageKitStats(data);
         }
       } catch (err) {
-        console.error('Failed to fetch stats:', err);
+        console.error("Failed to fetch stats:", err);
       } finally {
         setLoading(false);
       }
@@ -62,80 +68,93 @@ const ServiceStats = ({ serviceId, orgId, apiKey }: ServiceStatsProps) => {
   }
 
   const getStats = (): StatCardData[] => {
-    if (serviceId === 'email') {
+    if (serviceId === "email") {
       return [
         {
-          label: 'Total Emails',
+          label: "Total Emails",
           value: emailStats?.summary.total ?? 0,
           icon: <Email />,
-          color: '#1976d2',
+          color: "#1976d2",
         },
-        { label: 'Sent', value: emailStats?.summary.sent ?? 0, icon: <Check />, color: '#2e7d32' },
         {
-          label: 'Failed',
+          label: "Sent",
+          value: emailStats?.summary.sent ?? 0,
+          icon: <Check />,
+          color: "#2e7d32",
+        },
+        {
+          label: "Failed",
           value: emailStats?.summary.failed ?? 0,
           icon: <ErrorIcon />,
-          color: '#d32f2f',
+          color: "#d32f2f",
         },
         {
-          label: 'Success Rate',
+          label: "Success Rate",
           value: `${emailStats?.summary.successRate ?? 0}%`,
           icon: <TrendingUp />,
-          color: '#9c27b0',
+          color: "#9c27b0",
         },
       ];
     }
 
-    if (serviceId === 'imagekit') {
-      const sizeInMB = ((imageKitStats?.totalSize ?? 0) / (1024 * 1024)).toFixed(2);
+    if (serviceId === "imagekit") {
+      const sizeInMB = (
+        (imageKitStats?.totalSize ?? 0) /
+        (1024 * 1024)
+      ).toFixed(2);
       return [
         {
-          label: 'Total Files',
+          label: "Total Files",
           value: imageKitStats?.totalFiles ?? 0,
           icon: <CloudUpload />,
-          color: '#1976d2',
+          color: "#1976d2",
         },
         {
-          label: 'Images',
+          label: "Images",
           value: imageKitStats?.byFileType?.image ?? 0,
           icon: <CloudUpload />,
-          color: '#2e7d32',
+          color: "#2e7d32",
         },
         {
-          label: 'Documents',
+          label: "Documents",
           value: imageKitStats?.byFileType?.document ?? 0,
           icon: <CloudUpload />,
-          color: '#ff9800',
+          color: "#ff9800",
         },
-        { label: 'Storage Used', value: `${sizeInMB} MB`, icon: <TrendingUp />, color: '#9c27b0' },
+        {
+          label: "Storage Used",
+          value: `${sizeInMB} MB`,
+          icon: <TrendingUp />,
+          color: "#9c27b0",
+        },
       ];
     }
 
     // All services combined
     return [
       {
-        label: 'Total Emails',
+        label: "Total Emails",
         value: emailStats?.summary.total ?? 0,
         icon: <Email />,
-        color: '#1976d2',
+        color: "#1976d2",
       },
       {
-        label: 'Email Success',
+        label: "Email Success",
         value: `${emailStats?.summary.successRate ?? 0}%`,
         icon: <Check />,
-        color: '#2e7d32',
+        color: "#2e7d32",
       },
       {
-        label: 'Total Files',
+        label: "Total Files",
         value: imageKitStats?.totalFiles ?? 0,
         icon: <CloudUpload />,
-        color: '#ff9800',
+        color: "#ff9800",
       },
       {
-        label: 'Storage',
+        label: "Storage",
         value: `${((imageKitStats?.totalSize ?? 0) / (1024 * 1024)).toFixed(1)} MB`,
         icon: <TrendingUp />,
-        color: '#9c27b0',
+        color: "#9c27b0",
       },
     ];
   };
@@ -147,9 +166,19 @@ const ServiceStats = ({ serviceId, orgId, apiKey }: ServiceStatsProps) => {
       {stats.map((stat, index) => (
         <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
           <Paper variant="outlined" sx={{ p: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: 11, mb: 0.5 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontSize: 11, mb: 0.5 }}
+                >
                   {stat.label}
                 </Typography>
                 <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 20 }}>
@@ -162,9 +191,9 @@ const ServiceStats = ({ serviceId, orgId, apiKey }: ServiceStatsProps) => {
                   height: 40,
                   borderRadius: 1,
                   bgcolor: `${stat.color}15`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   color: stat.color,
                 }}
               >

@@ -9,7 +9,7 @@ export interface Organization {
   orgName: string;
   orgDescription?: string;
   orgSlug: string;
-  orgType: 'Service' | 'Product';
+  orgType: "Service" | "Product";
   orgApiKeys: ApiKey[];
   createdAt: string;
   updatedAt: string;
@@ -28,6 +28,6 @@ export interface OrganizationFormValues {
   orgName: string;
   orgDescription: string;
   orgSlug: string;
-  orgType: 'Service' | 'Product';
+  orgType: "Service" | "Product";
   orgApiKeys: { keyName: string }[];
 }

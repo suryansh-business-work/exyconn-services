@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,11 +12,11 @@ import {
   TablePagination,
   Chip,
   CircularProgress,
-} from '@mui/material';
-import { PageBreadcrumb } from '../../components/common';
-import { useOrg } from '../../context/OrgContext';
-import { aiChatApi } from '../../api/aiApi';
-import { AIChat } from '../../types/ai';
+} from "@mui/material";
+import { PageBreadcrumb } from "../../components/common";
+import { useOrg } from "../../context/OrgContext";
+import { aiChatApi } from "../../api/aiApi";
+import { AIChat } from "../../types/ai";
 
 const AIHistoryPage = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
@@ -34,12 +34,12 @@ const AIHistoryPage = () => {
         const result = await aiChatApi.list(
           selectedOrg.id,
           { page: page + 1, limit: rowsPerPage },
-          selectedApiKey?.apiKey
+          selectedApiKey?.apiKey,
         );
         setChats(result.data);
         setTotal(result.pagination.total);
       } catch (err) {
-        console.error('Failed to fetch chats:', err);
+        console.error("Failed to fetch chats:", err);
       } finally {
         setLoading(false);
       }
@@ -49,7 +49,7 @@ const AIHistoryPage = () => {
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -63,10 +63,10 @@ const AIHistoryPage = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/dashboard' },
+          { label: "Home", href: "/dashboard" },
           { label: selectedOrg.orgName, href: basePath },
-          { label: 'AI', href: `${basePath}/service/ai/dashboard` },
-          { label: 'History' },
+          { label: "AI", href: `${basePath}/service/ai/dashboard` },
+          { label: "History" },
         ]}
       />
       <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18, mb: 2 }}>
@@ -97,7 +97,9 @@ const AIHistoryPage = () => {
               ) : chats.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
-                    <Typography color="text.secondary">No chat history</Typography>
+                    <Typography color="text.secondary">
+                      No chat history
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -110,7 +112,7 @@ const AIHistoryPage = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" sx={{ fontSize: 12 }}>
-                        {chat.company?.name || '-'}
+                        {chat.company?.name || "-"}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -124,7 +126,8 @@ const AIHistoryPage = () => {
                     <TableCell align="center">
                       <Chip
                         label={
-                          (chat as AIChat & { messageCount?: number }).messageCount ||
+                          (chat as AIChat & { messageCount?: number })
+                            .messageCount ||
                           chat.messages?.length ||
                           0
                         }

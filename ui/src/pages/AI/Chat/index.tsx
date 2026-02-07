@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { PageBreadcrumb } from '../../../components/common';
-import { useOrg } from '../../../context/OrgContext';
-import { aiChatApi, aiCompanyApi } from '../../../api/aiApi';
-import { AIChat, AICompany, ChatMessage } from '../../../types/ai';
-import ChatList from './ChatList';
-import ChatArea from './ChatArea';
-import NewChatDialog from './NewChatDialog';
-import ChatSettingsDialog from './ChatSettingsDialog';
+import { useState, useEffect } from "react";
+import { Box, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { PageBreadcrumb } from "../../../components/common";
+import { useOrg } from "../../../context/OrgContext";
+import { aiChatApi, aiCompanyApi } from "../../../api/aiApi";
+import { AIChat, AICompany, ChatMessage } from "../../../types/ai";
+import ChatList from "./ChatList";
+import ChatArea from "./ChatArea";
+import NewChatDialog from "./NewChatDialog";
+import ChatSettingsDialog from "./ChatSettingsDialog";
 
 const AIChatPage = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
@@ -17,7 +17,7 @@ const AIChatPage = () => {
   const [selectedChat, setSelectedChat] = useState<AIChat | null>(null);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [newChatDialog, setNewChatDialog] = useState(false);
   const [settingsDialog, setSettingsDialog] = useState(false);
 
@@ -27,12 +27,16 @@ const AIChatPage = () => {
     try {
       const [chatResult, companyResult] = await Promise.all([
         aiChatApi.list(selectedOrg.id, { limit: 50 }, selectedApiKey?.apiKey),
-        aiCompanyApi.list(selectedOrg.id, { limit: 50 }, selectedApiKey?.apiKey),
+        aiCompanyApi.list(
+          selectedOrg.id,
+          { limit: 50 },
+          selectedApiKey?.apiKey,
+        ),
       ]);
       setChats(chatResult.data);
       setCompanies(companyResult.data);
     } catch (err) {
-      console.error('Failed to fetch:', err);
+      console.error("Failed to fetch:", err);
     } finally {
       setLoading(false);
     }
@@ -45,10 +49,14 @@ const AIChatPage = () => {
   const loadChat = async (chatId: string) => {
     if (!selectedOrg) return;
     try {
-      const chat = await aiChatApi.get(selectedOrg.id, chatId, selectedApiKey?.apiKey);
+      const chat = await aiChatApi.get(
+        selectedOrg.id,
+        chatId,
+        selectedApiKey?.apiKey,
+      );
       setSelectedChat(chat);
     } catch (err) {
-      console.error('Failed to load chat:', err);
+      console.error("Failed to load chat:", err);
     }
   };
 
@@ -56,11 +64,11 @@ const AIChatPage = () => {
     if (!selectedOrg || !selectedChat || !message.trim()) return;
 
     const userMessageText = message.trim();
-    setMessage('');
+    setMessage("");
 
     // Immediately add user message to UI
     const userMessage: ChatMessage = {
-      role: 'user',
+      role: "user",
       content: userMessageText,
       timestamp: new Date().toISOString(),
     };
@@ -80,12 +88,12 @@ const AIChatPage = () => {
         selectedOrg.id,
         selectedChat.id,
         userMessageText,
-        selectedApiKey?.apiKey
+        selectedApiKey?.apiKey,
       );
       // Reload to get actual response from server
       await loadChat(selectedChat.id);
     } catch (err) {
-      console.error('Failed to send:', err);
+      console.error("Failed to send:", err);
       // On error, reload chat to sync state
       await loadChat(selectedChat.id);
     } finally {
@@ -94,13 +102,13 @@ const AIChatPage = () => {
   };
 
   const handleDeleteChat = async (chatId: string) => {
-    if (!selectedOrg || !confirm('Delete this chat?')) return;
+    if (!selectedOrg || !confirm("Delete this chat?")) return;
     try {
       await aiChatApi.delete(selectedOrg.id, chatId, selectedApiKey?.apiKey);
       if (selectedChat?.id === chatId) setSelectedChat(null);
       fetchChats();
     } catch (err) {
-      console.error('Delete failed:', err);
+      console.error("Delete failed:", err);
     }
   };
 
@@ -117,23 +125,23 @@ const AIChatPage = () => {
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
   }
 
   return (
-    <Box sx={{ height: 'calc(100vh - 120px)' }}>
+    <Box sx={{ height: "calc(100vh - 120px)" }}>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/welcome' },
+          { label: "Home", href: "/welcome" },
           { label: selectedOrg.orgName },
-          { label: 'AI' },
-          { label: 'Chat' },
+          { label: "AI" },
+          { label: "Chat" },
         ]}
       />
-      <Grid container spacing={2} sx={{ height: 'calc(100% - 40px)' }}>
+      <Grid container spacing={2} sx={{ height: "calc(100% - 40px)" }}>
         <Grid size={{ xs: 12, md: 3 }}>
           <ChatList
             chats={chats}

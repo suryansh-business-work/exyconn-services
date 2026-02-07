@@ -1,11 +1,11 @@
-import https from 'https';
-import http from 'http';
-import dns from 'dns';
-import { promisify } from 'util';
-import { URL } from 'url';
-import mongoose from 'mongoose';
-import { ISiteMonitor } from '../monitors/monitor.models';
-import { SiteCheckResult, ISiteCheckResult } from '../history/history.models';
+import https from "https";
+import http from "http";
+import dns from "dns";
+import { promisify } from "util";
+import { URL } from "url";
+import mongoose from "mongoose";
+import { ISiteMonitor } from "../monitors/monitor.models";
+import { SiteCheckResult, ISiteCheckResult } from "../history/history.models";
 
 const resolveMx = promisify(dns.resolveMx);
 const resolve4 = promisify(dns.resolve4);
@@ -52,12 +52,12 @@ interface CheckResult {
     loadTime: number;
   };
   responseTime?: number;
-  overallStatus: 'healthy' | 'warning' | 'error';
+  overallStatus: "healthy" | "warning" | "error";
 }
 
 export const siteCheckService = {
   runCheck: async (monitor: ISiteMonitor): Promise<ISiteCheckResult> => {
-    const result: CheckResult = { overallStatus: 'healthy' };
+    const result: CheckResult = { overallStatus: "healthy" };
     const url = new URL(monitor.url);
     const hostname = url.hostname;
     const startTime = Date.now();
@@ -66,7 +66,7 @@ export const siteCheckService = {
       // HTTP Status Check
       if (monitor.checks.httpStatus) {
         result.httpStatus = await checkHttpStatus(monitor.url);
-        if (!result.httpStatus.isOk) result.overallStatus = 'error';
+        if (!result.httpStatus.isOk) result.overallStatus = "error";
       }
 
       // Response Time
@@ -75,15 +75,16 @@ export const siteCheckService = {
       }
 
       // SSL Certificate Check
-      if (monitor.checks.sslCertificate && url.protocol === 'https:') {
+      if (monitor.checks.sslCertificate && url.protocol === "https:") {
         result.sslCertificate = await checkSslCertificate(hostname);
-        if (result.sslCertificate && !result.sslCertificate.valid) result.overallStatus = 'error';
+        if (result.sslCertificate && !result.sslCertificate.valid)
+          result.overallStatus = "error";
         else if (
           result.sslCertificate &&
           result.sslCertificate.daysUntilExpiry < 30 &&
-          result.overallStatus !== 'error'
+          result.overallStatus !== "error"
         )
-          result.overallStatus = 'warning';
+          result.overallStatus = "warning";
       }
 
       // DNS Records Check
@@ -104,15 +105,15 @@ export const siteCheckService = {
       // Screenshot (placeholder - would need puppeteer or similar)
       if (monitor.checks.screenshot) {
         result.screenshot = {
-          url: '',
-          thumbnailUrl: '',
+          url: "",
+          thumbnailUrl: "",
           capturedAt: new Date(),
           width: 1280,
           height: 720,
         };
       }
     } catch {
-      result.overallStatus = 'error';
+      result.overallStatus = "error";
     }
 
     // Save result to database
@@ -129,163 +130,178 @@ export const siteCheckService = {
 };
 
 async function checkHttpStatus(
-  url: string
+  url: string,
 ): Promise<{ statusCode: number; statusText: string; isOk: boolean }> {
   return new Promise((resolve) => {
-    const protocol = url.startsWith('https') ? https : http;
+    const protocol = url.startsWith("https") ? https : http;
     const req = protocol.get(url, { timeout: 10000 }, (res) => {
       resolve({
         statusCode: res.statusCode || 0,
-        statusText: res.statusMessage || '',
+        statusText: res.statusMessage || "",
         isOk: (res.statusCode || 0) >= 200 && (res.statusCode || 0) < 400,
       });
     });
-    req.on('error', () => resolve({ statusCode: 0, statusText: 'Connection failed', isOk: false }));
-    req.on('timeout', () => {
+    req.on("error", () =>
+      resolve({ statusCode: 0, statusText: "Connection failed", isOk: false }),
+    );
+    req.on("timeout", () => {
       req.destroy();
-      resolve({ statusCode: 0, statusText: 'Timeout', isOk: false });
+      resolve({ statusCode: 0, statusText: "Timeout", isOk: false });
     });
   });
 }
 
-async function checkSslCertificate(hostname: string): Promise<CheckResult['sslCertificate']> {
+async function checkSslCertificate(
+  hostname: string,
+): Promise<CheckResult["sslCertificate"]> {
   return new Promise((resolve) => {
     const req = https.request(
-      { hostname, port: 443, method: 'HEAD', rejectUnauthorized: false },
+      { hostname, port: 443, method: "HEAD", rejectUnauthorized: false },
       (res) => {
-        const socket = res.socket as import('tls').TLSSocket;
+        const socket = res.socket as import("tls").TLSSocket;
         const cert = socket.getPeerCertificate();
         if (cert && Object.keys(cert).length > 0) {
           const validTo = new Date(cert.valid_to);
           const daysUntilExpiry = Math.floor(
-            (validTo.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+            (validTo.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
           );
           resolve({
             valid: socket.authorized ?? false,
-            issuer: typeof cert.issuer === 'object' ? cert.issuer.O || '' : '',
-            subject: typeof cert.subject === 'object' ? cert.subject.CN || '' : '',
+            issuer: typeof cert.issuer === "object" ? cert.issuer.O || "" : "",
+            subject:
+              typeof cert.subject === "object" ? cert.subject.CN || "" : "",
             validFrom: new Date(cert.valid_from),
             validTo,
             daysUntilExpiry,
-            protocol: socket.getProtocol() || 'unknown',
+            protocol: socket.getProtocol() || "unknown",
           });
         } else {
           resolve({
             valid: false,
-            issuer: '',
-            subject: '',
+            issuer: "",
+            subject: "",
             validFrom: new Date(),
             validTo: new Date(),
             daysUntilExpiry: 0,
-            protocol: '',
+            protocol: "",
           });
         }
-      }
+      },
     );
-    req.on('error', () =>
+    req.on("error", () =>
       resolve({
         valid: false,
-        issuer: '',
-        subject: '',
+        issuer: "",
+        subject: "",
         validFrom: new Date(),
         validTo: new Date(),
         daysUntilExpiry: 0,
-        protocol: '',
-      })
+        protocol: "",
+      }),
     );
     req.end();
   });
 }
 
-async function checkDnsRecords(hostname: string): Promise<CheckResult['dnsRecords']> {
-  const [aRecords, aaaaRecords, nsRecords, txtRecords, cnameRecords] = await Promise.all([
-    resolve4(hostname).catch(() => []),
-    resolve6(hostname).catch(() => []),
-    resolveNs(hostname).catch(() => []),
-    resolveTxt(hostname)
-      .catch(() => [])
-      .then((r) => r.map((t) => t.join(''))),
-    resolveCname(hostname).catch(() => []),
-  ]);
+async function checkDnsRecords(
+  hostname: string,
+): Promise<CheckResult["dnsRecords"]> {
+  const [aRecords, aaaaRecords, nsRecords, txtRecords, cnameRecords] =
+    await Promise.all([
+      resolve4(hostname).catch(() => []),
+      resolve6(hostname).catch(() => []),
+      resolveNs(hostname).catch(() => []),
+      resolveTxt(hostname)
+        .catch(() => [])
+        .then((r) => r.map((t) => t.join(""))),
+      resolveCname(hostname).catch(() => []),
+    ]);
   return { aRecords, aaaaRecords, nsRecords, txtRecords, cnameRecords };
 }
 
-async function checkMxRecords(hostname: string): Promise<CheckResult['mxRecords']> {
+async function checkMxRecords(
+  hostname: string,
+): Promise<CheckResult["mxRecords"]> {
   try {
     const records = await resolveMx(hostname);
-    return { records: records.map((r) => ({ exchange: r.exchange, priority: r.priority })) };
+    return {
+      records: records.map((r) => ({
+        exchange: r.exchange,
+        priority: r.priority,
+      })),
+    };
   } catch {
     return { records: [] };
   }
 }
 
-async function checkPageInfo(url: string): Promise<CheckResult['pageInfo']> {
+async function checkPageInfo(url: string): Promise<CheckResult["pageInfo"]> {
   return new Promise((resolve) => {
     const startTime = Date.now();
-    const protocol = url.startsWith('https') ? https : http;
+    const protocol = url.startsWith("https") ? https : http;
     const req = protocol.get(url, { timeout: 15000 }, (res) => {
-      let data = '';
-      res.on('data', (chunk) => {
+      let data = "";
+      res.on("data", (chunk) => {
         data += chunk;
       });
-      res.on('end', () => {
+      res.on("end", () => {
         const loadTime = Date.now() - startTime;
         const titleMatch = data.match(/<title[^>]*>([^<]+)<\/title>/i);
         const descMatch = data.match(
-          /<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i
+          /<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i,
         );
         const ogImageMatch = data.match(
-          /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i
+          /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i,
         );
         const keywordsMatch = data.match(
-          /<meta[^>]*name=["']keywords["'][^>]*content=["']([^"']+)["']/i
+          /<meta[^>]*name=["']keywords["'][^>]*content=["']([^"']+)["']/i,
         );
         const charsetMatch = data.match(/<meta[^>]*charset=["']([^"']+)["']/i);
         const langMatch = data.match(/<html[^>]*lang=["']([^"']+)["']/i);
         const generatorMatch = data.match(
-          /<meta[^>]*name=["']generator["'][^>]*content=["']([^"']+)["']/i
+          /<meta[^>]*name=["']generator["'][^>]*content=["']([^"']+)["']/i,
         );
         const faviconMatch = data.match(
-          /<link[^>]*rel=["'](?:shortcut )?icon["'][^>]*href=["']([^"']+)["']/i
+          /<link[^>]*rel=["'](?:shortcut )?icon["'][^>]*href=["']([^"']+)["']/i,
         );
 
         resolve({
-          title: titleMatch?.[1] || '',
-          description: descMatch?.[1] || '',
-          favicon: faviconMatch?.[1] || '',
-          ogImage: ogImageMatch?.[1] || '',
-          keywords: keywordsMatch?.[1]?.split(',').map((k) => k.trim()) || [],
-          language: langMatch?.[1] || '',
-          charset: charsetMatch?.[1] || 'UTF-8',
-          generator: generatorMatch?.[1] || '',
+          title: titleMatch?.[1] || "",
+          description: descMatch?.[1] || "",
+          favicon: faviconMatch?.[1] || "",
+          ogImage: ogImageMatch?.[1] || "",
+          keywords: keywordsMatch?.[1]?.split(",").map((k) => k.trim()) || [],
+          language: langMatch?.[1] || "",
+          charset: charsetMatch?.[1] || "UTF-8",
+          generator: generatorMatch?.[1] || "",
           loadTime,
         });
       });
     });
-    req.on('error', () =>
+    req.on("error", () =>
       resolve({
-        title: '',
-        description: '',
-        favicon: '',
-        ogImage: '',
+        title: "",
+        description: "",
+        favicon: "",
+        ogImage: "",
         keywords: [],
-        language: '',
-        charset: '',
-        generator: '',
+        language: "",
+        charset: "",
+        generator: "",
         loadTime: 0,
-      })
+      }),
     );
-    req.on('timeout', () => {
+    req.on("timeout", () => {
       req.destroy();
       resolve({
-        title: '',
-        description: '',
-        favicon: '',
-        ogImage: '',
+        title: "",
+        description: "",
+        favicon: "",
+        ogImage: "",
         keywords: [],
-        language: '',
-        charset: '',
-        generator: '',
+        language: "",
+        charset: "",
+        generator: "",
         loadTime: 0,
       });
     });

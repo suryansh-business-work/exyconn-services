@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import crypto from 'crypto';
+import mongoose, { Schema, Document } from "mongoose";
+import crypto from "crypto";
 
 // API Key sub-document interface
 export interface IApiKey {
@@ -13,7 +13,7 @@ export interface IOrganization extends Document {
   orgName: string;
   orgDescription?: string;
   orgSlug: string;
-  orgType: 'Service' | 'Product';
+  orgType: "Service" | "Product";
   orgApiKeys: IApiKey[];
   createdAt: Date;
   updatedAt: Date;
@@ -26,7 +26,7 @@ const ApiKeySchema = new Schema<IApiKey>(
     apiKey: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // Organization schema
@@ -42,22 +42,30 @@ const OrganizationSchema = new Schema<IOrganization>(
       maxlength: 50,
       match: /^[a-z][a-zA-Z0-9]*$/,
     },
-    orgType: { type: String, required: true, enum: ['Service', 'Product'] },
+    orgType: { type: String, required: true, enum: ["Service", "Product"] },
     orgApiKeys: { type: [ApiKeySchema], default: [] },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Indexes
-OrganizationSchema.index({ orgName: 'text', orgSlug: 'text', orgDescription: 'text' });
+OrganizationSchema.index({
+  orgName: "text",
+  orgSlug: "text",
+  orgDescription: "text",
+});
 OrganizationSchema.index({ orgType: 1 });
 OrganizationSchema.index({ createdAt: -1 });
-OrganizationSchema.index({ 'orgApiKeys.apiKey': 1 });
+OrganizationSchema.index({ "orgApiKeys.apiKey": 1 });
 
-export const OrganizationModel = mongoose.model<IOrganization>('Organization', OrganizationSchema);
+export const OrganizationModel = mongoose.model<IOrganization>(
+  "Organization",
+  OrganizationSchema,
+);
 
 // Generate API key
-export const generateApiKey = (): string => `sk_${crypto.randomBytes(32).toString('hex')}`;
+export const generateApiKey = (): string =>
+  `sk_${crypto.randomBytes(32).toString("hex")}`;
 
 // Helper to convert document to plain object with id
 export const toPlainObject = (doc: IOrganization) => ({

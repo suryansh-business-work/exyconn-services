@@ -8,13 +8,13 @@ import {
   FormControlLabel,
   Switch,
   CircularProgress,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { envVariableApi } from '../../../api/envKeysApi';
-import { useOrg } from '../../../context/OrgContext';
-import { EnvVariable, CreateEnvVariableInput } from '../../../types/envKeys';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { envVariableApi } from "../../../api/envKeysApi";
+import { useOrg } from "../../../context/OrgContext";
+import { EnvVariable, CreateEnvVariableInput } from "../../../types/envKeys";
 
 interface EnvVariableDialogProps {
   open: boolean;
@@ -26,23 +26,29 @@ interface EnvVariableDialogProps {
 
 const validationSchema = Yup.object({
   key: Yup.string()
-    .required('Key is required')
+    .required("Key is required")
     .min(1)
     .max(100)
-    .matches(/^[A-Z_][A-Z0-9_]*$/, 'Must be uppercase with underscores'),
-  value: Yup.string().required('Value is required'),
+    .matches(/^[A-Z_][A-Z0-9_]*$/, "Must be uppercase with underscores"),
+  value: Yup.string().required("Value is required"),
   description: Yup.string().max(500),
 });
 
-const EnvVariableDialog = ({ open, onClose, appId, variable, onSaved }: EnvVariableDialogProps) => {
+const EnvVariableDialog = ({
+  open,
+  onClose,
+  appId,
+  variable,
+  onSaved,
+}: EnvVariableDialogProps) => {
   const { selectedOrg, selectedApiKey } = useOrg();
   const isEdit = !!variable;
 
   const formik = useFormik<CreateEnvVariableInput>({
     initialValues: {
-      key: variable?.key || '',
-      value: '',
-      description: variable?.description || '',
+      key: variable?.key || "",
+      value: "",
+      description: variable?.description || "",
       isSecret: variable?.isSecret ?? false,
     },
     validationSchema,
@@ -56,15 +62,20 @@ const EnvVariableDialog = ({ open, onClose, appId, variable, onSaved }: EnvVaria
             appId,
             variable.id,
             values,
-            selectedApiKey?.apiKey
+            selectedApiKey?.apiKey,
           );
         } else {
-          await envVariableApi.create(selectedOrg.id, appId, values, selectedApiKey?.apiKey);
+          await envVariableApi.create(
+            selectedOrg.id,
+            appId,
+            values,
+            selectedApiKey?.apiKey,
+          );
         }
         onSaved();
         onClose();
       } catch (err) {
-        console.error('Save failed:', err);
+        console.error("Save failed:", err);
       } finally {
         setSubmitting(false);
       }
@@ -74,7 +85,7 @@ const EnvVariableDialog = ({ open, onClose, appId, variable, onSaved }: EnvVaria
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={formik.handleSubmit}>
-        <DialogTitle>{isEdit ? 'Edit Variable' : 'Add Variable'}</DialogTitle>
+        <DialogTitle>{isEdit ? "Edit Variable" : "Add Variable"}</DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 0.5 }}>
             <Grid size={12}>
@@ -87,8 +98,8 @@ const EnvVariableDialog = ({ open, onClose, appId, variable, onSaved }: EnvVaria
                 value={formik.values.key}
                 onChange={(e) =>
                   formik.setFieldValue(
-                    'key',
-                    e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '_')
+                    "key",
+                    e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, "_"),
                   )
                 }
                 onBlur={formik.handleBlur}
@@ -101,9 +112,9 @@ const EnvVariableDialog = ({ open, onClose, appId, variable, onSaved }: EnvVaria
               <TextField
                 fullWidth
                 size="small"
-                label={isEdit ? 'Value (leave blank to keep current)' : 'Value'}
+                label={isEdit ? "Value (leave blank to keep current)" : "Value"}
                 name="value"
-                type={formik.values.isSecret ? 'password' : 'text'}
+                type={formik.values.isSecret ? "password" : "text"}
                 value={formik.values.value}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -129,7 +140,9 @@ const EnvVariableDialog = ({ open, onClose, appId, variable, onSaved }: EnvVaria
                   <Switch
                     size="small"
                     checked={formik.values.isSecret}
-                    onChange={(e) => formik.setFieldValue('isSecret', e.target.checked)}
+                    onChange={(e) =>
+                      formik.setFieldValue("isSecret", e.target.checked)
+                    }
                     disabled={isEdit}
                   />
                 }
@@ -142,8 +155,18 @@ const EnvVariableDialog = ({ open, onClose, appId, variable, onSaved }: EnvVaria
           <Button onClick={onClose} disabled={formik.isSubmitting}>
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
-            {formik.isSubmitting ? <CircularProgress size={20} /> : isEdit ? 'Update' : 'Create'}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? (
+              <CircularProgress size={20} />
+            ) : isEdit ? (
+              "Update"
+            ) : (
+              "Create"
+            )}
           </Button>
         </DialogActions>
       </form>

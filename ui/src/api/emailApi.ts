@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   SmtpConfig,
   SmtpConfigFormValues,
@@ -13,8 +13,8 @@ import {
   EmailLog,
   EmailLogListResponse,
   EmailStats,
-} from '../types/email';
-import { API_BASE } from './config';
+} from "../types/email";
+import { API_BASE } from "./config";
 
 export interface ListParams {
   page?: number;
@@ -25,45 +25,66 @@ export interface ListParams {
 
 // SMTP Configuration API
 export const smtpConfigApi = {
-  list: async (orgId: string, params: ListParams = {}): Promise<SmtpConfigListResponse> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/smtp`, { params });
+  list: async (
+    orgId: string,
+    params: ListParams = {},
+  ): Promise<SmtpConfigListResponse> => {
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/smtp`,
+      { params },
+    );
     return response.data;
   },
 
   getById: async (orgId: string, configId: string): Promise<SmtpConfig> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/smtp/${configId}`);
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/smtp/${configId}`,
+    );
     return response.data;
   },
 
   getDefault: async (orgId: string): Promise<SmtpConfig> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/smtp/default`);
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/smtp/default`,
+    );
     return response.data;
   },
 
-  create: async (orgId: string, data: SmtpConfigFormValues): Promise<SmtpConfig> => {
-    const response = await axios.post(`${API_BASE}/organizations/${orgId}/email/smtp`, data);
+  create: async (
+    orgId: string,
+    data: SmtpConfigFormValues,
+  ): Promise<SmtpConfig> => {
+    const response = await axios.post(
+      `${API_BASE}/organizations/${orgId}/email/smtp`,
+      data,
+    );
     return response.data;
   },
 
   update: async (
     orgId: string,
     configId: string,
-    data: Partial<SmtpConfigFormValues>
+    data: Partial<SmtpConfigFormValues>,
   ): Promise<SmtpConfig> => {
     const response = await axios.put(
       `${API_BASE}/organizations/${orgId}/email/smtp/${configId}`,
-      data
+      data,
     );
     return response.data;
   },
 
   delete: async (orgId: string, configId: string): Promise<void> => {
-    await axios.delete(`${API_BASE}/organizations/${orgId}/email/smtp/${configId}`);
+    await axios.delete(
+      `${API_BASE}/organizations/${orgId}/email/smtp/${configId}`,
+    );
   },
 
-  testConnection: async (orgId: string, configId: string): Promise<TestSmtpResult> => {
+  testConnection: async (
+    orgId: string,
+    configId: string,
+  ): Promise<TestSmtpResult> => {
     const response = await axios.post(
-      `${API_BASE}/organizations/${orgId}/email/test-smtp/${configId}`
+      `${API_BASE}/organizations/${orgId}/email/test-smtp/${configId}`,
     );
     return response.data;
   },
@@ -71,52 +92,69 @@ export const smtpConfigApi = {
 
 // Email Template API
 export const emailTemplateApi = {
-  list: async (orgId: string, params: ListParams = {}): Promise<EmailTemplateListResponse> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/templates`, {
-      params,
-    });
-    return response.data;
-  },
-
-  getById: async (orgId: string, templateId: string): Promise<EmailTemplate> => {
+  list: async (
+    orgId: string,
+    params: ListParams = {},
+  ): Promise<EmailTemplateListResponse> => {
     const response = await axios.get(
-      `${API_BASE}/organizations/${orgId}/email/templates/${templateId}`
+      `${API_BASE}/organizations/${orgId}/email/templates`,
+      {
+        params,
+      },
     );
     return response.data;
   },
 
-  create: async (orgId: string, data: EmailTemplateFormValues): Promise<EmailTemplate> => {
-    const response = await axios.post(`${API_BASE}/organizations/${orgId}/email/templates`, data);
+  getById: async (
+    orgId: string,
+    templateId: string,
+  ): Promise<EmailTemplate> => {
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/templates/${templateId}`,
+    );
+    return response.data;
+  },
+
+  create: async (
+    orgId: string,
+    data: EmailTemplateFormValues,
+  ): Promise<EmailTemplate> => {
+    const response = await axios.post(
+      `${API_BASE}/organizations/${orgId}/email/templates`,
+      data,
+    );
     return response.data;
   },
 
   update: async (
     orgId: string,
     templateId: string,
-    data: Partial<EmailTemplateFormValues>
+    data: Partial<EmailTemplateFormValues>,
   ): Promise<EmailTemplate> => {
     const response = await axios.put(
       `${API_BASE}/organizations/${orgId}/email/templates/${templateId}`,
-      data
+      data,
     );
     return response.data;
   },
 
   delete: async (orgId: string, templateId: string): Promise<void> => {
-    await axios.delete(`${API_BASE}/organizations/${orgId}/email/templates/${templateId}`);
+    await axios.delete(
+      `${API_BASE}/organizations/${orgId}/email/templates/${templateId}`,
+    );
   },
 
   preview: async (
     orgId: string,
     mjmlContent: string,
-    variables?: Record<string, string>
+    variables?: Record<string, string>,
   ): Promise<TemplatePreviewResult> => {
     const response = await axios.post(
       `${API_BASE}/organizations/${orgId}/email/templates/preview`,
       {
         mjmlContent,
         variables,
-      }
+      },
     );
     return response.data;
   },
@@ -124,8 +162,14 @@ export const emailTemplateApi = {
 
 // Email Send API
 export const emailSendApi = {
-  send: async (orgId: string, data: SendEmailInput): Promise<SendEmailResult> => {
-    const response = await axios.post(`${API_BASE}/organizations/${orgId}/email/send`, data);
+  send: async (
+    orgId: string,
+    data: SendEmailInput,
+  ): Promise<SendEmailResult> => {
+    const response = await axios.post(
+      `${API_BASE}/organizations/${orgId}/email/send`,
+      data,
+    );
     return response.data;
   },
 };
@@ -134,7 +178,7 @@ export const emailSendApi = {
 export interface LogListParams {
   page?: number;
   limit?: number;
-  status?: 'sent' | 'failed' | 'pending';
+  status?: "sent" | "failed" | "pending";
   recipient?: string;
   startDate?: string;
   endDate?: string;
@@ -165,27 +209,44 @@ export interface EmailAnalytics {
 }
 
 export const emailLogApi = {
-  list: async (orgId: string, params: LogListParams = {}): Promise<EmailLogListResponse> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/logs`, { params });
+  list: async (
+    orgId: string,
+    params: LogListParams = {},
+  ): Promise<EmailLogListResponse> => {
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/logs`,
+      { params },
+    );
     return response.data;
   },
 
   getById: async (orgId: string, logId: string): Promise<EmailLog> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/logs/${logId}`);
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/logs/${logId}`,
+    );
     return response.data;
   },
 
   getStats: async (orgId: string, apiKeyUsed?: string): Promise<EmailStats> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/logs/stats`, {
-      params: { apiKeyUsed },
-    });
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/logs/stats`,
+      {
+        params: { apiKeyUsed },
+      },
+    );
     return response.data;
   },
 
-  getAnalytics: async (orgId: string, apiKeyUsed?: string): Promise<EmailAnalytics> => {
-    const response = await axios.get(`${API_BASE}/organizations/${orgId}/email/logs/analytics`, {
-      params: { apiKeyUsed },
-    });
+  getAnalytics: async (
+    orgId: string,
+    apiKeyUsed?: string,
+  ): Promise<EmailAnalytics> => {
+    const response = await axios.get(
+      `${API_BASE}/organizations/${orgId}/email/logs/analytics`,
+      {
+        params: { apiKeyUsed },
+      },
+    );
     return response.data;
   },
 };

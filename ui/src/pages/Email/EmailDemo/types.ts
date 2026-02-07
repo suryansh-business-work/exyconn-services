@@ -9,11 +9,11 @@ export interface SendEmailFormValues {
 }
 
 export const initialFormValues: SendEmailFormValues = {
-  smtpConfigId: '',
-  templateId: '',
+  smtpConfigId: "",
+  templateId: "",
   to: [],
   cc: [],
   bcc: [],
-  subject: '',
+  subject: "",
   variables: {},
 };

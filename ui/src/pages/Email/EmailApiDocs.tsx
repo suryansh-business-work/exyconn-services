@@ -1,18 +1,18 @@
-import { Box, Typography } from '@mui/material';
-import { PageBreadcrumb, ApiDocsViewer } from '../../components/common';
-import { useOrg } from '../../context/OrgContext';
-import { EndpointDefinition } from '../../components/common/ApiDocsViewer/types';
+import { Box, Typography } from "@mui/material";
+import { PageBreadcrumb, ApiDocsViewer } from "../../components/common";
+import { useOrg } from "../../context/OrgContext";
+import { EndpointDefinition } from "../../components/common/ApiDocsViewer/types";
 
 const EmailApiDocs = () => {
   const { selectedOrg, selectedApiKey } = useOrg();
 
-  const apiKey = selectedApiKey?.apiKey || 'YOUR_API_KEY';
-  const orgId = selectedOrg?.id || 'YOUR_ORG_ID';
-  const baseUrl = 'http://localhost:4004/api';
+  const apiKey = selectedApiKey?.apiKey || "YOUR_API_KEY";
+  const orgId = selectedOrg?.id || "YOUR_ORG_ID";
+  const baseUrl = "http://localhost:4004/api";
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -20,10 +20,10 @@ const EmailApiDocs = () => {
 
   const endpoints: EndpointDefinition[] = [
     {
-      method: 'POST',
+      method: "POST",
       path: `/organizations/${orgId}/email/send`,
       description:
-        'Send an email using a template and SMTP configuration. Supports multiple recipients via to, cc, and bcc arrays.',
+        "Send an email using a template and SMTP configuration. Supports multiple recipients via to, cc, and bcc arrays.",
       body: `{
   "smtpConfigId": "SMTP_CONFIG_ID",
   "templateId": "TEMPLATE_ID",
@@ -47,9 +47,10 @@ const EmailApiDocs = () => {
 }`,
     },
     {
-      method: 'GET',
+      method: "GET",
       path: `/organizations/${orgId}/email/smtp`,
-      description: 'List all SMTP configurations for the organization with pagination support.',
+      description:
+        "List all SMTP configurations for the organization with pagination support.",
       body: null,
       response: `{
   "data": [
@@ -72,9 +73,10 @@ const EmailApiDocs = () => {
 }`,
     },
     {
-      method: 'GET',
+      method: "GET",
       path: `/organizations/${orgId}/email/templates`,
-      description: 'List all email templates with their variables and metadata.',
+      description:
+        "List all email templates with their variables and metadata.",
       body: null,
       response: `{
   "data": [
@@ -98,9 +100,10 @@ const EmailApiDocs = () => {
 }`,
     },
     {
-      method: 'POST',
+      method: "POST",
       path: `/organizations/${orgId}/email/templates/preview`,
-      description: 'Preview MJML template by compiling it to HTML with variable substitution.',
+      description:
+        "Preview MJML template by compiling it to HTML with variable substitution.",
       body: `{
   "mjmlContent": "<mjml><mj-body>...</mj-body></mjml>",
   "variables": {
@@ -118,11 +121,14 @@ const EmailApiDocs = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'Communications' },
-          { label: 'Email' },
-          { label: 'API Docs' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "Communications" },
+          { label: "Email" },
+          { label: "API Docs" },
         ]}
       />
 
@@ -133,7 +139,7 @@ const EmailApiDocs = () => {
         apiKey={apiKey}
         orgId={orgId}
         endpoints={endpoints}
-        tabLabels={['Send Email', 'SMTP Configs', 'Templates', 'Preview']}
+        tabLabels={["Send Email", "SMTP Configs", "Templates", "Preview"]}
       />
     </Box>
   );

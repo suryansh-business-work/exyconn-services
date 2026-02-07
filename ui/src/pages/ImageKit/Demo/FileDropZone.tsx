@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
-import { Typography, Paper } from '@mui/material';
-import { CloudUpload } from '@mui/icons-material';
+import { useCallback } from "react";
+import { Typography, Paper } from "@mui/material";
+import { CloudUpload } from "@mui/icons-material";
 
 interface FileDropZoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -22,7 +22,7 @@ const FileDropZone = ({
       const files = Array.from(e.dataTransfer.files);
       onFilesSelected(multiple ? files : files.slice(0, 1));
     },
-    [onFilesSelected, multiple, disabled]
+    [onFilesSelected, multiple, disabled],
   );
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -31,8 +31,8 @@ const FileDropZone = ({
 
   const handleClick = () => {
     if (disabled) return;
-    const input = document.createElement('input');
-    input.type = 'file';
+    const input = document.createElement("input");
+    input.type = "file";
     input.multiple = multiple;
     if (accept) input.accept = accept;
     input.onchange = (e) => {
@@ -51,29 +51,39 @@ const FileDropZone = ({
       onClick={handleClick}
       sx={{
         p: 4,
-        textAlign: 'center',
-        border: '2px dashed',
-        borderColor: disabled ? 'action.disabled' : 'primary.main',
-        bgcolor: disabled ? 'action.disabledBackground' : 'action.hover',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        transition: 'all 0.2s',
-        '&:hover': disabled
+        textAlign: "center",
+        border: "2px dashed",
+        borderColor: disabled ? "action.disabled" : "primary.main",
+        bgcolor: disabled ? "action.disabledBackground" : "action.hover",
+        cursor: disabled ? "not-allowed" : "pointer",
+        transition: "all 0.2s",
+        "&:hover": disabled
           ? {}
-          : { borderColor: 'primary.dark', bgcolor: 'primary.light', opacity: 0.1 },
+          : {
+              borderColor: "primary.dark",
+              bgcolor: "primary.light",
+              opacity: 0.1,
+            },
       }}
     >
       <CloudUpload
-        sx={{ fontSize: 48, color: disabled ? 'action.disabled' : 'primary.main', mb: 1 }}
+        sx={{
+          fontSize: 48,
+          color: disabled ? "action.disabled" : "primary.main",
+          mb: 1,
+        }}
       />
       <Typography
         variant="body1"
-        color={disabled ? 'text.disabled' : 'text.primary'}
+        color={disabled ? "text.disabled" : "text.primary"}
         fontWeight={500}
       >
-        {multiple ? 'Drop files here or click to select' : 'Drop a file here or click to select'}
+        {multiple
+          ? "Drop files here or click to select"
+          : "Drop a file here or click to select"}
       </Typography>
       <Typography variant="caption" color="text.secondary">
-        {accept ? `Accepted: ${accept}` : 'All file types accepted'}
+        {accept ? `Accepted: ${accept}` : "All file types accepted"}
       </Typography>
     </Paper>
   );

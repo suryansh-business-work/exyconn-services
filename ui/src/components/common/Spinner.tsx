@@ -1,17 +1,21 @@
-import { CircularProgress, Box, BoxProps } from '@mui/material';
+import { CircularProgress, Box, BoxProps } from "@mui/material";
 
-interface SpinnerProps extends Omit<BoxProps, 'children'> {
+interface SpinnerProps extends Omit<BoxProps, "children"> {
   size?: number;
-  color?: 'primary' | 'secondary' | 'inherit';
+  color?: "primary" | "secondary" | "inherit";
 }
 
-const Spinner = ({ size = 24, color = 'primary', ...boxProps }: SpinnerProps) => {
+const Spinner = ({
+  size = 24,
+  color = "primary",
+  ...boxProps
+}: SpinnerProps) => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         ...boxProps.sx,
       }}
       {...boxProps}

@@ -1,18 +1,27 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // Template variable schema
 export const templateVariableSchema = z.object({
-  name: z.string().min(1, 'Variable name is required').max(50, 'Variable name too long'),
-  description: z.string().max(200, 'Description too long').optional(),
-  defaultValue: z.string().max(500, 'Default value too long').optional(),
+  name: z
+    .string()
+    .min(1, "Variable name is required")
+    .max(50, "Variable name too long"),
+  description: z.string().max(200, "Description too long").optional(),
+  defaultValue: z.string().max(500, "Default value too long").optional(),
 });
 
 // Email Template schema
 export const emailTemplateSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name too long'),
-  description: z.string().max(500, 'Description too long').optional(),
-  subject: z.string().min(1, 'Subject is required').max(255, 'Subject too long'),
-  mjmlContent: z.string().min(1, 'MJML content is required'),
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name too long"),
+  description: z.string().max(500, "Description too long").optional(),
+  subject: z
+    .string()
+    .min(1, "Subject is required")
+    .max(255, "Subject too long"),
+  mjmlContent: z.string().min(1, "MJML content is required"),
   variables: z.array(templateVariableSchema).optional().default([]),
   isActive: z.boolean().optional().default(true),
 });
@@ -25,7 +34,7 @@ export const updateEmailTemplateSchema = emailTemplateSchema.partial();
 
 // Preview template schema (for live preview)
 export const previewTemplateSchema = z.object({
-  mjmlContent: z.string().min(1, 'MJML content is required'),
+  mjmlContent: z.string().min(1, "MJML content is required"),
   variables: z.record(z.string(), z.string()).optional().default({}),
 });
 
@@ -46,7 +55,13 @@ export type EmailTemplate = z.infer<typeof emailTemplateSchema> & {
   createdAt: string;
   updatedAt: string;
 };
-export type CreateEmailTemplateInput = z.infer<typeof createEmailTemplateSchema>;
-export type UpdateEmailTemplateInput = z.infer<typeof updateEmailTemplateSchema>;
+export type CreateEmailTemplateInput = z.infer<
+  typeof createEmailTemplateSchema
+>;
+export type UpdateEmailTemplateInput = z.infer<
+  typeof updateEmailTemplateSchema
+>;
 export type PreviewTemplateInput = z.infer<typeof previewTemplateSchema>;
-export type ListEmailTemplatesQuery = z.infer<typeof listEmailTemplatesQuerySchema>;
+export type ListEmailTemplatesQuery = z.infer<
+  typeof listEmailTemplatesQuerySchema
+>;

@@ -10,13 +10,13 @@ import {
   IconButton,
   Typography,
   Divider,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { Close, Add } from '@mui/icons-material';
-import { useFormik, FieldArray, FormikProvider } from 'formik';
-import { organizationValidationSchema } from '../../validation/organizationSchema';
-import { Organization, OrganizationFormValues } from '../../types/organization';
-import { ActionButton } from '../../components/common';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { Close, Add } from "@mui/icons-material";
+import { useFormik, FieldArray, FormikProvider } from "formik";
+import { organizationValidationSchema } from "../../validation/organizationSchema";
+import { Organization, OrganizationFormValues } from "../../types/organization";
+import { ActionButton } from "../../components/common";
 
 interface OrganizationFormDialogProps {
   open: boolean;
@@ -37,10 +37,10 @@ const OrganizationFormDialog = ({
 
   const formik = useFormik<OrganizationFormValues>({
     initialValues: {
-      orgName: organization?.orgName || '',
-      orgDescription: organization?.orgDescription || '',
-      orgSlug: organization?.orgSlug || '',
-      orgType: organization?.orgType || 'Service',
+      orgName: organization?.orgName || "",
+      orgDescription: organization?.orgDescription || "",
+      orgSlug: organization?.orgSlug || "",
+      orgType: organization?.orgType || "Service",
       orgApiKeys: [],
     },
     validationSchema: organizationValidationSchema,
@@ -59,23 +59,28 @@ const OrganizationFormDialog = ({
   const generateSlug = (name: string): string => {
     return name
       .trim()
-      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/[^a-zA-Z0-9\s]/g, "")
       .split(/\s+/)
       .map((word, index) =>
         index === 0
           ? word.toLowerCase()
-          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
       )
-      .join('');
+      .join("");
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 1.5 }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          py: 1.5,
+        }}
       >
         <Typography variant="h6" sx={{ fontSize: 16, fontWeight: 600 }}>
-          {isEdit ? 'Edit Organization' : 'Create Organization'}
+          {isEdit ? "Edit Organization" : "Create Organization"}
         </Typography>
         <IconButton size="small" onClick={handleClose}>
           <Close fontSize="small" />
@@ -96,14 +101,17 @@ const OrganizationFormDialog = ({
                 onChange={(e) => {
                   formik.handleChange(e);
                   if (!isEdit && !formik.touched.orgSlug) {
-                    formik.setFieldValue('orgSlug', generateSlug(e.target.value));
+                    formik.setFieldValue(
+                      "orgSlug",
+                      generateSlug(e.target.value),
+                    );
                   }
                 }}
                 onBlur={formik.handleBlur}
                 error={formik.touched.orgName && Boolean(formik.errors.orgName)}
                 helperText={
                   (formik.touched.orgName && formik.errors.orgName) ||
-                  'A unique name for your organization (must be unique across all organizations)'
+                  "A unique name for your organization (must be unique across all organizations)"
                 }
               />
             </Grid>
@@ -120,7 +128,7 @@ const OrganizationFormDialog = ({
                 error={formik.touched.orgSlug && Boolean(formik.errors.orgSlug)}
                 helperText={
                   (formik.touched.orgSlug && formik.errors.orgSlug) ||
-                  'URL-friendly identifier in camelCase (auto-generated from name)'
+                  "URL-friendly identifier in camelCase (auto-generated from name)"
                 }
                 disabled={isEdit}
               />
@@ -138,7 +146,7 @@ const OrganizationFormDialog = ({
                 error={formik.touched.orgType && Boolean(formik.errors.orgType)}
                 helperText={
                   (formik.touched.orgType && formik.errors.orgType) ||
-                  'Service: API-based services | Product: End-user applications'
+                  "Service: API-based services | Product: End-user applications"
                 }
               >
                 <MenuItem value="Service">Service</MenuItem>
@@ -157,10 +165,14 @@ const OrganizationFormDialog = ({
                 value={formik.values.orgDescription}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.orgDescription && Boolean(formik.errors.orgDescription)}
+                error={
+                  formik.touched.orgDescription &&
+                  Boolean(formik.errors.orgDescription)
+                }
                 helperText={
-                  (formik.touched.orgDescription && formik.errors.orgDescription) ||
-                  'Optional description (max 500 characters)'
+                  (formik.touched.orgDescription &&
+                    formik.errors.orgDescription) ||
+                  "Optional description (max 500 characters)"
                 }
               />
             </Grid>
@@ -172,14 +184,17 @@ const OrganizationFormDialog = ({
                       <Box>
                         <Box
                           sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
                             mb: 1,
                           }}
                         >
                           <Box>
-                            <Typography variant="body2" sx={{ fontWeight: 500, fontSize: 13 }}>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 500, fontSize: 13 }}
+                            >
                               API Keys (Optional)
                             </Typography>
                             <Typography
@@ -193,13 +208,16 @@ const OrganizationFormDialog = ({
                           <Button
                             size="small"
                             startIcon={<Add />}
-                            onClick={() => push({ keyName: '' })}
+                            onClick={() => push({ keyName: "" })}
                           >
                             Add Key
                           </Button>
                         </Box>
                         {formik.values.orgApiKeys.map((_, index) => (
-                          <Box key={index} sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                          <Box
+                            key={index}
+                            sx={{ display: "flex", gap: 1, mb: 1 }}
+                          >
                             <TextField
                               fullWidth
                               size="small"
@@ -208,7 +226,11 @@ const OrganizationFormDialog = ({
                               value={formik.values.orgApiKeys[index].keyName}
                               onChange={formik.handleChange}
                             />
-                            <IconButton size="small" color="error" onClick={() => remove(index)}>
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => remove(index)}
+                            >
                               <Close fontSize="small" />
                             </IconButton>
                           </Box>
@@ -232,9 +254,9 @@ const OrganizationFormDialog = ({
             size="small"
             disabled={!formik.isValid}
             loading={isLoading}
-            loadingText={isEdit ? 'Updating...' : 'Creating...'}
+            loadingText={isEdit ? "Updating..." : "Creating..."}
           >
-            {isEdit ? 'Update' : 'Create'}
+            {isEdit ? "Update" : "Create"}
           </ActionButton>
         </DialogActions>
       </form>

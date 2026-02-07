@@ -3,26 +3,30 @@ import {
   toPlainObject,
   generateApiKey,
   IOrganization,
-} from './organizations.models';
+} from "./organizations.models";
 import {
   CreateOrganizationInput,
   UpdateOrganizationInput,
   ListOrganizationsQuery,
-} from './organizations.validators';
-import mongoose from 'mongoose';
+} from "./organizations.validators";
+import mongoose from "mongoose";
 
 export const organizationsService = {
   // Create a new organization
   createOrganization: async (input: CreateOrganizationInput) => {
     // Check if organization name already exists
-    const existingName = await OrganizationModel.findOne({ orgName: input.orgName });
+    const existingName = await OrganizationModel.findOne({
+      orgName: input.orgName,
+    });
     if (existingName) {
-      throw new Error('Organization name already exists');
+      throw new Error("Organization name already exists");
     }
 
-    const existing = await OrganizationModel.findOne({ orgSlug: input.orgSlug });
+    const existing = await OrganizationModel.findOne({
+      orgSlug: input.orgSlug,
+    });
     if (existing) {
-      throw new Error('Organization slug already exists');
+      throw new Error("Organization slug already exists");
     }
 
     // Check for duplicate API key names in input
@@ -30,7 +34,7 @@ export const organizationsService = {
       const keyNames = input.orgApiKeys.map((k) => k.keyName.toLowerCase());
       const uniqueKeyNames = new Set(keyNames);
       if (keyNames.length !== uniqueKeyNames.size) {
-        throw new Error('Duplicate API key names are not allowed');
+        throw new Error("Duplicate API key names are not allowed");
       }
     }
 
@@ -68,9 +72,9 @@ export const organizationsService = {
 
     if (query.search) {
       filter.$or = [
-        { orgName: { $regex: query.search, $options: 'i' } },
-        { orgSlug: { $regex: query.search, $options: 'i' } },
-        { orgDescription: { $regex: query.search, $options: 'i' } },
+        { orgName: { $regex: query.search, $options: "i" } },
+        { orgSlug: { $regex: query.search, $options: "i" } },
+        { orgDescription: { $regex: query.search, $options: "i" } },
       ];
     }
 
@@ -78,7 +82,7 @@ export const organizationsService = {
       filter.orgType = query.orgType;
     }
 
-    const sortDirection = query.sortOrder === 'asc' ? 1 : -1;
+    const sortDirection = query.sortOrder === "asc" ? 1 : -1;
     const sort: Record<string, 1 | -1> = { [query.sortBy]: sortDirection };
 
     const total = await OrganizationModel.countDocuments(filter);
@@ -109,14 +113,14 @@ export const organizationsService = {
         _id: { $ne: id },
       });
       if (existing) {
-        throw new Error('Organization slug already exists');
+        throw new Error("Organization slug already exists");
       }
     }
 
     const organization = await OrganizationModel.findByIdAndUpdate(
       id,
       { $set: input },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     return organization ? toPlainObject(organization) : null;
@@ -138,10 +142,10 @@ export const organizationsService = {
     if (!org) return null;
 
     const existingKey = org.orgApiKeys.find(
-      (k) => k.keyName.toLowerCase() === keyName.toLowerCase()
+      (k) => k.keyName.toLowerCase() === keyName.toLowerCase(),
     );
     if (existingKey) {
-      throw new Error('API key name already exists in this organization');
+      throw new Error("API key name already exists in this organization");
     }
 
     const newKey = {
@@ -153,7 +157,7 @@ export const organizationsService = {
     const organization = await OrganizationModel.findByIdAndUpdate(
       orgId,
       { $push: { orgApiKeys: newKey } },
-      { new: true }
+      { new: true },
     );
 
     if (!organization) return null;
@@ -172,7 +176,7 @@ export const organizationsService = {
     const result = await OrganizationModel.findByIdAndUpdate(
       orgId,
       { $pull: { orgApiKeys: { apiKey } } },
-      { new: true }
+      { new: true },
     );
 
     return !!result;
@@ -180,7 +184,9 @@ export const organizationsService = {
 
   // Find organization by API key
   findByApiKey: async (apiKey: string) => {
-    const org = await OrganizationModel.findOne({ 'orgApiKeys.apiKey': apiKey });
+    const org = await OrganizationModel.findOne({
+      "orgApiKeys.apiKey": apiKey,
+    });
     return org ? toPlainObject(org) : null;
   },
 };

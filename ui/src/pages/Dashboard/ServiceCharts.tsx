@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Box, Paper, Typography, Skeleton } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { useEffect, useState } from "react";
+import { Box, Paper, Typography, Skeleton } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,13 +10,21 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-} from 'chart.js';
-import { Bar, Doughnut } from 'react-chartjs-2';
-import { emailLogApi, EmailAnalytics } from '../../api/emailApi';
-import { uploadHistoryApi } from '../../api/imagekitApi';
-import { UploadStats } from '../../types/imagekit';
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
+import { emailLogApi, EmailAnalytics } from "../../api/emailApi";
+import { uploadHistoryApi } from "../../api/imagekitApi";
+import { UploadStats } from "../../types/imagekit";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+);
 
 interface ServiceChartsProps {
   serviceId: string;
@@ -27,15 +35,19 @@ interface ServiceChartsProps {
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  plugins: { legend: { position: 'bottom' as const, labels: { font: { size: 11 } } } },
+  plugins: {
+    legend: { position: "bottom" as const, labels: { font: { size: 11 } } },
+  },
   scales: { x: { grid: { display: false } }, y: { beginAtZero: true } },
 };
 
 const doughnutOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  plugins: { legend: { position: 'bottom' as const, labels: { font: { size: 11 } } } },
-  cutout: '60%',
+  plugins: {
+    legend: { position: "bottom" as const, labels: { font: { size: 11 } } },
+  },
+  cutout: "60%",
 };
 
 const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
@@ -48,14 +60,14 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
       if (!orgId) return;
       setLoading(true);
       try {
-        if (serviceId === 'all' || serviceId === 'email') {
+        if (serviceId === "all" || serviceId === "email") {
           setEmailStats(await emailLogApi.getAnalytics(orgId, apiKey));
         }
-        if (serviceId === 'all' || serviceId === 'imagekit') {
+        if (serviceId === "all" || serviceId === "imagekit") {
           setImageKitStats(await uploadHistoryApi.getStats(orgId));
         }
       } catch (err) {
-        console.error('Failed to fetch charts:', err);
+        console.error("Failed to fetch charts:", err);
       } finally {
         setLoading(false);
       }
@@ -73,7 +85,12 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper variant="outlined" sx={{ p: 2 }}>
-            <Skeleton variant="circular" width={180} height={180} sx={{ mx: 'auto' }} />
+            <Skeleton
+              variant="circular"
+              width={180}
+              height={180}
+              sx={{ mx: "auto" }}
+            />
           </Paper>
         </Grid>
       </Grid>
@@ -95,14 +112,14 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
                   labels: dailyData.map((d) => d.date),
                   datasets: [
                     {
-                      label: 'Sent',
+                      label: "Sent",
                       data: dailyData.map((d) => d.sent),
-                      backgroundColor: '#4caf50',
+                      backgroundColor: "#4caf50",
                     },
                     {
-                      label: 'Failed',
+                      label: "Failed",
                       data: dailyData.map((d) => d.failed),
-                      backgroundColor: '#f44336',
+                      backgroundColor: "#f44336",
                     },
                   ],
                 }}
@@ -119,7 +136,7 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
             <Box sx={{ height: 220 }}>
               <Doughnut
                 data={{
-                  labels: ['Sent', 'Failed', 'Pending'],
+                  labels: ["Sent", "Failed", "Pending"],
                   datasets: [
                     {
                       data: [
@@ -127,7 +144,7 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
                         emailStats?.summary.failed ?? 0,
                         emailStats?.summary.pending ?? 0,
                       ],
-                      backgroundColor: ['#4caf50', '#f44336', '#ff9800'],
+                      backgroundColor: ["#4caf50", "#f44336", "#ff9800"],
                       borderWidth: 0,
                     },
                   ],
@@ -153,11 +170,18 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
             <Box sx={{ height: 250 }}>
               <Doughnut
                 data={{
-                  labels: Object.keys(byType).map((k) => k.charAt(0).toUpperCase() + k.slice(1)),
+                  labels: Object.keys(byType).map(
+                    (k) => k.charAt(0).toUpperCase() + k.slice(1),
+                  ),
                   datasets: [
                     {
                       data: Object.values(byType),
-                      backgroundColor: ['#1976d2', '#4caf50', '#ff9800', '#9c27b0'],
+                      backgroundColor: [
+                        "#1976d2",
+                        "#4caf50",
+                        "#ff9800",
+                        "#9c27b0",
+                      ],
                       borderWidth: 0,
                     },
                   ],
@@ -178,9 +202,9 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
                   labels: (imageKitStats?.byMonth || []).map((m) => m.month),
                   datasets: [
                     {
-                      label: 'Files',
+                      label: "Files",
                       data: (imageKitStats?.byMonth || []).map((m) => m.count),
-                      backgroundColor: '#1976d2',
+                      backgroundColor: "#1976d2",
                     },
                   ],
                 }}
@@ -193,12 +217,12 @@ const ServiceCharts = ({ serviceId, orgId, apiKey }: ServiceChartsProps) => {
     );
   };
 
-  if (serviceId === 'email') return renderEmailCharts();
-  if (serviceId === 'imagekit') return renderImageKitCharts();
+  if (serviceId === "email") return renderEmailCharts();
+  if (serviceId === "imagekit") return renderImageKitCharts();
 
   // All services - show both
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
         Email
       </Typography>

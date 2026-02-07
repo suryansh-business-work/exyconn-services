@@ -10,21 +10,21 @@
 // Detect if running in production
 const isProduction = (): boolean => {
   // Check if running on production domain
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const hostname = window.location.hostname;
     return (
-      hostname === 'services.exyconn.com' ||
-      hostname.endsWith('.exyconn.com') ||
-      hostname === 'exyconn.com'
+      hostname === "services.exyconn.com" ||
+      hostname.endsWith(".exyconn.com") ||
+      hostname === "exyconn.com"
     );
   }
   // Check environment variable
-  return import.meta.env.PROD || import.meta.env.MODE === 'production';
+  return import.meta.env.PROD || import.meta.env.MODE === "production";
 };
 
 // API Base URLs
-const LOCAL_API_BASE = 'http://localhost:4004/api';
-const PRODUCTION_API_BASE = 'https://exyconn-service-server.exyconn.com/api';
+const LOCAL_API_BASE = "http://localhost:4004/api";
+const PRODUCTION_API_BASE = "https://exyconn-service-server.exyconn.com/api";
 
 /**
  * Get the API base URL based on environment
@@ -50,11 +50,11 @@ export const API_BASE = getApiBaseUrl();
  */
 export const getHeaders = (apiKey?: string): Record<string, string> => {
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
   if (apiKey) {
-    headers['x-api-key'] = apiKey;
-    headers['X-API-Key'] = apiKey; // Some endpoints use capital letters
+    headers["x-api-key"] = apiKey;
+    headers["X-API-Key"] = apiKey; // Some endpoints use capital letters
   }
   return headers;
 };
@@ -70,7 +70,7 @@ export const isDevelopment = (): boolean => !isProduction();
 export const getEnvironmentInfo = () => ({
   isProduction: isProduction(),
   apiBase: API_BASE,
-  hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
+  hostname: typeof window !== "undefined" ? window.location.hostname : "server",
   mode: import.meta.env.MODE,
 });
 

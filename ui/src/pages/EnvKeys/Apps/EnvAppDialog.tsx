@@ -7,13 +7,13 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { envAppApi } from '../../../api/envKeysApi';
-import { useOrg } from '../../../context/OrgContext';
-import { EnvApp, CreateEnvAppInput } from '../../../types/envKeys';
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { envAppApi } from "../../../api/envKeysApi";
+import { useOrg } from "../../../context/OrgContext";
+import { EnvApp, CreateEnvAppInput } from "../../../types/envKeys";
 
 interface EnvAppDialogProps {
   open: boolean;
@@ -23,9 +23,11 @@ interface EnvAppDialogProps {
 }
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Name is required').min(2).max(100),
+  name: Yup.string().required("Name is required").min(2).max(100),
   description: Yup.string().max(500),
-  environment: Yup.string().oneOf(['development', 'staging', 'production']).required(),
+  environment: Yup.string()
+    .oneOf(["development", "staging", "production"])
+    .required(),
 });
 
 const EnvAppDialog = ({ open, onClose, app, onSaved }: EnvAppDialogProps) => {
@@ -34,9 +36,9 @@ const EnvAppDialog = ({ open, onClose, app, onSaved }: EnvAppDialogProps) => {
 
   const formik = useFormik<CreateEnvAppInput>({
     initialValues: {
-      name: app?.name || '',
-      description: app?.description || '',
-      environment: app?.environment || 'development',
+      name: app?.name || "",
+      description: app?.description || "",
+      environment: app?.environment || "development",
     },
     validationSchema,
     enableReinitialize: true,
@@ -44,14 +46,23 @@ const EnvAppDialog = ({ open, onClose, app, onSaved }: EnvAppDialogProps) => {
       if (!selectedOrg) return;
       try {
         if (isEdit && app) {
-          await envAppApi.update(selectedOrg.id, app.id, values, selectedApiKey?.apiKey);
+          await envAppApi.update(
+            selectedOrg.id,
+            app.id,
+            values,
+            selectedApiKey?.apiKey,
+          );
         } else {
-          await envAppApi.create(selectedOrg.id, values, selectedApiKey?.apiKey);
+          await envAppApi.create(
+            selectedOrg.id,
+            values,
+            selectedApiKey?.apiKey,
+          );
         }
         onSaved();
         onClose();
       } catch (err) {
-        console.error('Save failed:', err);
+        console.error("Save failed:", err);
       } finally {
         setSubmitting(false);
       }
@@ -61,7 +72,9 @@ const EnvAppDialog = ({ open, onClose, app, onSaved }: EnvAppDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={formik.handleSubmit}>
-        <DialogTitle>{isEdit ? 'Edit Application' : 'Add New Application'}</DialogTitle>
+        <DialogTitle>
+          {isEdit ? "Edit Application" : "Add New Application"}
+        </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 0.5 }}>
             <Grid size={12}>
@@ -110,8 +123,18 @@ const EnvAppDialog = ({ open, onClose, app, onSaved }: EnvAppDialogProps) => {
           <Button onClick={onClose} disabled={formik.isSubmitting}>
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={formik.isSubmitting}>
-            {formik.isSubmitting ? <CircularProgress size={20} /> : isEdit ? 'Update' : 'Create'}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? (
+              <CircularProgress size={20} />
+            ) : isEdit ? (
+              "Update"
+            ) : (
+              "Create"
+            )}
           </Button>
         </DialogActions>
       </form>

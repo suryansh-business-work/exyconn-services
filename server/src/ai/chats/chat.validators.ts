@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createAIChatSchema = z.object({
   body: z.object({
@@ -39,8 +39,8 @@ export const listChatsSchema = z.object({
     orgId: z.string().min(1),
   }),
   query: z.object({
-    page: z.string().default('1').transform(Number),
-    limit: z.string().default('20').transform(Number),
+    page: z.string().default("1").transform(Number),
+    limit: z.string().default("20").transform(Number),
     companyId: z.string().optional(),
   }),
 });

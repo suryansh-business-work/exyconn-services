@@ -1,7 +1,7 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
   tokenCount?: number;
@@ -21,23 +21,32 @@ export interface IAIChat extends Document {
 
 const ChatMessageSchema = new Schema<IChatMessage>(
   {
-    role: { type: String, enum: ['user', 'assistant', 'system'], required: true },
+    role: {
+      type: String,
+      enum: ["user", "assistant", "system"],
+      required: true,
+    },
     content: { type: String, required: true },
     timestamp: { type: Date, default: Date.now },
     tokenCount: { type: Number },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const AIChatSchema = new Schema<IAIChat>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
-    companyId: { type: Schema.Types.ObjectId, ref: 'AICompany', required: true, index: true },
+    companyId: {
+      type: Schema.Types.ObjectId,
+      ref: "AICompany",
+      required: true,
+      index: true,
+    },
     title: { type: String, required: true },
     aiModel: { type: String, required: true },
     messages: { type: [ChatMessageSchema], default: [] },
@@ -57,9 +66,9 @@ const AIChatSchema = new Schema<IAIChat>(
         return ret;
       },
     },
-  }
+  },
 );
 
 AIChatSchema.index({ organizationId: 1, createdAt: -1 });
 
-export const AIChat = mongoose.model<IAIChat>('AIChat', AIChatSchema);
+export const AIChat = mongoose.model<IAIChat>("AIChat", AIChatSchema);

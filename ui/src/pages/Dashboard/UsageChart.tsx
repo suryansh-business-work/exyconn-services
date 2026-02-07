@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Box, Paper, Typography, Skeleton } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { useEffect, useState } from "react";
+import { Box, Paper, Typography, Skeleton } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,12 +10,20 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-} from 'chart.js';
-import { Bar, Doughnut } from 'react-chartjs-2';
-import { emailLogApi, EmailAnalytics } from '../../api/emailApi';
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
+import { emailLogApi, EmailAnalytics } from "../../api/emailApi";
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+);
 
 interface UsageChartProps {
   orgId: string;
@@ -34,7 +42,7 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
         const data = await emailLogApi.getAnalytics(orgId, apiKey);
         setAnalytics(data);
       } catch (err) {
-        console.error('Failed to fetch analytics:', err);
+        console.error("Failed to fetch analytics:", err);
       } finally {
         setLoading(false);
       }
@@ -56,7 +64,12 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper variant="outlined" sx={{ p: 2 }}>
             <Skeleton variant="text" width={120} height={24} sx={{ mb: 2 }} />
-            <Skeleton variant="circular" width={180} height={180} sx={{ mx: 'auto' }} />
+            <Skeleton
+              variant="circular"
+              width={180}
+              height={180}
+              sx={{ mx: "auto" }}
+            />
           </Paper>
         </Grid>
       </Grid>
@@ -70,14 +83,22 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
   const barChartData = {
     labels: dailyData.map((d) => d.date),
     datasets: [
-      { label: 'Sent', data: dailyData.map((d) => d.sent), backgroundColor: '#4caf50' },
-      { label: 'Failed', data: dailyData.map((d) => d.failed), backgroundColor: '#f44336' },
+      {
+        label: "Sent",
+        data: dailyData.map((d) => d.sent),
+        backgroundColor: "#4caf50",
+      },
+      {
+        label: "Failed",
+        data: dailyData.map((d) => d.failed),
+        backgroundColor: "#f44336",
+      },
     ],
   };
 
   // Doughnut chart for status breakdown
   const doughnutData = {
-    labels: ['Sent', 'Failed', 'Pending'],
+    labels: ["Sent", "Failed", "Pending"],
     datasets: [
       {
         data: [
@@ -85,7 +106,7 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
           analytics?.summary.failed ?? 0,
           analytics?.summary.pending ?? 0,
         ],
-        backgroundColor: ['#4caf50', '#f44336', '#ff9800'],
+        backgroundColor: ["#4caf50", "#f44336", "#ff9800"],
         borderWidth: 0,
       },
     ],
@@ -94,20 +115,24 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom' as const, labels: { font: { size: 11 } } } },
+    plugins: {
+      legend: { position: "bottom" as const, labels: { font: { size: 11 } } },
+    },
     scales: { x: { grid: { display: false } }, y: { beginAtZero: true } },
   };
 
   const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom' as const, labels: { font: { size: 11 } } } },
-    cutout: '60%',
+    plugins: {
+      legend: { position: "bottom" as const, labels: { font: { size: 11 } } },
+    },
+    cutout: "60%",
   };
 
   if (!hasData) {
     return (
-      <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+      <Paper variant="outlined" sx={{ p: 3, textAlign: "center" }}>
         <Typography variant="body2" color="text.secondary">
           No data yet. Start sending emails to see analytics.
         </Typography>
@@ -119,7 +144,10 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 8 }}>
         <Paper variant="outlined" sx={{ p: 2 }}>
-          <Typography variant="h6" sx={{ fontSize: 14, fontWeight: 600, mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: 14, fontWeight: 600, mb: 2 }}
+          >
             Email Activity (Last 30 Days)
           </Typography>
           <Box sx={{ height: 250 }}>
@@ -129,7 +157,10 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <Paper variant="outlined" sx={{ p: 2 }}>
-          <Typography variant="h6" sx={{ fontSize: 14, fontWeight: 600, mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ fontSize: 14, fontWeight: 600, mb: 2 }}
+          >
             Status Breakdown
           </Typography>
           <Box sx={{ height: 200 }}>
@@ -140,13 +171,24 @@ const UsageChart = ({ orgId, apiKey }: UsageChartProps) => {
       {analytics?.templateStats && analytics.templateStats.length > 0 && (
         <Grid size={12}>
           <Paper variant="outlined" sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ fontSize: 14, fontWeight: 600, mb: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{ fontSize: 14, fontWeight: 600, mb: 2 }}
+            >
               Top Templates
             </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
               {analytics.templateStats.slice(0, 5).map((t, i) => (
-                <Paper key={i} variant="outlined" sx={{ p: 1.5, minWidth: 150, flex: '1 1 auto' }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500, fontSize: 12 }} noWrap>
+                <Paper
+                  key={i}
+                  variant="outlined"
+                  sx={{ p: 1.5, minWidth: 150, flex: "1 1 auto" }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 500, fontSize: 12 }}
+                    noWrap
+                  >
                     {t.templateName}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">

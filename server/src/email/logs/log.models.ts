@@ -1,7 +1,7 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 // Email Log status
-export type EmailLogStatus = 'sent' | 'failed' | 'pending';
+export type EmailLogStatus = "sent" | "failed" | "pending";
 
 // Email Log interface
 export interface IEmailLog extends Document {
@@ -26,18 +26,18 @@ const EmailLogSchema = new Schema<IEmailLog>(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
+      ref: "Organization",
       required: true,
       index: true,
     },
     smtpConfigId: {
       type: Schema.Types.ObjectId,
-      ref: 'SmtpConfig',
+      ref: "SmtpConfig",
       required: true,
     },
     templateId: {
       type: Schema.Types.ObjectId,
-      ref: 'EmailTemplate',
+      ref: "EmailTemplate",
       required: true,
     },
     apiKeyUsed: {
@@ -59,7 +59,7 @@ const EmailLogSchema = new Schema<IEmailLog>(
     },
     status: {
       type: String,
-      enum: ['sent', 'failed', 'pending'],
+      enum: ["sent", "failed", "pending"],
       required: true,
     },
     messageId: {
@@ -78,7 +78,7 @@ const EmailLogSchema = new Schema<IEmailLog>(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Indexes
@@ -86,4 +86,7 @@ EmailLogSchema.index({ organizationId: 1, sentAt: -1 });
 EmailLogSchema.index({ organizationId: 1, status: 1 });
 EmailLogSchema.index({ recipient: 1 });
 
-export const EmailLogModel = mongoose.model<IEmailLog>('EmailLog', EmailLogSchema);
+export const EmailLogModel = mongoose.model<IEmailLog>(
+  "EmailLog",
+  EmailLogSchema,
+);

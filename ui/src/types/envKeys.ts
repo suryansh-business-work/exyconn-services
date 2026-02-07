@@ -4,7 +4,7 @@ export interface EnvApp {
   organizationId: string;
   name: string;
   description?: string;
-  environment: 'development' | 'staging' | 'production';
+  environment: "development" | "staging" | "production";
   isActive: boolean;
   variableCount?: number;
   createdAt: string;
@@ -28,13 +28,13 @@ export interface EnvVariable {
 export interface CreateEnvAppInput {
   name: string;
   description?: string;
-  environment?: 'development' | 'staging' | 'production';
+  environment?: "development" | "staging" | "production";
 }
 
 export interface UpdateEnvAppInput {
   name?: string;
   description?: string;
-  environment?: 'development' | 'staging' | 'production';
+  environment?: "development" | "staging" | "production";
   isActive?: boolean;
 }
 
@@ -64,7 +64,7 @@ export interface EnvAppListParams {
   page?: number;
   limit?: number;
   search?: string;
-  environment?: 'development' | 'staging' | 'production';
+  environment?: "development" | "staging" | "production";
 }
 
 export interface EnvVariableListParams {

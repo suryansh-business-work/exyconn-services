@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Box, Typography, Paper, CircularProgress, Chip } from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { useNavigate, useParams } from 'react-router-dom';
-import PageBreadcrumb from '../../components/common/PageBreadcrumb';
-import ServiceSelector, { getLiveServices } from './ServiceSelector';
-import ServiceStats from './ServiceStats';
-import ServiceCharts from './ServiceCharts';
-import { useOrg } from '../../context/OrgContext';
-import { getIcon } from '../../utils/iconMap';
+import { useState, useEffect } from "react";
+import { Box, Typography, Paper, CircularProgress, Chip } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { useNavigate, useParams } from "react-router-dom";
+import PageBreadcrumb from "../../components/common/PageBreadcrumb";
+import ServiceSelector, { getLiveServices } from "./ServiceSelector";
+import ServiceStats from "./ServiceStats";
+import ServiceCharts from "./ServiceCharts";
+import { useOrg } from "../../context/OrgContext";
+import { getIcon } from "../../utils/iconMap";
 
 const DashboardPage = () => {
   const { selectedOrg, selectedApiKey, isLoading } = useOrg();
@@ -19,20 +19,21 @@ const DashboardPage = () => {
   const [selectedService, setSelectedService] = useState(() => {
     if (serviceSlug) {
       const service = liveServices.find(
-        (s) => s.id === serviceSlug || s.basePath.includes(serviceSlug)
+        (s) => s.id === serviceSlug || s.basePath.includes(serviceSlug),
       );
-      return service?.id || liveServices[0]?.id || '';
+      return service?.id || liveServices[0]?.id || "";
     }
-    return liveServices[0]?.id || '';
+    return liveServices[0]?.id || "";
   });
 
   // Sync service with URL parameter
   useEffect(() => {
     if (serviceSlug) {
       const service = liveServices.find(
-        (s) => s.id === serviceSlug || s.basePath.includes(serviceSlug)
+        (s) => s.id === serviceSlug || s.basePath.includes(serviceSlug),
       );
       if (service && service.id !== selectedService) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedService(service.id);
       }
     }
@@ -43,11 +44,18 @@ const DashboardPage = () => {
       ? `/organization/${selectedOrg.id}/apikey/${selectedApiKey.apiKey}`
       : selectedOrg
         ? `/organization/${selectedOrg.id}`
-        : '';
+        : "";
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: 300,
+        }}
+      >
         <CircularProgress size={32} />
       </Box>
     );
@@ -68,45 +76,56 @@ const DashboardPage = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/dashboard' },
-          ...(selectedOrg ? [{ label: selectedOrg.orgName, href: basePath }] : []),
-          { label: 'Dashboard' },
+          { label: "Home", href: "/dashboard" },
+          ...(selectedOrg
+            ? [{ label: selectedOrg.orgName, href: basePath }]
+            : []),
+          { label: "Dashboard" },
         ]}
       />
 
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           mb: 2,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           gap: 2,
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 18 }}>
-          {isGlobalDashboard ? 'Services Overview' : 'Dashboard'}
+          {isGlobalDashboard ? "Services Overview" : "Dashboard"}
           {selectedOrg && (
-            <Typography component="span" sx={{ fontSize: 14, ml: 1, color: 'text.secondary' }}>
+            <Typography
+              component="span"
+              sx={{ fontSize: 14, ml: 1, color: "text.secondary" }}
+            >
               - {selectedOrg.orgName}
             </Typography>
           )}
           {selectedApiKey && (
-            <Typography component="span" sx={{ fontSize: 12, ml: 1, color: 'text.secondary' }}>
+            <Typography
+              component="span"
+              sx={{ fontSize: 12, ml: 1, color: "text.secondary" }}
+            >
               ({selectedApiKey.keyName})
             </Typography>
           )}
         </Typography>
         {selectedOrg && !isGlobalDashboard && (
-          <ServiceSelector value={selectedService} onChange={setSelectedService} />
+          <ServiceSelector
+            value={selectedService}
+            onChange={setSelectedService}
+          />
         )}
       </Box>
 
       {!selectedOrg ? (
-        <Paper variant="outlined" sx={{ p: 4, textAlign: 'center' }}>
+        <Paper variant="outlined" sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="body2" color="text.secondary">
-            No organization selected. Please select an organization from the header to view API
-            usage data.
+            No organization selected. Please select an organization from the
+            header to view API usage data.
           </Typography>
         </Paper>
       ) : isGlobalDashboard ? (
@@ -120,30 +139,45 @@ const DashboardPage = () => {
                   variant="outlined"
                   sx={{
                     p: 2,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      bgcolor: "action.hover",
+                    },
                   }}
                   onClick={() => handleServiceClick(service)}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                  <Box
+                    sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}
+                  >
                     <Box
                       sx={{
                         width: 44,
                         height: 44,
                         borderRadius: 1.5,
-                        bgcolor: 'primary.main',
-                        color: 'white',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        bgcolor: "primary.main",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       {IconComponent && <IconComponent />}
                     </Box>
                     <Box sx={{ flex: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: 15 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          mb: 0.5,
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle1"
+                          sx={{ fontWeight: 600, fontSize: 15 }}
+                        >
                           {service.name}
                         </Typography>
                         <Chip
@@ -160,7 +194,14 @@ const DashboardPage = () => {
                       >
                         {service.description}
                       </Typography>
-                      <Box sx={{ display: 'flex', gap: 0.5, mt: 1, flexWrap: 'wrap' }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 0.5,
+                          mt: 1,
+                          flexWrap: "wrap",
+                        }}
+                      >
                         {service.subItems.slice(0, 3).map((item) => (
                           <Chip
                             key={item.pathSuffix}

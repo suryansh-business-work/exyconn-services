@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -16,13 +16,21 @@ import {
   Tooltip,
   TextField,
   InputAdornment,
-} from '@mui/material';
-import { Settings, Add, Edit, Delete, CheckCircle, Cancel, Search } from '@mui/icons-material';
-import { PageBreadcrumb, Spinner, ActionButton } from '../../components/common';
-import { useOrg } from '../../context/OrgContext';
-import { imageKitConfigApi } from '../../api/imagekitApi';
-import { ImageKitConfig } from '../../types/imagekit';
-import ImageKitConfigDialog from './ImageKitConfigDialog';
+} from "@mui/material";
+import {
+  Settings,
+  Add,
+  Edit,
+  Delete,
+  CheckCircle,
+  Cancel,
+  Search,
+} from "@mui/icons-material";
+import { PageBreadcrumb, Spinner, ActionButton } from "../../components/common";
+import { useOrg } from "../../context/OrgContext";
+import { imageKitConfigApi } from "../../api/imagekitApi";
+import { ImageKitConfig } from "../../types/imagekit";
+import ImageKitConfigDialog from "./ImageKitConfigDialog";
 
 const ImageKitSettings = () => {
   const { selectedOrg } = useOrg();
@@ -32,7 +40,7 @@ const ImageKitSettings = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editConfig, setEditConfig] = useState<ImageKitConfig | null>(null);
 
@@ -48,7 +56,7 @@ const ImageKitSettings = () => {
       setConfigs(response.data);
       setTotal(response.pagination.total);
     } catch {
-      setError('Failed to load configurations');
+      setError("Failed to load configurations");
     } finally {
       setLoading(false);
     }
@@ -69,12 +77,12 @@ const ImageKitSettings = () => {
   };
 
   const handleDelete = async (configId: string) => {
-    if (!selectedOrg || !confirm('Delete this configuration?')) return;
+    if (!selectedOrg || !confirm("Delete this configuration?")) return;
     try {
       await imageKitConfigApi.delete(selectedOrg.id, configId);
       fetchConfigs();
     } catch {
-      setError('Failed to delete configuration');
+      setError("Failed to delete configuration");
     }
   };
 
@@ -90,7 +98,7 @@ const ImageKitSettings = () => {
 
   if (!selectedOrg) {
     return (
-      <Box sx={{ p: 3, textAlign: 'center' }}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
         <Typography color="text.secondary">No organization selected</Typography>
       </Box>
     );
@@ -100,16 +108,26 @@ const ImageKitSettings = () => {
     <Box>
       <PageBreadcrumb
         items={[
-          { label: 'Home', href: '/' },
-          { label: selectedOrg.orgName, href: `/organization/${selectedOrg.id}` },
-          { label: 'Storage' },
-          { label: 'ImageKit' },
-          { label: 'Settings' },
+          { label: "Home", href: "/" },
+          {
+            label: selectedOrg.orgName,
+            href: `/organization/${selectedOrg.id}`,
+          },
+          { label: "Storage" },
+          { label: "ImageKit" },
+          { label: "Settings" },
         ]}
       />
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Settings sx={{ fontSize: 32, color: 'primary.main' }} />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 3,
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Settings sx={{ fontSize: 32, color: "primary.main" }} />
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 600 }}>
               ImageKit Settings
@@ -119,7 +137,11 @@ const ImageKitSettings = () => {
             </Typography>
           </Box>
         </Box>
-        <ActionButton variant="contained" startIcon={<Add />} onClick={handleCreate}>
+        <ActionButton
+          variant="contained"
+          startIcon={<Add />}
+          onClick={handleCreate}
+        >
           Add Configuration
         </ActionButton>
       </Box>
@@ -149,7 +171,7 @@ const ImageKitSettings = () => {
           />
         </Box>
         {loading ? (
-          <Box sx={{ p: 4, textAlign: 'center' }}>
+          <Box sx={{ p: 4, textAlign: "center" }}>
             <Spinner />
           </Box>
         ) : (
@@ -170,7 +192,9 @@ const ImageKitSettings = () => {
                   {configs.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                        <Typography color="text.secondary">No configurations found</Typography>
+                        <Typography color="text.secondary">
+                          No configurations found
+                        </Typography>
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -182,20 +206,30 @@ const ImageKitSettings = () => {
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+                          <Typography
+                            variant="caption"
+                            sx={{ fontFamily: "monospace" }}
+                          >
                             {config.urlEndpoint}
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+                          <Typography
+                            variant="caption"
+                            sx={{ fontFamily: "monospace" }}
+                          >
                             {config.publicKey.substring(0, 20)}...
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           {config.isDefault ? (
-                            <Chip label="Default" size="small" color="primary" />
+                            <Chip
+                              label="Default"
+                              size="small"
+                              color="primary"
+                            />
                           ) : (
-                            '-'
+                            "-"
                           )}
                         </TableCell>
                         <TableCell align="center">
@@ -207,7 +241,10 @@ const ImageKitSettings = () => {
                         </TableCell>
                         <TableCell align="right">
                           <Tooltip title="Edit">
-                            <IconButton size="small" onClick={() => handleEdit(config)}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEdit(config)}
+                            >
                               <Edit fontSize="small" />
                             </IconButton>
                           </Tooltip>

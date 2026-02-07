@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Box, Typography, Paper, Tabs, Tab, Chip, Alert } from '@mui/material';
-import { Api, Key } from '@mui/icons-material';
-import LanguageSelector from './LanguageSelector';
-import EndpointCard from './EndpointCard';
-import CodeViewer from './CodeViewer';
-import { generateCodeExample } from './codeGenerators';
-import { ApiDocsViewerProps, CodeLanguage } from './types';
+import { useState } from "react";
+import { Box, Typography, Paper, Tabs, Tab, Chip, Alert } from "@mui/material";
+import { Api, Key } from "@mui/icons-material";
+import LanguageSelector from "./LanguageSelector";
+import EndpointCard from "./EndpointCard";
+import CodeViewer from "./CodeViewer";
+import { generateCodeExample } from "./codeGenerators";
+import { ApiDocsViewerProps, CodeLanguage } from "./types";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -29,7 +29,7 @@ const ApiDocsViewer = ({
   tabLabels,
 }: ApiDocsViewerProps) => {
   const [tabValue, setTabValue] = useState(0);
-  const [codeLanguage, setCodeLanguage] = useState<CodeLanguage>('curl');
+  const [codeLanguage, setCodeLanguage] = useState<CodeLanguage>("curl");
 
   const handleGenerateCode = (endpoint: (typeof endpoints)[0]) => {
     return generateCodeExample(endpoint, codeLanguage, baseUrl, apiKey);
@@ -38,8 +38,15 @@ const ApiDocsViewer = ({
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'primary.main', color: 'white' }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+        <Box
+          sx={{
+            p: 1.5,
+            borderRadius: 2,
+            bgcolor: "primary.main",
+            color: "white",
+          }}
+        >
           <Api sx={{ fontSize: 28 }} />
         </Box>
         <Box>
@@ -54,22 +61,33 @@ const ApiDocsViewer = ({
 
       {/* API Key Info */}
       <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
           <Key fontSize="small" color="primary" />
           <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
             API Authentication
           </Typography>
         </Box>
-        {apiKey && apiKey !== 'YOUR_API_KEY' ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        {apiKey && apiKey !== "YOUR_API_KEY" ? (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              flexWrap: "wrap",
+            }}
+          >
             <Chip label="Active" color="success" size="small" />
-            <Typography variant="body2" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+            <Typography
+              variant="body2"
+              sx={{ fontFamily: "monospace", color: "text.secondary" }}
+            >
               {apiKey.substring(0, 20)}...
             </Typography>
           </Box>
         ) : (
           <Alert severity="warning" sx={{ mt: 1 }}>
-            No API key selected. Please select an API key from the header dropdown.
+            No API key selected. Please select an API key from the header
+            dropdown.
           </Alert>
         )}
       </Paper>
@@ -80,10 +98,16 @@ const ApiDocsViewer = ({
           Authentication Header
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Include your API key in the{' '}
-          <code style={{ background: '#f5f5f5', padding: '2px 6px', borderRadius: 4 }}>
+          Include your API key in the{" "}
+          <code
+            style={{
+              background: "#f5f5f5",
+              padding: "2px 6px",
+              borderRadius: 4,
+            }}
+          >
             X-API-Key
-          </code>{' '}
+          </code>{" "}
           header:
         </Typography>
         <CodeViewer
@@ -110,10 +134,14 @@ const ApiDocsViewer = ({
           onChange={(_, v) => setTabValue(v)}
           variant="scrollable"
           scrollButtons="auto"
-          sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
+          sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}
         >
           {tabLabels.map((label, index) => (
-            <Tab key={index} label={label} sx={{ textTransform: 'none', fontWeight: 500 }} />
+            <Tab
+              key={index}
+              label={label}
+              sx={{ textTransform: "none", fontWeight: 500 }}
+            />
           ))}
         </Tabs>
 
@@ -134,5 +162,5 @@ const ApiDocsViewer = ({
 
 export default ApiDocsViewer;
 export { CodeViewer, EndpointCard, LanguageSelector };
-export * from './types';
-export { generateCodeExample } from './codeGenerators';
+export * from "./types";
+export { generateCodeExample } from "./codeGenerators";

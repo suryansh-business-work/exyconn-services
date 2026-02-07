@@ -1,9 +1,15 @@
-import { useState } from 'react';
-import { Box, TextField, Typography, Collapse, IconButton } from '@mui/material';
-import { ExpandMore, ExpandLess } from '@mui/icons-material';
-import { Field, FormikErrors, FormikTouched } from 'formik';
-import { ChipInput } from '../../../components/common';
-import { SendEmailFormValues } from './types';
+import { useState } from "react";
+import {
+  Box,
+  TextField,
+  Typography,
+  Collapse,
+  IconButton,
+} from "@mui/material";
+import { ExpandMore, ExpandLess } from "@mui/icons-material";
+import { Field, FormikErrors, FormikTouched } from "formik";
+import { ChipInput } from "../../../components/common";
+import { SendEmailFormValues } from "./types";
 
 interface RecipientSectionProps {
   values: SendEmailFormValues;
@@ -14,7 +20,12 @@ interface RecipientSectionProps {
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const RecipientSection = ({ values, touched, errors, setFieldValue }: RecipientSectionProps) => {
+const RecipientSection = ({
+  values,
+  touched,
+  errors,
+  setFieldValue,
+}: RecipientSectionProps) => {
   const [showCcBcc, setShowCcBcc] = useState(false);
 
   const validateEmail = (email: string) => emailRegex.test(email);
@@ -24,7 +35,7 @@ const RecipientSection = ({ values, touched, errors, setFieldValue }: RecipientS
       {/* To Recipients */}
       <ChipInput
         value={values.to}
-        onChange={(emails) => setFieldValue('to', emails)}
+        onChange={(emails) => setFieldValue("to", emails)}
         validateItem={validateEmail}
         label="Recipients (To) *"
         placeholder="Type email and press Enter"
@@ -49,25 +60,29 @@ const RecipientSection = ({ values, touched, errors, setFieldValue }: RecipientS
         <Box
           onClick={() => setShowCcBcc(!showCcBcc)}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            color: 'primary.main',
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            color: "primary.main",
             mb: 1,
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: 500 }}>
-            {showCcBcc ? 'Hide' : 'Show'} CC & BCC
+            {showCcBcc ? "Hide" : "Show"} CC & BCC
           </Typography>
           <IconButton size="small">
-            {showCcBcc ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
+            {showCcBcc ? (
+              <ExpandLess fontSize="small" />
+            ) : (
+              <ExpandMore fontSize="small" />
+            )}
           </IconButton>
         </Box>
         <Collapse in={showCcBcc}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <ChipInput
               value={values.cc}
-              onChange={(emails) => setFieldValue('cc', emails)}
+              onChange={(emails) => setFieldValue("cc", emails)}
               validateItem={validateEmail}
               label="CC"
               placeholder="Add CC recipients"
@@ -78,7 +93,7 @@ const RecipientSection = ({ values, touched, errors, setFieldValue }: RecipientS
             />
             <ChipInput
               value={values.bcc}
-              onChange={(emails) => setFieldValue('bcc', emails)}
+              onChange={(emails) => setFieldValue("bcc", emails)}
               validateItem={validateEmail}
               label="BCC"
               placeholder="Add BCC recipients"

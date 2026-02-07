@@ -1,5 +1,5 @@
 // AI Provider types
-export type AIProvider = 'openai' | 'gemini' | 'anthropic' | 'custom';
+export type AIProvider = "openai" | "gemini" | "anthropic" | "custom";
 
 // AI Company
 export interface AICompany {
@@ -19,7 +19,7 @@ export interface AICompany {
 
 // Chat Message
 export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: string;
   tokenCount?: number;

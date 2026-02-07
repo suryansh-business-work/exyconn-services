@@ -1,6 +1,13 @@
-import { Box, Menu, MenuItem, Typography, ListItemIcon, ListItemText } from '@mui/material';
-import { Key, KeyboardArrowDown } from '@mui/icons-material';
-import { ApiKey } from '../../../types/organization';
+import {
+  Box,
+  Menu,
+  MenuItem,
+  Typography,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import { Key, KeyboardArrowDown } from "@mui/icons-material";
+import { ApiKey } from "../../../types/organization";
 
 interface ApiKeyDropdownProps {
   apiKeys: ApiKey[];
@@ -19,29 +26,35 @@ const ApiKeyDropdown = ({
   onClose,
   onSelect,
 }: ApiKeyDropdownProps) => {
-  const displayText = selectedApiKey?.keyName || 'Select API Key';
+  const displayText = selectedApiKey?.keyName || "Select API Key";
 
   return (
     <>
       <Box
         onClick={onOpen}
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer',
+          display: "flex",
+          alignItems: "center",
+          cursor: "pointer",
           px: 1.5,
           py: 0.5,
           borderRadius: 1,
           mr: 1,
-          bgcolor: 'action.hover',
-          '&:hover': { bgcolor: 'action.selected' },
+          bgcolor: "action.hover",
+          "&:hover": { bgcolor: "action.selected" },
         }}
       >
-        <Key sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-        <Typography variant="body2" sx={{ fontSize: 12, fontWeight: 500, maxWidth: 120 }} noWrap>
+        <Key sx={{ fontSize: 16, mr: 0.5, color: "text.secondary" }} />
+        <Typography
+          variant="body2"
+          sx={{ fontSize: 12, fontWeight: 500, maxWidth: 120 }}
+          noWrap
+        >
           {displayText}
         </Typography>
-        <KeyboardArrowDown sx={{ fontSize: 16, ml: 0.5, color: 'text.secondary' }} />
+        <KeyboardArrowDown
+          sx={{ fontSize: 16, ml: 0.5, color: "text.secondary" }}
+        />
       </Box>
       <Menu
         anchorEl={anchorEl}
@@ -63,7 +76,10 @@ const ApiKeyDropdown = ({
               primary={key.keyName}
               secondary={`${key.apiKey.substring(0, 16)}...`}
               primaryTypographyProps={{ fontSize: 12 }}
-              secondaryTypographyProps={{ fontSize: 10, fontFamily: 'monospace' }}
+              secondaryTypographyProps={{
+                fontSize: 10,
+                fontFamily: "monospace",
+              }}
             />
           </MenuItem>
         ))}

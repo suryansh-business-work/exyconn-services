@@ -1,6 +1,10 @@
-import mongoose from 'mongoose';
-import { ImageKitConfigModel, IImageKitConfig } from './config.models';
-import { CreateConfigInput, UpdateConfigInput, ListConfigQuery } from './config.validators';
+import mongoose from "mongoose";
+import { ImageKitConfigModel, IImageKitConfig } from "./config.models";
+import {
+  CreateConfigInput,
+  UpdateConfigInput,
+  ListConfigQuery,
+} from "./config.validators";
 
 export interface PaginatedResult<T> {
   data: T[];
@@ -13,12 +17,17 @@ export interface PaginatedResult<T> {
 }
 
 export const configService = {
-  async list(orgId: string, query: ListConfigQuery): Promise<PaginatedResult<IImageKitConfig>> {
+  async list(
+    orgId: string,
+    query: ListConfigQuery,
+  ): Promise<PaginatedResult<IImageKitConfig>> {
     const { page = 1, limit = 10, search, isActive } = query;
-    const filter: Record<string, unknown> = { organizationId: new mongoose.Types.ObjectId(orgId) };
+    const filter: Record<string, unknown> = {
+      organizationId: new mongoose.Types.ObjectId(orgId),
+    };
 
     if (search) {
-      filter.name = { $regex: search, $options: 'i' };
+      filter.name = { $regex: search, $options: "i" };
     }
     if (isActive !== undefined) {
       filter.isActive = isActive;
@@ -39,7 +48,10 @@ export const configService = {
     };
   },
 
-  async getById(orgId: string, configId: string): Promise<IImageKitConfig | null> {
+  async getById(
+    orgId: string,
+    configId: string,
+  ): Promise<IImageKitConfig | null> {
     return ImageKitConfigModel.findOne({
       _id: new mongoose.Types.ObjectId(configId),
       organizationId: new mongoose.Types.ObjectId(orgId),
@@ -54,11 +66,14 @@ export const configService = {
     }).lean() as Promise<IImageKitConfig | null>;
   },
 
-  async create(orgId: string, data: CreateConfigInput): Promise<IImageKitConfig> {
+  async create(
+    orgId: string,
+    data: CreateConfigInput,
+  ): Promise<IImageKitConfig> {
     if (data.isDefault) {
       await ImageKitConfigModel.updateMany(
         { organizationId: new mongoose.Types.ObjectId(orgId) },
-        { isDefault: false }
+        { isDefault: false },
       );
     }
 
@@ -72,7 +87,7 @@ export const configService = {
   async update(
     orgId: string,
     configId: string,
-    data: UpdateConfigInput
+    data: UpdateConfigInput,
   ): Promise<IImageKitConfig | null> {
     if (data.isDefault) {
       await ImageKitConfigModel.updateMany(
@@ -80,7 +95,7 @@ export const configService = {
           organizationId: new mongoose.Types.ObjectId(orgId),
           _id: { $ne: new mongoose.Types.ObjectId(configId) },
         },
-        { isDefault: false }
+        { isDefault: false },
       );
     }
 
@@ -90,7 +105,7 @@ export const configService = {
         organizationId: new mongoose.Types.ObjectId(orgId),
       },
       { $set: data },
-      { new: true }
+      { new: true },
     ).lean() as Promise<IImageKitConfig | null>;
   },
 

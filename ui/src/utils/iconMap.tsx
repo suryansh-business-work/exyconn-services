@@ -41,9 +41,9 @@ import {
   Menu,
   ChevronLeft,
   Apps,
-} from '@mui/icons-material';
-import { SvgIconProps } from '@mui/material';
-import { ComponentType } from 'react';
+} from "@mui/icons-material";
+import { SvgIconProps } from "@mui/material";
+import { ComponentType } from "react";
 
 const iconMap: Record<string, ComponentType<SvgIconProps>> = {
   Dashboard,

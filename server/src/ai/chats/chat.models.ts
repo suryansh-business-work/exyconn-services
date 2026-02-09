@@ -14,6 +14,7 @@ export interface IAIChat extends Document {
   aiModel: string;
   messages: IChatMessage[];
   totalTokens: number;
+  totalMessages: number;
   maxHistoryMessages: number;
   createdAt: Date;
   updatedAt: Date;
@@ -51,6 +52,7 @@ const AIChatSchema = new Schema<IAIChat>(
     aiModel: { type: String, required: true },
     messages: { type: [ChatMessageSchema], default: [] },
     totalTokens: { type: Number, default: 0 },
+    totalMessages: { type: Number, default: 0 },
     maxHistoryMessages: { type: Number, default: 50 },
   },
   {

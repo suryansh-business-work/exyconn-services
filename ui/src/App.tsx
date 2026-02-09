@@ -22,6 +22,7 @@ import {
   EmailDemo,
   EmailHistory,
   EmailApiDocs,
+  EmailDashboard,
 } from "./pages/Email";
 import {
   ImageKitSettings,
@@ -49,6 +50,17 @@ import {
   AIHistoryPage,
   AIApiDocs,
 } from "./pages/AI";
+import { SearchLogs, TestLogs, LogSettings, LogsApiDocs } from "./pages/Logs";
+import {
+  FeatureFlagDemo,
+  FeatureFlagList,
+  FeatureFlagApiDocs,
+} from "./pages/FeatureFlags";
+import {
+  CronJobDemo,
+  CronJobHistoryPage,
+  CronJobApiDocs,
+} from "./pages/CronJobs";
 
 // Wrapper component to sync URL org and apiKey with context
 const OrgRouteWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -209,6 +221,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/organization/:orgId/apikey/:apiKey/communications/email/dashboard"
+          element={
+            <OrgRouteWrapper>
+              <EmailDashboard />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
           path="/organization/:orgId/apikey/:apiKey/communications/email/templates"
           element={
             <OrgRouteWrapper>
@@ -242,6 +262,14 @@ const AppRoutes = () => {
         />
 
         {/* Legacy routes without API key */}
+        <Route
+          path="/organization/:orgId/communications/email/dashboard"
+          element={
+            <OrgRouteWrapper>
+              <EmailDashboard />
+            </OrgRouteWrapper>
+          }
+        />
         <Route
           path="/organization/:orgId/communications/email/settings"
           element={
@@ -279,6 +307,126 @@ const AppRoutes = () => {
           element={
             <OrgRouteWrapper>
               <EmailApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* API Logs routes with API key */}
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/logs/search"
+          element={
+            <OrgRouteWrapper>
+              <SearchLogs />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/logs/test"
+          element={
+            <OrgRouteWrapper>
+              <TestLogs />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/logs/settings"
+          element={
+            <OrgRouteWrapper>
+              <LogSettings />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/logs/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <LogsApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* API Logs legacy routes without API key */}
+        <Route
+          path="/organization/:orgId/service/logs/search"
+          element={
+            <OrgRouteWrapper>
+              <SearchLogs />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/logs/test"
+          element={
+            <OrgRouteWrapper>
+              <TestLogs />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/logs/settings"
+          element={
+            <OrgRouteWrapper>
+              <LogSettings />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/logs/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <LogsApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Feature Flags routes with API key */}
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/feature-flags/demo"
+          element={
+            <OrgRouteWrapper>
+              <FeatureFlagDemo />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/feature-flags/list"
+          element={
+            <OrgRouteWrapper>
+              <FeatureFlagList />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/feature-flags/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <FeatureFlagApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Feature Flags legacy routes without API key */}
+        <Route
+          path="/organization/:orgId/service/feature-flags/demo"
+          element={
+            <OrgRouteWrapper>
+              <FeatureFlagDemo />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/feature-flags/list"
+          element={
+            <OrgRouteWrapper>
+              <FeatureFlagList />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/feature-flags/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <FeatureFlagApiDocs />
             </OrgRouteWrapper>
           }
         />
@@ -583,6 +731,58 @@ const AppRoutes = () => {
           element={
             <OrgRouteWrapper>
               <AIApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Cron Jobs routes with API key */}
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/cron-jobs/demo"
+          element={
+            <OrgRouteWrapper>
+              <CronJobDemo />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/cron-jobs/history"
+          element={
+            <OrgRouteWrapper>
+              <CronJobHistoryPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/cron-jobs/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <CronJobApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Cron Jobs legacy routes without API key */}
+        <Route
+          path="/organization/:orgId/service/cron-jobs/demo"
+          element={
+            <OrgRouteWrapper>
+              <CronJobDemo />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/cron-jobs/history"
+          element={
+            <OrgRouteWrapper>
+              <CronJobHistoryPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/cron-jobs/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <CronJobApiDocs />
             </OrgRouteWrapper>
           }
         />

@@ -82,6 +82,7 @@ export const APP_DATA: AppDefinition[] = [
         status: "live",
         category: APP_CATEGORIES.COMMUNICATION,
         subItems: [
+          { label: "Dashboard", pathSuffix: "/dashboard" },
           { label: "Demo", pathSuffix: "/demo" },
           { label: "Templates", pathSuffix: "/templates" },
           { label: "Settings", pathSuffix: "/settings" },
@@ -191,12 +192,13 @@ export const APP_DATA: AppDefinition[] = [
       "Centralized logging service for application debugging and monitoring.",
     iconName: "Article",
     basePath: "service/logs",
-    status: "soon",
+    status: "live",
     category: APP_CATEGORIES.DEVELOPER_TOOLS,
     subItems: [
       { label: "Search Logs", pathSuffix: "/search" },
       { label: "Test Logs", pathSuffix: "/test" },
       { label: "Settings", pathSuffix: "/settings" },
+      { label: "API Docs", pathSuffix: "/api-docs" },
     ],
     keywords: ["debug", "trace", "error", "monitoring"],
   },
@@ -228,35 +230,57 @@ export const APP_DATA: AppDefinition[] = [
     ],
   },
   {
-    id: "environment-keys",
-    name: "Environment Keys",
+    id: "config-service",
+    name: "Config Service",
     description:
-      "Secure storage and management of environment variables and secrets.",
-    iconName: "Key",
-    basePath: "service/env-keys",
+      "Configuration management including environment keys and feature flags.",
+    iconName: "Settings",
+    basePath: "",
     status: "live",
     category: APP_CATEGORIES.DEVELOPER_TOOLS,
-    subItems: [
-      { label: "Dashboard", pathSuffix: "/dashboard" },
-      { label: "Applications", pathSuffix: "/applications" },
-      { label: "API Docs", pathSuffix: "/api-docs" },
+    subItems: [],
+    isGroup: true,
+    keywords: ["config", "settings", "environment", "flags", "variables"],
+    children: [
+      {
+        id: "environment-keys",
+        name: "Environment Keys",
+        description:
+          "Secure storage and management of environment variables and secrets.",
+        iconName: "Key",
+        basePath: "service/env-keys",
+        status: "live",
+        category: APP_CATEGORIES.DEVELOPER_TOOLS,
+        subItems: [
+          { label: "Dashboard", pathSuffix: "/dashboard" },
+          { label: "Applications", pathSuffix: "/applications" },
+          { label: "API Docs", pathSuffix: "/api-docs" },
+        ],
+        keywords: ["secrets", "config", "variables", "env", "keys"],
+      },
+      {
+        id: "feature-flags",
+        name: "Feature Flags",
+        description:
+          "Control feature rollouts with toggles, percentage rollouts, and targeting rules.",
+        iconName: "Flag",
+        basePath: "service/feature-flags",
+        status: "live",
+        category: APP_CATEGORIES.DEVELOPER_TOOLS,
+        subItems: [
+          { label: "Demo", pathSuffix: "/demo" },
+          { label: "Flags", pathSuffix: "/list" },
+          { label: "API Docs", pathSuffix: "/api-docs" },
+        ],
+        keywords: [
+          "feature toggle",
+          "rollout",
+          "ab testing",
+          "flags",
+          "release",
+        ],
+      },
     ],
-    keywords: ["secrets", "config", "variables", "env", "keys"],
-  },
-  {
-    id: "feature-flags",
-    name: "Feature Flags",
-    description:
-      "Control feature rollouts with toggles, percentage rollouts, and targeting rules.",
-    iconName: "Flag",
-    basePath: "service/feature-flags",
-    status: "soon",
-    category: APP_CATEGORIES.DEVELOPER_TOOLS,
-    subItems: [
-      { label: "Demo", pathSuffix: "/demo" },
-      { label: "Flags", pathSuffix: "/list" },
-    ],
-    keywords: ["feature toggle", "rollout", "ab testing", "flags", "release"],
   },
 
   // Storage & Files
@@ -448,12 +472,12 @@ export const APP_DATA: AppDefinition[] = [
       "Schedule recurring tasks with webhook support for real-time actions.",
     iconName: "Schedule",
     basePath: "service/cron-jobs",
-    status: "soon",
+    status: "live",
     category: APP_CATEGORIES.INFRASTRUCTURE,
     subItems: [
       { label: "Demo", pathSuffix: "/demo" },
-      { label: "Jobs List", pathSuffix: "" },
-      { label: "Statistics", pathSuffix: "/stats" },
+      { label: "History", pathSuffix: "/history" },
+      { label: "API Docs", pathSuffix: "/api-docs" },
     ],
     keywords: [
       "scheduler",

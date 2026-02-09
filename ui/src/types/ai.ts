@@ -35,7 +35,9 @@ export interface AIChat {
   model: string;
   messages: ChatMessage[];
   totalTokens: number;
+  totalMessages: number;
   maxHistoryMessages: number;
+  messageCount?: number;
   createdAt: string;
   updatedAt: string;
 }

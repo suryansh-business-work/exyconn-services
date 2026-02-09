@@ -81,7 +81,8 @@ const AIHistoryPage = () => {
                 <TableCell>Title</TableCell>
                 <TableCell>Company</TableCell>
                 <TableCell>Model</TableCell>
-                <TableCell align="center">Messages</TableCell>
+                <TableCell align="center">Total Messages</TableCell>
+                <TableCell align="center">Context Messages</TableCell>
                 <TableCell align="center">Tokens</TableCell>
                 <TableCell>Created</TableCell>
                 <TableCell>Last Updated</TableCell>
@@ -90,13 +91,13 @@ const AIHistoryPage = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={7} align="center">
+                  <TableCell colSpan={8} align="center">
                     <CircularProgress size={24} />
                   </TableCell>
                 </TableRow>
               ) : chats.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} align="center">
+                  <TableCell colSpan={8} align="center">
                     <Typography color="text.secondary">
                       No chat history
                     </Typography>
@@ -125,13 +126,16 @@ const AIHistoryPage = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Chip
-                        label={
-                          (chat as AIChat & { messageCount?: number })
-                            .messageCount ||
-                          chat.messages?.length ||
-                          0
-                        }
+                        label={chat.totalMessages || 0}
                         size="small"
+                        color="primary"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip
+                        label={chat.messageCount || chat.messages?.length || 0}
+                        size="small"
+                        variant="outlined"
                       />
                     </TableCell>
                     <TableCell align="center">

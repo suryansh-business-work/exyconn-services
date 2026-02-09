@@ -55,6 +55,7 @@ export const aiChatService = {
             title: 1,
             aiModel: 1,
             totalTokens: 1,
+            totalMessages: 1,
             maxHistoryMessages: 1,
             createdAt: 1,
             updatedAt: 1,
@@ -72,6 +73,7 @@ export const aiChatService = {
         title: d.title,
         model: d.aiModel,
         totalTokens: d.totalTokens,
+        totalMessages: d.totalMessages || d.messageCount,
         maxHistoryMessages: d.maxHistoryMessages,
         createdAt: d.createdAt,
         updatedAt: d.updatedAt,
@@ -164,6 +166,7 @@ export const aiChatService = {
 
     chat.messages.push(newMessage);
     chat.totalTokens += tokenCount;
+    chat.totalMessages = (chat.totalMessages || 0) + 1;
 
     // Trim history if exceeds max (keep system message if exists)
     const systemMessages = chat.messages.filter((m) => m.role === "system");

@@ -2,11 +2,6 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDatabase } from "./config/database";
-import {
-  createHealthHandler,
-  createRootHandler,
-  HealthConfig,
-} from "@exyconn/common/server";
 import contactRoutes from "./routes/contact";
 import organizationsRoutes from "./organizations/organizations.routes";
 import emailRoutes from "./email";
@@ -14,6 +9,9 @@ import imagekitRoutes from "./imagekit";
 import siteStatusRoutes from "./site-status";
 import envKeysRoutes from "./env-keys";
 import aiRoutes from "./ai";
+import apiLogRoutes from "./api-logs/log.routes";
+import featureFlagRoutes from "./feature-flags/featureFlag.routes";
+import cronJobRoutes from "./cron-jobs/cronJob.routes";
 
 dotenv.config();
 
@@ -79,44 +77,10 @@ app.use("/api/organizations/:orgId/imagekit", imagekitRoutes);
 app.use("/api/organizations/:orgId/site-status", siteStatusRoutes);
 app.use("/api/organizations/:orgId/env-keys", envKeysRoutes);
 app.use("/api/organizations/:orgId/ai", aiRoutes);
+app.use("/api/organizations/:orgId/logs", apiLogRoutes);
+app.use("/api/organizations/:orgId/feature-flags", featureFlagRoutes);
+app.use("/api/organizations/:orgId/cron-jobs", cronJobRoutes);
 
-// Standardized Health Configuration
-const healthConfig: HealthConfig = {
-  name: "exyconn-services-server",
-  version: "1.0.0",
-  port: PORT,
-  domain: "exyconn-service-server.exyconn.com",
-  description: "Exyconn Services & Organizations API Server",
-  uiUrl: "https://services.exyconn.com",
-  serverUrl: "https://exyconn-service-server.exyconn.com",
-  criticalPackages: ["express", "mongoose", "cors", "nodemailer"],
-  async checkDependencies() {
-    const mongoose = await import("mongoose");
-    return { mongodb: mongoose.connection.readyState === 1 ? "UP" : "DOWN" };
-  },
-};
-
-// Health check endpoints
-app.get("/health", createHealthHandler(healthConfig));
-app.get("/api/health", createHealthHandler(healthConfig));
-
-// Root endpoint
-app.get(
-  "/",
-  createRootHandler({
-    ...healthConfig,
-    endpoints: {
-      health: "/health",
-      contact: "/api/contact",
-      organizations: "/api/organizations",
-      email: "/api/organizations/:orgId/email",
-      imagekit: "/api/organizations/:orgId/imagekit",
-      siteStatus: "/api/organizations/:orgId/site-status",
-      envKeys: "/api/organizations/:orgId/env-keys",
-      ai: "/api/organizations/:orgId/ai",
-    },
-  }),
-);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {

@@ -1,4 +1,5 @@
 import { execSync } from "child_process";
+import os from "os";
 
 export interface DockerInfoResponse {
   installed: boolean;
@@ -68,33 +69,84 @@ export interface DockerNetwork {
   scope: string;
 }
 
-function execCommand(cmd: string): string {
+// Cross-platform quoting helper
+const isWindows = os.platform() === "win32";
+
+function formatQuote(formatStr: string): string {
+  // Use double quotes on all platforms for Docker --format
+  // On Linux: double quotes work fine for {{.Field}} patterns (no shell expansion)
+  // On Windows: double quotes are the native quoting mechanism
+  return `"${formatStr}"`;
+}
+
+interface ExecResult {
+  output: string;
+  error?: string;
+}
+
+function execCommand(cmd: string, timeout = 15000): ExecResult {
   try {
-    return execSync(cmd, { encoding: "utf-8", timeout: 10000 }).trim();
-  } catch {
-    return "";
+    const output = execSync(cmd, {
+      encoding: "utf-8",
+      timeout,
+      // Explicit shell selection for cross-platform compatibility
+      shell: isWindows ? "cmd.exe" : "/bin/sh",
+      // Capture stderr separately for better error reporting
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim();
+    return { output };
+  } catch (err: unknown) {
+    const error = err as { stderr?: string; message?: string; code?: string };
+    const stderr = typeof error.stderr === "string" ? error.stderr.trim() : "";
+    const message = error.message || "Unknown error";
+
+    // Classify the error for better reporting
+    if (stderr.includes("permission denied") || stderr.includes("Permission denied")) {
+      return { output: "", error: `Permission denied. On Linux, add your user to the docker group: sudo usermod -aG docker $USER` };
+    }
+    if (stderr.includes("Cannot connect to the Docker daemon") || stderr.includes("Is the docker daemon running")) {
+      return { output: "", error: "Docker daemon is not running. Start it with: sudo systemctl start docker" };
+    }
+    if (stderr.includes("command not found") || stderr.includes("not recognized") || error.code === "ENOENT") {
+      return { output: "", error: "Docker is not installed or not in PATH" };
+    }
+    if (message.includes("ETIMEDOUT") || message.includes("timed out")) {
+      return { output: "", error: "Docker command timed out. The daemon may be unresponsive." };
+    }
+    return { output: "", error: stderr || message };
   }
 }
 
-function isDockerInstalled(): boolean {
+function isDockerInstalled(): { installed: boolean; error?: string } {
   const result = execCommand("docker --version");
-  return result.length > 0;
+  if (result.output.length > 0) return { installed: true };
+  return { installed: false, error: result.error };
 }
 
 export const dockerService = {
   getDockerInfo: async (): Promise<DockerInfoResponse> => {
-    if (!isDockerInstalled()) {
-      return { installed: false, error: "Docker is not installed" };
+    const check = isDockerInstalled();
+    if (!check.installed) {
+      return { installed: false, error: check.error || "Docker is not installed" };
     }
 
     try {
-      const version = execCommand("docker --version");
-      const infoJson = execCommand("docker info --format '{{json .}}'");
+      const versionResult = execCommand("docker --version");
+      const version = versionResult.output || undefined;
+
+      // Use double quotes for --format on all platforms
+      const infoResult = execCommand(`docker info --format ${formatQuote("{{json .}}")}`);
+
+      if (infoResult.error) {
+        return { installed: true, version, error: infoResult.error };
+      }
 
       let info: DockerDaemonInfo | undefined;
-      if (infoJson) {
+      if (infoResult.output) {
         try {
-          const parsed = JSON.parse(infoJson);
+          // Strip any leading/trailing quotes that some shells may add
+          const jsonStr = infoResult.output.replace(/^['"]|['"]$/g, "");
+          const parsed = JSON.parse(jsonStr);
           info = {
             serverVersion: parsed.ServerVersion || "unknown",
             storageDriver: parsed.Driver || "unknown",
@@ -110,7 +162,7 @@ export const dockerService = {
             images: parsed.Images || 0,
           };
         } catch {
-          // JSON parse failed, try line-by-line
+          return { installed: true, version, error: "Failed to parse Docker info output" };
         }
       }
 
@@ -120,50 +172,44 @@ export const dockerService = {
     }
   },
 
-  listContainers: async (showAll = true): Promise<DockerContainer[]> => {
-    if (!isDockerInstalled()) return [];
+  listContainers: async (showAll = true): Promise<{ data: DockerContainer[]; error?: string }> => {
+    const check = isDockerInstalled();
+    if (!check.installed) return { data: [], error: check.error };
 
     const flag = showAll ? "-a" : "";
-    const output = execCommand(
-      `docker ps ${flag} --format "{{.ID}}|||{{.Names}}|||{{.Image}}|||{{.Command}}|||{{.CreatedAt}}|||{{.Status}}|||{{.Ports}}|||{{.Size}}|||{{.State}}"`,
-    );
+    const fmt = formatQuote("{{.ID}}|||{{.Names}}|||{{.Image}}|||{{.Command}}|||{{.CreatedAt}}|||{{.Status}}|||{{.Ports}}|||{{.Size}}|||{{.State}}");
+    const result = execCommand(`docker ps ${flag} --format ${fmt}`);
 
-    if (!output) return [];
+    if (result.error) return { data: [], error: result.error };
+    if (!result.output) return { data: [] };
 
-    return output
+    const data = result.output
       .split("\n")
       .filter(Boolean)
       .map((line) => {
-        const parts = line.split("|||");
+        const p = line.split("|||");
         return {
-          id: parts[0] || "",
-          names: parts[1] || "",
-          image: parts[2] || "",
-          command: parts[3] || "",
-          created: parts[4] || "",
-          status: parts[5] || "",
-          ports: parts[6] || "",
-          size: parts[7] || "",
-          state: parts[8] || "",
+          id: p[0] || "", names: p[1] || "", image: p[2] || "",
+          command: p[3] || "", created: p[4] || "", status: p[5] || "",
+          ports: p[6] || "", size: p[7] || "", state: p[8] || "",
         };
       });
+    return { data };
   },
 
-  getContainerDetail: async (
-    containerId: string,
-  ): Promise<DockerContainerDetail | null> => {
-    if (!isDockerInstalled()) return null;
+  getContainerDetail: async (containerId: string): Promise<DockerContainerDetail | null> => {
+    const check = isDockerInstalled();
+    if (!check.installed) return null;
 
-    const inspectJson = execCommand(
-      `docker inspect ${containerId} --format "{{json .}}"`,
-    );
-    if (!inspectJson) return null;
+    // Sanitize container ID to prevent command injection
+    const safeId = containerId.replace(/[^a-zA-Z0-9_.-]/g, "");
+    const inspectResult = execCommand(`docker inspect ${safeId} --format ${formatQuote("{{json .}}")}`);
+    if (!inspectResult.output) return null;
 
     try {
-      const parsed = JSON.parse(inspectJson);
-      const logs = execCommand(
-        `docker logs ${containerId} --tail 50 2>&1`,
-      );
+      const jsonStr = inspectResult.output.replace(/^['"]|['"]$/g, "");
+      const parsed = JSON.parse(jsonStr);
+      const logsResult = execCommand(`docker logs ${safeId} --tail 50 2>&1`);
 
       return {
         id: parsed.Id || containerId,
@@ -179,77 +225,79 @@ export const dockerService = {
         networkSettings: parsed.NetworkSettings?.Networks || {},
         mounts: parsed.Mounts || [],
         created: parsed.Created || "",
-        logs,
+        logs: logsResult.output,
       };
     } catch {
       return null;
     }
   },
 
-  listImages: async (): Promise<DockerImage[]> => {
-    if (!isDockerInstalled()) return [];
+  listImages: async (): Promise<{ data: DockerImage[]; error?: string }> => {
+    const check = isDockerInstalled();
+    if (!check.installed) return { data: [], error: check.error };
 
-    const output = execCommand(
-      'docker images --format "{{.ID}}|||{{.Repository}}|||{{.Tag}}|||{{.Size}}|||{{.CreatedAt}}"',
-    );
-    if (!output) return [];
+    const fmt = formatQuote("{{.ID}}|||{{.Repository}}|||{{.Tag}}|||{{.Size}}|||{{.CreatedAt}}");
+    const result = execCommand(`docker images --format ${fmt}`);
 
-    return output
+    if (result.error) return { data: [], error: result.error };
+    if (!result.output) return { data: [] };
+
+    const data = result.output
       .split("\n")
       .filter(Boolean)
       .map((line) => {
-        const parts = line.split("|||");
+        const p = line.split("|||");
         return {
-          id: parts[0] || "",
-          repository: parts[1] || "",
-          tag: parts[2] || "",
-          size: parts[3] || "",
-          created: parts[4] || "",
+          id: p[0] || "", repository: p[1] || "", tag: p[2] || "",
+          size: p[3] || "", created: p[4] || "",
         };
       });
+    return { data };
   },
 
-  listVolumes: async (): Promise<DockerVolume[]> => {
-    if (!isDockerInstalled()) return [];
+  listVolumes: async (): Promise<{ data: DockerVolume[]; error?: string }> => {
+    const check = isDockerInstalled();
+    if (!check.installed) return { data: [], error: check.error };
 
-    const output = execCommand(
-      'docker volume ls --format "{{.Name}}|||{{.Driver}}|||{{.Mountpoint}}|||{{.Scope}}"',
-    );
-    if (!output) return [];
+    const fmt = formatQuote("{{.Name}}|||{{.Driver}}|||{{.Mountpoint}}|||{{.Scope}}");
+    const result = execCommand(`docker volume ls --format ${fmt}`);
 
-    return output
+    if (result.error) return { data: [], error: result.error };
+    if (!result.output) return { data: [] };
+
+    const data = result.output
       .split("\n")
       .filter(Boolean)
       .map((line) => {
-        const parts = line.split("|||");
+        const p = line.split("|||");
         return {
-          name: parts[0] || "",
-          driver: parts[1] || "",
-          mountpoint: parts[2] || "",
-          scope: parts[3] || "",
+          name: p[0] || "", driver: p[1] || "",
+          mountpoint: p[2] || "", scope: p[3] || "",
         };
       });
+    return { data };
   },
 
-  listNetworks: async (): Promise<DockerNetwork[]> => {
-    if (!isDockerInstalled()) return [];
+  listNetworks: async (): Promise<{ data: DockerNetwork[]; error?: string }> => {
+    const check = isDockerInstalled();
+    if (!check.installed) return { data: [], error: check.error };
 
-    const output = execCommand(
-      'docker network ls --format "{{.ID}}|||{{.Name}}|||{{.Driver}}|||{{.Scope}}"',
-    );
-    if (!output) return [];
+    const fmt = formatQuote("{{.ID}}|||{{.Name}}|||{{.Driver}}|||{{.Scope}}");
+    const result = execCommand(`docker network ls --format ${fmt}`);
 
-    return output
+    if (result.error) return { data: [], error: result.error };
+    if (!result.output) return { data: [] };
+
+    const data = result.output
       .split("\n")
       .filter(Boolean)
       .map((line) => {
-        const parts = line.split("|||");
+        const p = line.split("|||");
         return {
-          id: parts[0] || "",
-          name: parts[1] || "",
-          driver: parts[2] || "",
-          scope: parts[3] || "",
+          id: p[0] || "", name: p[1] || "",
+          driver: p[2] || "", scope: p[3] || "",
         };
       });
+    return { data };
   },
 };

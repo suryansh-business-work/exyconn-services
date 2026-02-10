@@ -1,11 +1,38 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// ==================== Translations Models ====================
+// ==================== Translation Project ====================
+
+export interface ITranslationProject extends Document {
+  organizationId: mongoose.Types.ObjectId;
+  name: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const translationProjectSchema = new Schema<ITranslationProject>(
+  {
+    organizationId: { type: Schema.Types.ObjectId, required: true, index: true },
+    name: { type: String, required: true },
+    description: { type: String },
+  },
+  { timestamps: true },
+);
+
+translationProjectSchema.index({ organizationId: 1, name: 1 }, { unique: true });
+
+export const TranslationProject = mongoose.model<ITranslationProject>(
+  "TranslationProject",
+  translationProjectSchema,
+);
+
+// ==================== Locale ====================
 
 export interface ILocale extends Document {
   organizationId: mongoose.Types.ObjectId;
-  code: string; // e.g., "en", "es", "fr"
-  name: string; // e.g., "English", "Spanish"
+  projectId: mongoose.Types.ObjectId;
+  code: string;
+  name: string;
   isDefault: boolean;
   isActive: boolean;
   createdAt: Date;
@@ -14,11 +41,8 @@ export interface ILocale extends Document {
 
 const localeSchema = new Schema<ILocale>(
   {
-    organizationId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      index: true,
-    },
+    organizationId: { type: Schema.Types.ObjectId, required: true, index: true },
+    projectId: { type: Schema.Types.ObjectId, required: true, index: true },
     code: { type: String, required: true },
     name: { type: String, required: true },
     isDefault: { type: Boolean, default: false },
@@ -27,16 +51,18 @@ const localeSchema = new Schema<ILocale>(
   { timestamps: true },
 );
 
-localeSchema.index({ organizationId: 1, code: 1 }, { unique: true });
+localeSchema.index({ organizationId: 1, projectId: 1, code: 1 }, { unique: true });
 
 export const Locale = mongoose.model<ILocale>("Locale", localeSchema);
 
-// Translation keys with values for each locale
+// ==================== Translation Entry ====================
+
 export interface ITranslationEntry extends Document {
   organizationId: mongoose.Types.ObjectId;
-  section: string; // group key, e.g., "header", "footer", "auth"
-  key: string; // e.g., "welcome_message"
-  values: Record<string, string>; // { en: "Hello", es: "Hola", fr: "Bonjour" }
+  projectId: mongoose.Types.ObjectId;
+  section: string;
+  key: string;
+  values: Record<string, string>;
   description?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -44,11 +70,8 @@ export interface ITranslationEntry extends Document {
 
 const translationEntrySchema = new Schema<ITranslationEntry>(
   {
-    organizationId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      index: true,
-    },
+    organizationId: { type: Schema.Types.ObjectId, required: true, index: true },
+    projectId: { type: Schema.Types.ObjectId, required: true, index: true },
     section: { type: String, required: true },
     key: { type: String, required: true },
     values: { type: Schema.Types.Mixed, default: {} },
@@ -58,7 +81,7 @@ const translationEntrySchema = new Schema<ITranslationEntry>(
 );
 
 translationEntrySchema.index(
-  { organizationId: 1, section: 1, key: 1 },
+  { organizationId: 1, projectId: 1, section: 1, key: 1 },
   { unique: true },
 );
 
@@ -67,22 +90,30 @@ export const TranslationEntry = mongoose.model<ITranslationEntry>(
   translationEntrySchema,
 );
 
-// ==================== Theme Models ====================
+// ==================== Theme Project ====================
 
-export interface ITheme extends Document {
+export interface IThemeProject extends Document {
   organizationId: mongoose.Types.ObjectId;
   name: string;
   description?: string;
-  isDefault: boolean;
-  isActive: boolean;
-  colors: ThemeColors;
-  typography: ThemeTypography;
-  spacing: ThemeSpacing;
-  borderRadius: ThemeBorderRadius;
-  components: Record<string, Record<string, string>>;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const themeProjectSchema = new Schema<IThemeProject>(
+  {
+    organizationId: { type: Schema.Types.ObjectId, required: true, index: true },
+    name: { type: String, required: true },
+    description: { type: String },
+  },
+  { timestamps: true },
+);
+
+themeProjectSchema.index({ organizationId: 1, name: 1 }, { unique: true });
+
+export const ThemeProject = mongoose.model<IThemeProject>("ThemeProject", themeProjectSchema);
+
+// ==================== Theme ====================
 
 export interface ThemeColors {
   primary: string;
@@ -130,13 +161,26 @@ export interface ThemeBorderRadius {
   full: number;
 }
 
+export interface ITheme extends Document {
+  organizationId: mongoose.Types.ObjectId;
+  projectId: mongoose.Types.ObjectId;
+  name: string;
+  description?: string;
+  isDefault: boolean;
+  isActive: boolean;
+  colors: ThemeColors;
+  typography: ThemeTypography;
+  spacing: ThemeSpacing;
+  borderRadius: ThemeBorderRadius;
+  components: Record<string, Record<string, string>>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 const themeSchema = new Schema<ITheme>(
   {
-    organizationId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      index: true,
-    },
+    organizationId: { type: Schema.Types.ObjectId, required: true, index: true },
+    projectId: { type: Schema.Types.ObjectId, required: true, index: true },
     name: { type: String, required: true },
     description: { type: String },
     isDefault: { type: Boolean, default: false },
@@ -150,6 +194,6 @@ const themeSchema = new Schema<ITheme>(
   { timestamps: true },
 );
 
-themeSchema.index({ organizationId: 1, name: 1 }, { unique: true });
+themeSchema.index({ organizationId: 1, projectId: 1, name: 1 }, { unique: true });
 
 export const Theme = mongoose.model<ITheme>("Theme", themeSchema);

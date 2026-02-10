@@ -1,8 +1,39 @@
+// ==================== Common Types ====================
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// ==================== Translation Project Types ====================
+
+export interface TranslationProject {
+  _id: string;
+  organizationId: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TranslationProjectListResponse {
+  data: TranslationProject[];
+  pagination: Pagination;
+}
+
+export interface TranslationProjectFormValues {
+  name: string;
+  description: string;
+}
+
 // ==================== Locale Types ====================
 
 export interface Locale {
   _id: string;
   organizationId: string;
+  projectId: string;
   code: string;
   name: string;
   isDefault: boolean;
@@ -22,11 +53,17 @@ export interface LocaleFormValues {
   isDefault: boolean;
 }
 
+export interface PredefinedLocale {
+  code: string;
+  name: string;
+}
+
 // ==================== Translation Types ====================
 
 export interface TranslationEntry {
   _id: string;
   organizationId: string;
+  projectId: string;
   section: string;
   key: string;
   values: Record<string, string>;
@@ -65,6 +102,27 @@ export interface TranslationBulkInput {
 
 export interface TranslationSectionsResponse {
   sections: string[];
+}
+
+// ==================== Theme Project Types ====================
+
+export interface ThemeProject {
+  _id: string;
+  organizationId: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ThemeProjectListResponse {
+  data: ThemeProject[];
+  pagination: Pagination;
+}
+
+export interface ThemeProjectFormValues {
+  name: string;
+  description: string;
 }
 
 // ==================== Theme Types ====================
@@ -118,6 +176,7 @@ export interface ThemeBorderRadius {
 export interface ThemeData {
   _id: string;
   organizationId: string;
+  projectId: string;
   name: string;
   description?: string;
   isDefault: boolean;
@@ -140,13 +199,4 @@ export interface ThemeListParams {
   page?: number;
   limit?: number;
   search?: string;
-}
-
-// ==================== Common Types ====================
-
-export interface Pagination {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
 }

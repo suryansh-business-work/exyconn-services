@@ -23,8 +23,9 @@ export const getDockerInfo = async (_req: Request, res: Response) => {
 export const getDockerContainers = async (req: Request, res: Response) => {
   try {
     const showAll = req.query.all === "true";
-    const containers = await dockerService.listContainers(showAll);
-    res.json({ containers });
+    const result = await dockerService.listContainers(showAll);
+    if (result.error) return res.json({ containers: [], error: result.error });
+    res.json({ containers: result.data });
   } catch {
     res.status(500).json({ error: "Failed to list Docker containers" });
   }
@@ -42,8 +43,9 @@ export const getDockerContainerDetail = async (req: Request, res: Response) => {
 
 export const getDockerImages = async (_req: Request, res: Response) => {
   try {
-    const images = await dockerService.listImages();
-    res.json({ images });
+    const result = await dockerService.listImages();
+    if (result.error) return res.json({ images: [], error: result.error });
+    res.json({ images: result.data });
   } catch {
     res.status(500).json({ error: "Failed to list Docker images" });
   }
@@ -51,8 +53,9 @@ export const getDockerImages = async (_req: Request, res: Response) => {
 
 export const getDockerVolumes = async (_req: Request, res: Response) => {
   try {
-    const volumes = await dockerService.listVolumes();
-    res.json({ volumes });
+    const result = await dockerService.listVolumes();
+    if (result.error) return res.json({ volumes: [], error: result.error });
+    res.json({ volumes: result.data });
   } catch {
     res.status(500).json({ error: "Failed to list Docker volumes" });
   }
@@ -60,8 +63,9 @@ export const getDockerVolumes = async (_req: Request, res: Response) => {
 
 export const getDockerNetworks = async (_req: Request, res: Response) => {
   try {
-    const networks = await dockerService.listNetworks();
-    res.json({ networks });
+    const result = await dockerService.listNetworks();
+    if (result.error) return res.json({ networks: [], error: result.error });
+    res.json({ networks: result.data });
   } catch {
     res.status(500).json({ error: "Failed to list Docker networks" });
   }

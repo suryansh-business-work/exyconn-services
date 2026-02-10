@@ -361,8 +361,8 @@ export const APP_DATA: AppDefinition[] = [
     status: "dev",
     category: APP_CATEGORIES.CONTENT,
     subItems: [
-      { label: "Locales", pathSuffix: "/locales" },
-      { label: "Translation Text", pathSuffix: "/sections" },
+      { label: "Projects", pathSuffix: "/projects" },
+      { label: "API Docs", pathSuffix: "/api-docs" },
     ],
     keywords: ["i18n", "localization", "language", "l10n"],
   },
@@ -375,8 +375,8 @@ export const APP_DATA: AppDefinition[] = [
     status: "dev",
     category: APP_CATEGORIES.CONTENT,
     subItems: [
-      { label: "Theme List", pathSuffix: "/list" },
-      { label: "Theme Components", pathSuffix: "/components" },
+      { label: "Projects", pathSuffix: "/projects" },
+      { label: "API Docs", pathSuffix: "/api-docs" },
     ],
     keywords: ["styling", "design", "ui", "components"],
   },
@@ -554,6 +554,7 @@ export const APP_DATA: AppDefinition[] = [
     subItems: [
       { label: "System", pathSuffix: "/system" },
       { label: "Docker", pathSuffix: "/docker" },
+      { label: "API Docs", pathSuffix: "/api-docs" },
     ],
     keywords: ["server", "docker", "nginx", "ssl", "terminal", "os", "runtime"],
   },

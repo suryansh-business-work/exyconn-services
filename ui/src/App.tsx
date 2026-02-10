@@ -61,12 +61,18 @@ import {
   CronJobHistoryPage,
   CronJobApiDocs,
 } from "./pages/CronJobs";
-import { SystemInfoPage, DockerPage } from "./pages/SystemInfo";
+import { SystemInfoPage, DockerPage, SystemInfoApiDocs } from "./pages/SystemInfo";
 import {
-  TranslationsLocalesPage,
-  TranslationSectionsPage,
+  TranslationProjectsPage,
+  ProjectDetailPage,
+  TranslationsApiDocs,
 } from "./pages/Translations";
-import { ThemeListPage, ThemeComponentsPage } from "./pages/Themes";
+import {
+  ThemeProjectsPage,
+  ThemeProjectDetailPage,
+  ThemeEditorPage,
+  ThemesApiDocs,
+} from "./pages/Themes";
 
 // Wrapper component to sync URL org and apiKey with context
 const OrgRouteWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -795,72 +801,120 @@ const AppRoutes = () => {
 
         {/* Translations routes with API key */}
         <Route
-          path="/organization/:orgId/apikey/:apiKey/service/translations/locales"
+          path="/organization/:orgId/apikey/:apiKey/service/translations/projects"
           element={
             <OrgRouteWrapper>
-              <TranslationsLocalesPage />
+              <TranslationProjectsPage />
             </OrgRouteWrapper>
           }
         />
         <Route
-          path="/organization/:orgId/apikey/:apiKey/service/translations/sections"
+          path="/organization/:orgId/apikey/:apiKey/service/translations/projects/:projectId"
           element={
             <OrgRouteWrapper>
-              <TranslationSectionsPage />
+              <ProjectDetailPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/translations/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <TranslationsApiDocs />
             </OrgRouteWrapper>
           }
         />
 
         {/* Translations legacy routes without API key */}
         <Route
-          path="/organization/:orgId/service/translations/locales"
+          path="/organization/:orgId/service/translations/projects"
           element={
             <OrgRouteWrapper>
-              <TranslationsLocalesPage />
+              <TranslationProjectsPage />
             </OrgRouteWrapper>
           }
         />
         <Route
-          path="/organization/:orgId/service/translations/sections"
+          path="/organization/:orgId/service/translations/projects/:projectId"
           element={
             <OrgRouteWrapper>
-              <TranslationSectionsPage />
+              <ProjectDetailPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/translations/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <TranslationsApiDocs />
             </OrgRouteWrapper>
           }
         />
 
         {/* Themes routes with API key */}
         <Route
-          path="/organization/:orgId/apikey/:apiKey/service/themes/list"
+          path="/organization/:orgId/apikey/:apiKey/service/themes/projects"
           element={
             <OrgRouteWrapper>
-              <ThemeListPage />
+              <ThemeProjectsPage />
             </OrgRouteWrapper>
           }
         />
         <Route
-          path="/organization/:orgId/apikey/:apiKey/service/themes/components"
+          path="/organization/:orgId/apikey/:apiKey/service/themes/projects/:projectId"
           element={
             <OrgRouteWrapper>
-              <ThemeComponentsPage />
+              <ThemeProjectDetailPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/themes/projects/:projectId/editor/:themeId"
+          element={
+            <OrgRouteWrapper>
+              <ThemeEditorPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/themes/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <ThemesApiDocs />
             </OrgRouteWrapper>
           }
         />
 
         {/* Themes legacy routes without API key */}
         <Route
-          path="/organization/:orgId/service/themes/list"
+          path="/organization/:orgId/service/themes/projects"
           element={
             <OrgRouteWrapper>
-              <ThemeListPage />
+              <ThemeProjectsPage />
             </OrgRouteWrapper>
           }
         />
         <Route
-          path="/organization/:orgId/service/themes/components"
+          path="/organization/:orgId/service/themes/projects/:projectId"
           element={
             <OrgRouteWrapper>
-              <ThemeComponentsPage />
+              <ThemeProjectDetailPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/themes/projects/:projectId/editor/:themeId"
+          element={
+            <OrgRouteWrapper>
+              <ThemeEditorPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/themes/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <ThemesApiDocs />
             </OrgRouteWrapper>
           }
         />
@@ -882,6 +936,14 @@ const AppRoutes = () => {
             </OrgRouteWrapper>
           }
         />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/dev/system-info/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <SystemInfoApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
 
         {/* System Info legacy routes without API key */}
         <Route
@@ -897,6 +959,14 @@ const AppRoutes = () => {
           element={
             <OrgRouteWrapper>
               <DockerPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/dev/system-info/api-docs"
+          element={
+            <OrgRouteWrapper>
+              <SystemInfoApiDocs />
             </OrgRouteWrapper>
           }
         />

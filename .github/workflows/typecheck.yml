@@ -9,7 +9,7 @@ on:
 jobs:
   typecheck-ui:
     name: 🎨 TypeCheck UI
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ui
@@ -23,7 +23,7 @@ jobs:
 
   typecheck-server:
     name: ⚙️ TypeCheck Server
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: server

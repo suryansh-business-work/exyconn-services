@@ -9,7 +9,7 @@ on:
 jobs:
   lint-ui:
     name: 🎨 Lint UI
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ui
@@ -23,7 +23,7 @@ jobs:
 
   lint-server:
     name: ⚙️ Lint Server
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: server

@@ -75,6 +75,7 @@ const SiteStatusMonitors = () => {
 
   useEffect(() => {
     fetchMonitors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOrg, selectedApiKey, page, rowsPerPage, search]);
 
   const handleCheckNow = async (monitorId: string) => {

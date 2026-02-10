@@ -64,7 +64,7 @@ const EmailHistory = () => {
       setLogs(logsResponse.data);
       setTotal(logsResponse.pagination.total);
       setStats(statsResponse);
-    } catch (err) {
+    } catch {
       setError("Failed to load email logs");
     } finally {
       setLoading(false);

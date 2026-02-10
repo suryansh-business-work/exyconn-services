@@ -83,6 +83,7 @@ const NewChatDialog = ({
       // Clear model if no company selected
       formik.setFieldValue("model", "");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.companyId, selectedCompany]);
 
   // Reset form when dialog opens
@@ -90,6 +91,7 @@ const NewChatDialog = ({
     if (open) {
       formik.resetForm();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   return (

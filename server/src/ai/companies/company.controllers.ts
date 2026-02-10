@@ -13,7 +13,7 @@ export const aiCompanyController = {
         provider: provider as AIProvider,
       });
       res.json(result);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to list companies" });
     }
   },
@@ -25,7 +25,7 @@ export const aiCompanyController = {
       const company = await aiCompanyService.get(orgId, companyId);
       if (!company) return res.status(404).json({ error: "Company not found" });
       res.json(company);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get company" });
     }
   },
@@ -52,7 +52,7 @@ export const aiCompanyController = {
       const company = await aiCompanyService.update(orgId, companyId, req.body);
       if (!company) return res.status(404).json({ error: "Company not found" });
       res.json(company);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to update company" });
     }
   },
@@ -64,7 +64,7 @@ export const aiCompanyController = {
       const deleted = await aiCompanyService.delete(orgId, companyId);
       if (!deleted) return res.status(404).json({ error: "Company not found" });
       res.json({ success: true });
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to delete company" });
     }
   },
@@ -74,7 +74,7 @@ export const aiCompanyController = {
       const orgId = req.params.orgId as string;
       const stats = await aiCompanyService.getStats(orgId);
       res.json(stats);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get stats" });
     }
   },

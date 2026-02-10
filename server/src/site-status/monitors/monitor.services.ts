@@ -25,8 +25,13 @@ interface UpdateInput {
   checks?: Partial<ISiteCheckOptions>;
 }
 
+interface ListResult {
+  data: Array<Record<string, unknown>>;
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
 export const monitorService = {
-  list: async (orgId: string, params: ListParams) => {
+  list: async (orgId: string, params: ListParams): Promise<ListResult> => {
     const { page, limit, search, sortBy, sortOrder, isActive } = params;
     const skip = (page - 1) * limit;
 

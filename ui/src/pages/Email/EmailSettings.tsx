@@ -76,7 +76,7 @@ const EmailSettings = () => {
     try {
       const response = await smtpConfigApi.list(selectedOrg.id);
       setConfigs(response.data);
-    } catch (err) {
+    } catch {
       setError("Failed to load SMTP configurations");
     } finally {
       setLoading(false);
@@ -124,7 +124,7 @@ const EmailSettings = () => {
       setDeleteConfirmOpen(false);
       setConfigToDelete(null);
       fetchConfigs();
-    } catch (err) {
+    } catch {
       setError("Failed to delete configuration");
     }
   };
@@ -144,7 +144,7 @@ const EmailSettings = () => {
           ? "Connection successful!"
           : result.error || "Connection failed",
       });
-    } catch (err) {
+    } catch {
       setTestResult({ success: false, message: "Failed to test connection" });
     } finally {
       setTestingConnection(null);

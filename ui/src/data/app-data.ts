@@ -358,7 +358,7 @@ export const APP_DATA: AppDefinition[] = [
       "Internationalization and localization management for multi-language support.",
     iconName: "Translate",
     basePath: "service/translations",
-    status: "soon",
+    status: "dev",
     category: APP_CATEGORIES.CONTENT,
     subItems: [
       { label: "Locales", pathSuffix: "/locales" },
@@ -372,7 +372,7 @@ export const APP_DATA: AppDefinition[] = [
     description: "Theme management and component styling for consistent UI/UX.",
     iconName: "Palette",
     basePath: "service/themes",
-    status: "soon",
+    status: "dev",
     category: APP_CATEGORIES.CONTENT,
     subItems: [
       { label: "Theme List", pathSuffix: "/list" },
@@ -549,9 +549,12 @@ export const APP_DATA: AppDefinition[] = [
       "Server runtime information, OS details, Docker, Nginx, SSL, and terminal access.",
     iconName: "Terminal",
     basePath: "dev/system-info",
-    status: "soon",
+    status: "dev",
     category: APP_CATEGORIES.DEV,
-    subItems: [],
+    subItems: [
+      { label: "System", pathSuffix: "/system" },
+      { label: "Docker", pathSuffix: "/docker" },
+    ],
     keywords: ["server", "docker", "nginx", "ssl", "terminal", "os", "runtime"],
   },
   {

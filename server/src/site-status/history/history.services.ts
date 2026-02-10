@@ -11,8 +11,13 @@ interface ListParams {
   endDate?: string;
 }
 
+interface ListResult {
+  data: Array<Record<string, unknown>>;
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
 export const historyService = {
-  list: async (orgId: string, params: ListParams) => {
+  list: async (orgId: string, params: ListParams): Promise<ListResult> => {
     const { page, limit, monitorId, status, startDate, endDate } = params;
     const skip = (page - 1) * limit;
 

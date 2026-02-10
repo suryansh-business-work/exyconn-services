@@ -111,7 +111,7 @@ const EmailTemplates = () => {
     try {
       const response = await emailTemplateApi.list(selectedOrg.id);
       setTemplates(response.data);
-    } catch (err) {
+    } catch {
       setError("Failed to load email templates");
     } finally {
       setLoading(false);
@@ -139,7 +139,7 @@ const EmailTemplates = () => {
             );
             setLivePreviewHtml(result.html);
             setPreviewErrors(result.errors);
-          } catch (err) {
+          } catch {
             setLivePreviewHtml(
               '<p style="color: red;">Failed to compile MJML</p>',
             );
@@ -216,7 +216,7 @@ const EmailTemplates = () => {
       setDeleteConfirmOpen(false);
       setTemplateToDelete(null);
       fetchTemplates();
-    } catch (err) {
+    } catch {
       setError("Failed to delete template");
     }
   };

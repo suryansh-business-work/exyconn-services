@@ -42,7 +42,7 @@ export const validateApiKey = async (
     req.apiKey = apiKey;
 
     next();
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Authentication error", code: "AUTH_ERROR" });
   }
 };
@@ -68,7 +68,7 @@ export const optionalApiKey = async (
     }
 
     next();
-  } catch (error) {
+  } catch {
     next();
   }
 };
@@ -105,7 +105,7 @@ export const validateOrgSlug = async (
     req.orgSlug = org.orgSlug;
 
     next();
-  } catch (error) {
+  } catch {
     res
       .status(500)
       .json({ error: "Validation error", code: "VALIDATION_ERROR" });

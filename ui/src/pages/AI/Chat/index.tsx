@@ -44,6 +44,7 @@ const AIChatPage = () => {
 
   useEffect(() => {
     fetchChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOrg, selectedApiKey]);
 
   const loadChat = async (chatId: string) => {

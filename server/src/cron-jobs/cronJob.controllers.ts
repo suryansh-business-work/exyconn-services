@@ -18,7 +18,7 @@ export const getCronJobs = async (req: Request, res: Response) => {
     }
     const result = await cronJobService.list(orgId, parsed.data);
     res.json(result);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to list cron jobs" });
   }
 };
@@ -30,7 +30,7 @@ export const getCronJob = async (req: Request, res: Response) => {
     const job = await cronJobService.get(orgId, jobId);
     if (!job) return res.status(404).json({ error: "Cron job not found" });
     res.json(job);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to get cron job" });
   }
 };
@@ -46,7 +46,7 @@ export const createCronJob = async (req: Request, res: Response) => {
     }
     const job = await cronJobService.create(orgId, parsed.data as Parameters<typeof cronJobService.create>[1]);
     res.status(201).json(job);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to create cron job" });
   }
 };
@@ -64,7 +64,7 @@ export const updateCronJob = async (req: Request, res: Response) => {
     const job = await cronJobService.update(orgId, jobId, parsed.data as Parameters<typeof cronJobService.update>[2]);
     if (!job) return res.status(404).json({ error: "Cron job not found" });
     res.json(job);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to update cron job" });
   }
 };
@@ -76,7 +76,7 @@ export const deleteCronJob = async (req: Request, res: Response) => {
     const deleted = await cronJobService.delete(orgId, jobId);
     if (!deleted) return res.status(404).json({ error: "Cron job not found" });
     res.json({ success: true });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to delete cron job" });
   }
 };
@@ -88,7 +88,7 @@ export const togglePauseCronJob = async (req: Request, res: Response) => {
     const job = await cronJobService.togglePause(orgId, jobId);
     if (!job) return res.status(404).json({ error: "Cron job not found" });
     res.json(job);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to toggle cron job" });
   }
 };
@@ -119,7 +119,7 @@ export const getCronJobHistory = async (req: Request, res: Response) => {
     }
     const result = await cronJobService.getHistory(orgId, parsed.data);
     res.json(result);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to get cron job history" });
   }
 };
@@ -129,7 +129,7 @@ export const getCronJobStats = async (req: Request, res: Response) => {
     const orgId = req.params.orgId as string;
     const stats = await cronJobService.getStats(orgId);
     res.json(stats);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to get cron job stats" });
   }
 };

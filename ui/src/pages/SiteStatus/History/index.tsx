@@ -85,6 +85,7 @@ const SiteStatusHistory = () => {
 
   useEffect(() => {
     fetchHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedOrg,
     selectedApiKey,

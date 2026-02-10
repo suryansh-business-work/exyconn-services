@@ -65,6 +65,7 @@ const EnvAppsPage = () => {
 
   useEffect(() => {
     fetchApps();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOrg, selectedApiKey, page, rowsPerPage, search]);
 
   const handleDelete = async (appId: string) => {

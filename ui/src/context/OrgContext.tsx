@@ -98,6 +98,7 @@ export const OrgProvider = ({ children }: OrgProviderProps) => {
 
   useEffect(() => {
     fetchOrganizations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Persist selected org to localStorage
@@ -153,6 +154,7 @@ export const OrgProvider = ({ children }: OrgProviderProps) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useOrg = (): OrgContextType => {
   const context = useContext(OrgContext);
   if (context === undefined) {

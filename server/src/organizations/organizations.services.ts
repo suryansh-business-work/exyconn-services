@@ -2,7 +2,6 @@ import {
   OrganizationModel,
   toPlainObject,
   generateApiKey,
-  IOrganization,
 } from "./organizations.models";
 import {
   CreateOrganizationInput,

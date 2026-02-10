@@ -61,6 +61,12 @@ import {
   CronJobHistoryPage,
   CronJobApiDocs,
 } from "./pages/CronJobs";
+import { SystemInfoPage, DockerPage } from "./pages/SystemInfo";
+import {
+  TranslationsLocalesPage,
+  TranslationSectionsPage,
+} from "./pages/Translations";
+import { ThemeListPage, ThemeComponentsPage } from "./pages/Themes";
 
 // Wrapper component to sync URL org and apiKey with context
 const OrgRouteWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -783,6 +789,114 @@ const AppRoutes = () => {
           element={
             <OrgRouteWrapper>
               <CronJobApiDocs />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Translations routes with API key */}
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/translations/locales"
+          element={
+            <OrgRouteWrapper>
+              <TranslationsLocalesPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/translations/sections"
+          element={
+            <OrgRouteWrapper>
+              <TranslationSectionsPage />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Translations legacy routes without API key */}
+        <Route
+          path="/organization/:orgId/service/translations/locales"
+          element={
+            <OrgRouteWrapper>
+              <TranslationsLocalesPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/translations/sections"
+          element={
+            <OrgRouteWrapper>
+              <TranslationSectionsPage />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Themes routes with API key */}
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/themes/list"
+          element={
+            <OrgRouteWrapper>
+              <ThemeListPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/service/themes/components"
+          element={
+            <OrgRouteWrapper>
+              <ThemeComponentsPage />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* Themes legacy routes without API key */}
+        <Route
+          path="/organization/:orgId/service/themes/list"
+          element={
+            <OrgRouteWrapper>
+              <ThemeListPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/service/themes/components"
+          element={
+            <OrgRouteWrapper>
+              <ThemeComponentsPage />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* System Info routes with API key */}
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/dev/system-info/system"
+          element={
+            <OrgRouteWrapper>
+              <SystemInfoPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/apikey/:apiKey/dev/system-info/docker"
+          element={
+            <OrgRouteWrapper>
+              <DockerPage />
+            </OrgRouteWrapper>
+          }
+        />
+
+        {/* System Info legacy routes without API key */}
+        <Route
+          path="/organization/:orgId/dev/system-info/system"
+          element={
+            <OrgRouteWrapper>
+              <SystemInfoPage />
+            </OrgRouteWrapper>
+          }
+        />
+        <Route
+          path="/organization/:orgId/dev/system-info/docker"
+          element={
+            <OrgRouteWrapper>
+              <DockerPage />
             </OrgRouteWrapper>
           }
         />

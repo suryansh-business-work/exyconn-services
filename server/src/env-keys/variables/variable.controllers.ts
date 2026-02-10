@@ -13,7 +13,7 @@ export const envVariableController = {
         search: search as string,
       });
       res.json(result);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to list variables" });
     }
   },
@@ -27,7 +27,7 @@ export const envVariableController = {
       if (!variable)
         return res.status(404).json({ error: "Variable not found" });
       res.json(variable);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get variable" });
     }
   },
@@ -45,7 +45,7 @@ export const envVariableController = {
       if (value === null)
         return res.status(404).json({ error: "Variable not found" });
       res.json({ value });
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get value" });
     }
   },
@@ -80,7 +80,7 @@ export const envVariableController = {
       if (!variable)
         return res.status(404).json({ error: "Variable not found" });
       res.json(variable);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to update variable" });
     }
   },
@@ -94,7 +94,7 @@ export const envVariableController = {
       if (!deleted)
         return res.status(404).json({ error: "Variable not found" });
       res.json({ success: true });
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to delete variable" });
     }
   },
@@ -110,7 +110,7 @@ export const envVariableController = {
         variables,
       );
       res.status(201).json({ created: created.length });
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to bulk create variables" });
     }
   },
@@ -121,7 +121,7 @@ export const envVariableController = {
       const appId = req.params.appId as string;
       const variables = await envVariableService.getAllForApp(orgId, appId);
       res.json(variables);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get variables" });
     }
   },

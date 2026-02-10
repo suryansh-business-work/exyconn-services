@@ -73,6 +73,7 @@ const EnvVariablesPage = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOrg, selectedApiKey, appId, page, rowsPerPage]);
 
   const handleDelete = async (variableId: string) => {

@@ -12,7 +12,7 @@ export const aiChatController = {
         companyId: companyId as string,
       });
       res.json(result);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to list chats" });
     }
   },
@@ -24,7 +24,7 @@ export const aiChatController = {
       const chat = await aiChatService.get(orgId, chatId);
       if (!chat) return res.status(404).json({ error: "Chat not found" });
       res.json(chat);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get chat" });
     }
   },
@@ -34,7 +34,7 @@ export const aiChatController = {
       const orgId = req.params.orgId as string;
       const chat = await aiChatService.create(orgId, req.body);
       res.status(201).json(chat);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to create chat" });
     }
   },
@@ -46,7 +46,7 @@ export const aiChatController = {
       const chat = await aiChatService.update(orgId, chatId, req.body);
       if (!chat) return res.status(404).json({ error: "Chat not found" });
       res.json(chat);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to update chat" });
     }
   },
@@ -58,7 +58,7 @@ export const aiChatController = {
       const deleted = await aiChatService.delete(orgId, chatId);
       if (!deleted) return res.status(404).json({ error: "Chat not found" });
       res.json({ success: true });
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to delete chat" });
     }
   },
@@ -87,7 +87,7 @@ export const aiChatController = {
       const orgId = req.params.orgId as string;
       const stats = await aiChatService.getStats(orgId);
       res.json(stats);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get stats" });
     }
   },

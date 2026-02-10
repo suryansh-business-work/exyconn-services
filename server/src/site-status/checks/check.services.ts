@@ -3,7 +3,6 @@ import http from "http";
 import dns from "dns";
 import { promisify } from "util";
 import { URL } from "url";
-import mongoose from "mongoose";
 import { ISiteMonitor } from "../monitors/monitor.models";
 import { SiteCheckResult, ISiteCheckResult } from "../history/history.models";
 

@@ -151,7 +151,6 @@ export const uploadService = {
       totalFailed: 0,
     };
 
-    const groupId = new mongoose.Types.ObjectId().toString();
     const uploadMode = options.uploadMode || "multiple";
 
     for (const file of files) {

@@ -17,7 +17,7 @@ export const createCronJobSchema = z.object({
     .string()
     .min(1)
     .regex(
-      /^(\*|[0-9,\-\/]+)\s+(\*|[0-9,\-\/]+)\s+(\*|[0-9,\-\/]+)\s+(\*|[0-9,\-\/]+)\s+(\*|[0-9,\-\/]+)$/,
+      /^(\*|[0-9,\-/]+)\s+(\*|[0-9,\-/]+)\s+(\*|[0-9,\-/]+)\s+(\*|[0-9,\-/]+)\s+(\*|[0-9,\-/]+)$/,
       "Invalid cron expression (use 5-part format: minute hour day month weekday)",
     ),
   timezone: z.string().default("UTC"),

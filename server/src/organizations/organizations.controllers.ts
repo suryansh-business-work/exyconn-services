@@ -48,7 +48,7 @@ export const organizationsController = {
           .json({ success: false, error: "Organization not found" });
       }
       return res.json({ success: true, data: organization });
-    } catch (error) {
+    } catch {
       return res
         .status(500)
         .json({ success: false, error: "Internal server error" });
@@ -67,7 +67,7 @@ export const organizationsController = {
           .json({ success: false, error: "Organization not found" });
       }
       return res.json({ success: true, data: organization });
-    } catch (error) {
+    } catch {
       return res
         .status(500)
         .json({ success: false, error: "Internal server error" });
@@ -132,7 +132,7 @@ export const organizationsController = {
         success: true,
         message: "Organization deleted successfully",
       });
-    } catch (error) {
+    } catch {
       return res
         .status(500)
         .json({ success: false, error: "Internal server error" });
@@ -176,7 +176,7 @@ export const organizationsController = {
         success: true,
         message: "API key removed successfully",
       });
-    } catch (error) {
+    } catch {
       return res
         .status(500)
         .json({ success: false, error: "Internal server error" });

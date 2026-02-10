@@ -26,7 +26,7 @@ export const envAppController = {
       const app = await envAppService.get(orgId, appId);
       if (!app) return res.status(404).json({ error: "App not found" });
       res.json(app);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get app" });
     }
   },
@@ -53,7 +53,7 @@ export const envAppController = {
       const app = await envAppService.update(orgId, appId, req.body);
       if (!app) return res.status(404).json({ error: "App not found" });
       res.json(app);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to update app" });
     }
   },
@@ -65,7 +65,7 @@ export const envAppController = {
       const deleted = await envAppService.delete(orgId, appId);
       if (!deleted) return res.status(404).json({ error: "App not found" });
       res.json({ success: true });
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to delete app" });
     }
   },
@@ -75,7 +75,7 @@ export const envAppController = {
       const orgId = req.params.orgId as string;
       const stats = await envAppService.getStats(orgId);
       res.json(stats);
-    } catch (err) {
+    } catch {
       res.status(500).json({ error: "Failed to get stats" });
     }
   },

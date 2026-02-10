@@ -12,6 +12,8 @@ import aiRoutes from "./ai";
 import apiLogRoutes from "./api-logs/log.routes";
 import featureFlagRoutes from "./feature-flags/featureFlag.routes";
 import cronJobRoutes from "./cron-jobs/cronJob.routes";
+import systemInfoRoutes from "./system-info";
+import translationsThemeRoutes from "./translations-theme";
 
 dotenv.config();
 
@@ -80,6 +82,8 @@ app.use("/api/organizations/:orgId/ai", aiRoutes);
 app.use("/api/organizations/:orgId/logs", apiLogRoutes);
 app.use("/api/organizations/:orgId/feature-flags", featureFlagRoutes);
 app.use("/api/organizations/:orgId/cron-jobs", cronJobRoutes);
+app.use("/api/organizations/:orgId/translations-theme", translationsThemeRoutes);
+app.use("/api/system-info", systemInfoRoutes);
 
 
 // Error handling middleware

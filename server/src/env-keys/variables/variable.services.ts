@@ -30,8 +30,13 @@ const toObjectId = (id: string): mongoose.Types.ObjectId | null => {
   }
 };
 
+interface ListResult {
+  data: Array<Record<string, unknown>>;
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
 export const envVariableService = {
-  list: async (orgId: string, appId: string, params: ListParams) => {
+  list: async (orgId: string, appId: string, params: ListParams): Promise<ListResult> => {
     const { page, limit, search } = params;
     const skip = (page - 1) * limit;
 

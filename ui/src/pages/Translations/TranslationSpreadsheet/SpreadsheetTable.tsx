@@ -66,9 +66,11 @@ const SpreadsheetTable = ({
                   <Chip label={entry.section} size="small" color="primary" variant="outlined" />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: 12 }}>
-                    {entry.key}
-                  </Typography>
+                  <Tooltip title={`Access: locale.<code>.${entry.section}.${entry.key}`} placement="top">
+                    <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: 12, cursor: "help" }}>
+                      {entry.key}
+                    </Typography>
+                  </Tooltip>
                   {entry.description && (
                     <Typography variant="caption" color="text.secondary" display="block">
                       {entry.description}

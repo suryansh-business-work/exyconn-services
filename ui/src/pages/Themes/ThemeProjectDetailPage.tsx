@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { PageBreadcrumb } from "../../components/common";
 import { useOrg } from "../../context/OrgContext";
-import { themeProjectApi, themeApi } from "../../api/translationsThemeApi";
+import { themeProjectApi, themeApi } from "../../api/themesApi";
 import { ThemeProject, ThemeData } from "../../types/translationsTheme";
 import ThemeCard from "./ThemeCard";
 

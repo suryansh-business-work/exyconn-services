@@ -43,7 +43,7 @@ const TranslationsApiDocs = () => {
       </Typography>
       <ApiDocsViewer
         title="Translations API"
-        subtitle="Manage translation projects, locales, and translation key-value pairs"
+        subtitle="Manage translation projects, locales, sections, and translation key-value pairs. Access pattern: locale.<code>.<section>.<key>"
         baseUrl={getBaseUrlWithoutApi()}
         apiKey={apiKey}
         orgId={orgId}
@@ -53,6 +53,9 @@ const TranslationsApiDocs = () => {
           "Create Project",
           "Update Project",
           "Delete Project",
+          "Locale Counts",
+          "Add Section",
+          "Remove Section",
           "List Locales",
           "Create Locale",
           "Bulk Locales",

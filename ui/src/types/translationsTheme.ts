@@ -14,6 +14,7 @@ export interface TranslationProject {
   organizationId: string;
   name: string;
   description?: string;
+  sections: Section[];
   createdAt: string;
   updatedAt: string;
 }
@@ -36,6 +37,8 @@ export interface Locale {
   projectId: string;
   code: string;
   name: string;
+  nativeName: string;
+  flag: string;
   isDefault: boolean;
   isActive: boolean;
   createdAt: string;
@@ -50,12 +53,49 @@ export interface LocaleListResponse {
 export interface LocaleFormValues {
   code: string;
   name: string;
+  nativeName: string;
+  flag?: string;
   isDefault: boolean;
 }
 
 export interface PredefinedLocale {
   code: string;
   name: string;
+  nativeName: string;
+  flag: string;
+}
+
+export interface LocaleJsonEntry {
+  locale: string;
+  language: {
+    name: string;
+    name_local: string;
+    iso_639_1: string;
+    iso_639_2: string;
+    iso_639_3: string;
+    countries: string[];
+  };
+  country: {
+    name: string;
+    name_local: string;
+    code: string;
+    area_sq_km: number;
+    continent: string;
+    region: string;
+    capital_name: string;
+    capital_latitude: number;
+    capital_longitude: number;
+    currency: string;
+    currency_local: string;
+    currency_code: string;
+    currency_symbol: string;
+    languages: (string | any)[]; // Can be strings or objects
+    flag: string;
+  };
+}
+
+export interface LocaleCountsResponse {
+  counts: Record<string, number>;
 }
 
 // ==================== Translation Types ====================
@@ -67,6 +107,7 @@ export interface TranslationEntry {
   section: string;
   key: string;
   values: Record<string, string>;
+  defaultValue?: string;
   description?: string;
   createdAt: string;
   updatedAt: string;
@@ -88,6 +129,7 @@ export interface TranslationUpsertInput {
   section: string;
   key: string;
   values: Record<string, string>;
+  defaultValue?: string;
   description?: string;
 }
 
@@ -100,8 +142,26 @@ export interface TranslationBulkInput {
   }>;
 }
 
+// ==================== Section Types ====================
+
+export interface Section {
+  name: string;
+  slug: string;
+  variableCount?: number;
+}
+
 export interface TranslationSectionsResponse {
-  sections: string[];
+  sections: Section[];
+}
+
+export interface AutoTranslateRequest {
+  sourceLocaleCode: string;
+  targetLocaleCode: string;
+  texts: Record<string, string>;
+}
+
+export interface AutoTranslateResponse {
+  translations: Record<string, string>;
 }
 
 // ==================== Theme Project Types ====================

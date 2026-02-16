@@ -18,62 +18,6 @@ export const listProjectsQuerySchema = z.object({
   search: z.string().optional(),
 });
 
-// ==================== Locale Validators ====================
-
-export const createLocaleSchema = z.object({
-  code: z.string().min(2).max(10),
-  name: z.string().min(1).max(100),
-  isDefault: z.boolean().optional(),
-});
-
-export const bulkCreateLocaleSchema = z.object({
-  locales: z.array(
-    z.object({
-      code: z.string().min(2).max(10),
-      name: z.string().min(1).max(100),
-      isDefault: z.boolean().optional(),
-    }),
-  ),
-});
-
-export const updateLocaleSchema = z.object({
-  name: z.string().min(1).max(100).optional(),
-  isDefault: z.boolean().optional(),
-  isActive: z.boolean().optional(),
-});
-
-export const listLocalesQuerySchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(200).default(50),
-});
-
-// ==================== Translation Validators ====================
-
-export const upsertTranslationSchema = z.object({
-  section: z.string().min(1).max(100),
-  key: z.string().min(1).max(200),
-  values: z.record(z.string(), z.string()),
-  description: z.string().max(500).optional(),
-});
-
-export const bulkUpsertTranslationsSchema = z.object({
-  section: z.string().min(1).max(100),
-  entries: z.array(
-    z.object({
-      key: z.string().min(1).max(200),
-      values: z.record(z.string(), z.string()),
-      description: z.string().max(500).optional(),
-    }),
-  ),
-});
-
-export const listTranslationsQuerySchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(200).default(50),
-  section: z.string().optional(),
-  search: z.string().optional(),
-});
-
 // ==================== Theme Validators ====================
 
 export const createThemeSchema = z.object({

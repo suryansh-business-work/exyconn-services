@@ -11,19 +11,20 @@ import {
   CardActionArea,
   IconButton,
   Tooltip,
+  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { Add, Delete, Edit, Search } from "@mui/icons-material";
+import { Add, Delete, Edit, Search, Language } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { PageBreadcrumb } from "../../components/common";
 import { useOrg } from "../../context/OrgContext";
-import { translationProjectApi } from "../../api/translationsThemeApi";
+import { translationProjectApi } from "../../api/translationsApi";
 import {
   TranslationProject,
   TranslationProjectFormValues,
@@ -44,6 +45,7 @@ const TranslationProjectsPage = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editProject, setEditProject] = useState<TranslationProject | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TranslationProject | null>(null);
+  const [localeCounts, setLocaleCounts] = useState<Record<string, number>>({});
 
   const basePath = selectedApiKey
     ? `/organization/${selectedOrg?.id}/apikey/${selectedApiKey.apiKey}`
@@ -55,6 +57,11 @@ const TranslationProjectsPage = () => {
     try {
       const res = await translationProjectApi.list(selectedOrg.id, 1, 100, search || undefined);
       setProjects(res.data);
+      if (res.data.length > 0) {
+        const ids = res.data.map((p) => p._id);
+        const countsRes = await translationProjectApi.getLocaleCounts(selectedOrg.id, ids);
+        setLocaleCounts(countsRes.counts);
+      }
     } catch {
       setError("Failed to load projects");
     } finally {
@@ -147,7 +154,10 @@ const TranslationProjectsPage = () => {
                   <CardContent>
                     <Typography variant="h6" noWrap>{p.name}</Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>{p.description || "No description"}</Typography>
-                    <Typography variant="caption" color="text.secondary">{new Date(p.createdAt).toLocaleDateString()}</Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
+                      <Typography variant="caption" color="text.secondary">{new Date(p.createdAt).toLocaleDateString()}</Typography>
+                      <Chip icon={<Language sx={{ fontSize: 14 }} />} label={`${localeCounts[p._id] || 0} locales`} size="small" variant="outlined" />
+                    </Box>
                   </CardContent>
                 </CardActionArea>
                 <Box sx={{ display: "flex", justifyContent: "flex-end", px: 1, pb: 1 }}>

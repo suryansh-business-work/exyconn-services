@@ -1,10 +1,7 @@
-import { Box, TextField, MenuItem, Chip, Button } from "@mui/material";
+import { Box, TextField, Chip, Button } from "@mui/material";
 import { Add, Save, Search } from "@mui/icons-material";
 
 interface SpreadsheetToolbarProps {
-  sections: string[];
-  selectedSection: string;
-  onSectionChange: (section: string) => void;
   search: string;
   onSearchChange: (search: string) => void;
   localeCount: number;
@@ -15,9 +12,6 @@ interface SpreadsheetToolbarProps {
 }
 
 const SpreadsheetToolbar = ({
-  sections,
-  selectedSection,
-  onSectionChange,
   search,
   onSearchChange,
   localeCount,
@@ -28,19 +22,6 @@ const SpreadsheetToolbar = ({
 }: SpreadsheetToolbarProps) => {
   return (
     <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap", alignItems: "center" }}>
-      <TextField
-        select
-        label="Section"
-        value={selectedSection}
-        onChange={(e) => onSectionChange(e.target.value)}
-        size="small"
-        sx={{ minWidth: 160 }}
-      >
-        <MenuItem value="">All Sections</MenuItem>
-        {sections.map((s) => (
-          <MenuItem key={s} value={s}>{s}</MenuItem>
-        ))}
-      </TextField>
       <TextField
         label="Search keys"
         value={search}

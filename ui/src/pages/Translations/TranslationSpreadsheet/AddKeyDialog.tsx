@@ -5,13 +5,16 @@ import {
   DialogActions,
   TextField,
   Button,
+  MenuItem,
+  Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Section } from "../../../types/translationsTheme";
 
 interface AddKeyDialogProps {
   open: boolean;
-  sections: string[];
+  sections: Section[];
   onClose: () => void;
   onAdd: (section: string, key: string, description: string) => Promise<void>;
 }
@@ -22,7 +25,7 @@ const addKeySchema = Yup.object({
   description: Yup.string().max(500),
 });
 
-const AddKeyDialog = ({ open, onClose, onAdd }: AddKeyDialogProps) => {
+const AddKeyDialog = ({ open, sections, onClose, onAdd }: AddKeyDialogProps) => {
   const formik = useFormik({
     initialValues: { section: "", key: "", description: "" },
     validationSchema: addKeySchema,
@@ -44,15 +47,19 @@ const AddKeyDialog = ({ open, onClose, onAdd }: AddKeyDialogProps) => {
         <DialogTitle>Add Translation Key</DialogTitle>
         <DialogContent>
           <TextField
+            select
             label="Section"
             fullWidth
             margin="dense"
             size="small"
-            placeholder="e.g., common, homepage, auth"
             {...formik.getFieldProps("section")}
             error={formik.touched.section && Boolean(formik.errors.section)}
             helperText={formik.touched.section && formik.errors.section}
-          />
+          >
+            {sections.map((s) => (
+              <MenuItem key={s.slug} value={s.slug}>{s.name}</MenuItem>
+            ))}
+          </TextField>
           <TextField
             label="Key"
             fullWidth
@@ -63,6 +70,11 @@ const AddKeyDialog = ({ open, onClose, onAdd }: AddKeyDialogProps) => {
             error={formik.touched.key && Boolean(formik.errors.key)}
             helperText={formik.touched.key && formik.errors.key}
           />
+          {formik.values.section && formik.values.key && (
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
+              Access: locale.&lt;code&gt;.{formik.values.section}.{formik.values.key}
+            </Typography>
+          )}
           <TextField
             label="Description (optional)"
             fullWidth

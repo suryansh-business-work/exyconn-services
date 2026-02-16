@@ -6,7 +6,7 @@ import { Save } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import { PageBreadcrumb } from "../../../components/common";
 import { useOrg } from "../../../context/OrgContext";
-import { themeProjectApi, themeApi } from "../../../api/translationsThemeApi";
+import { themeProjectApi, themeApi } from "../../../api/themesApi";
 import {
   ThemeProject, ThemeData, ThemeColors, ThemeTypography, ThemeSpacing, ThemeBorderRadius,
 } from "../../../types/translationsTheme";

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Box, Alert, CircularProgress } from "@mui/material";
 import { useOrg } from "../../../context/OrgContext";
-import { translationApi, localeApi } from "../../../api/translationsThemeApi";
-import { Locale, TranslationEntry } from "../../../types/translationsTheme";
+import { translationApi, localeApi, sectionApi } from "../../../api/translationsApi";
+import { Locale, TranslationEntry, Section } from "../../../types/translationsTheme";
+import SectionManager from "./SectionManager";
 import SpreadsheetToolbar from "./SpreadsheetToolbar";
 import SpreadsheetTable from "./SpreadsheetTable";
 import AddKeyDialog from "./AddKeyDialog";
@@ -21,7 +22,7 @@ const TranslationSpreadsheet = ({ projectId }: TranslationSpreadsheetProps) => {
   const { selectedOrg } = useOrg();
   const [locales, setLocales] = useState<Locale[]>([]);
   const [entries, setEntries] = useState<TranslationEntry[]>([]);
-  const [sections, setSections] = useState<string[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
   const [selectedSection, setSelectedSection] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -80,7 +81,7 @@ const TranslationSpreadsheet = ({ projectId }: TranslationSpreadsheetProps) => {
 
   const getCellValue = (entry: TranslationEntry, localeCode: string): string => {
     const edited = editedCells.get(`${entry._id}:${localeCode}`);
-    return edited ? edited.value : (entry.values[localeCode] || "");
+    return edited ? edited.value : (entry.values?.[localeCode] || "");
   };
 
   const handleSaveAll = async () => {
@@ -126,6 +127,21 @@ const TranslationSpreadsheet = ({ projectId }: TranslationSpreadsheetProps) => {
     await fetchEntries();
   };
 
+  const handleAddSection = async (name: string) => {
+    if (!selectedOrg) return;
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    await sectionApi.add(selectedOrg.id, projectId, { name, slug });
+    await fetchSections();
+  };
+
+  const handleRemoveSection = async (slug: string) => {
+    if (!selectedOrg) return;
+    await sectionApi.remove(selectedOrg.id, projectId, slug);
+    if (selectedSection === slug) setSelectedSection("");
+    await fetchSections();
+    await fetchEntries();
+  };
+
   if (loading && entries.length === 0) {
     return <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}><CircularProgress /></Box>;
   }
@@ -134,10 +150,14 @@ const TranslationSpreadsheet = ({ projectId }: TranslationSpreadsheetProps) => {
     <Box>
       {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>{error}</Alert>}
       {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
-      <SpreadsheetToolbar
+      <SectionManager
         sections={sections}
         selectedSection={selectedSection}
-        onSectionChange={(s) => { setSelectedSection(s); setPage(0); }}
+        onSectionSelect={(s) => { setSelectedSection(s); setPage(0); }}
+        onAddSection={handleAddSection}
+        onRemoveSection={handleRemoveSection}
+      />
+      <SpreadsheetToolbar
         search={search}
         onSearchChange={(s) => { setSearch(s); setPage(0); }}
         localeCount={activeLocales.length}

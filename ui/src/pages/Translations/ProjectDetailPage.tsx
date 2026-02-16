@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { Box, Typography, Tab, Tabs, CircularProgress, Alert } from "@mui/material";
+import { Box, Typography, CircularProgress, Alert } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { PageBreadcrumb } from "../../components/common";
 import { useOrg } from "../../context/OrgContext";
-import { translationProjectApi } from "../../api/translationsThemeApi";
+import { translationProjectApi } from "../../api/translationsApi";
 import { TranslationProject } from "../../types/translationsTheme";
-import LocaleManager from "./LocaleManager/LocaleManager";
-import TranslationSpreadsheet from "./TranslationSpreadsheet/TranslationSpreadsheet";
+import ProjectStepper from "./ProjectStepper";
 
 const ProjectDetailPage = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -14,8 +13,6 @@ const ProjectDetailPage = () => {
   const [project, setProject] = useState<TranslationProject | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [tab, setTab] = useState(0);
-  const [localeVersion, setLocaleVersion] = useState(0);
 
   const basePath = selectedApiKey
     ? `/organization/${selectedOrg?.id}/apikey/${selectedApiKey.apiKey}`
@@ -38,10 +35,6 @@ const ProjectDetailPage = () => {
   useEffect(() => {
     fetchProject();
   }, [fetchProject]);
-
-  const handleLocalesChange = () => {
-    setLocaleVersion((v) => v + 1);
-  };
 
   const breadcrumbs = [
     { label: "Home", href: "/dashboard" },
@@ -72,28 +65,11 @@ const ProjectDetailPage = () => {
         {project?.name || "Project"}
       </Typography>
       {project?.description && (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
           {project.description}
         </Typography>
       )}
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
-        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-          <Tab label="Locales" />
-          <Tab label="Translation Text" />
-        </Tabs>
-      </Box>
-      {projectId && tab === 0 && (
-        <LocaleManager
-          projectId={projectId}
-          onLocalesChange={handleLocalesChange}
-        />
-      )}
-      {projectId && tab === 1 && (
-        <TranslationSpreadsheet
-          projectId={projectId}
-          key={localeVersion}
-        />
-      )}
+      {projectId && <ProjectStepper projectId={projectId} />}
     </Box>
   );
 };

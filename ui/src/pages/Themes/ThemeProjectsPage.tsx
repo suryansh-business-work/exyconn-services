@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { PageBreadcrumb } from "../../components/common";
 import { useOrg } from "../../context/OrgContext";
-import { themeProjectApi } from "../../api/translationsThemeApi";
+import { themeProjectApi } from "../../api/themesApi";
 import { ThemeProject, ThemeProjectFormValues } from "../../types/translationsTheme";
 
 const schema = Yup.object({

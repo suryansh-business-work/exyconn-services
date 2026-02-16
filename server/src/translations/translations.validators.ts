@@ -23,6 +23,8 @@ export const listProjectsQuerySchema = z.object({
 export const createLocaleSchema = z.object({
   code: z.string().min(2).max(10),
   name: z.string().min(1).max(100),
+  nativeName: z.string().min(1).max(100),
+  flag: z.string().optional(),
   isDefault: z.boolean().optional(),
 });
 
@@ -31,6 +33,8 @@ export const bulkCreateLocaleSchema = z.object({
     z.object({
       code: z.string().min(2).max(10),
       name: z.string().min(1).max(100),
+      nativeName: z.string().min(1).max(100),
+      flag: z.string().optional(),
       isDefault: z.boolean().optional(),
     }),
   ),
@@ -38,6 +42,8 @@ export const bulkCreateLocaleSchema = z.object({
 
 export const updateLocaleSchema = z.object({
   name: z.string().min(1).max(100).optional(),
+  nativeName: z.string().min(1).max(100).optional(),
+  flag: z.string().optional(),
   isDefault: z.boolean().optional(),
   isActive: z.boolean().optional(),
 });
@@ -47,12 +53,20 @@ export const listLocalesQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(200).default(50),
 });
 
+// ==================== Section Validators ====================
+
+export const addSectionSchema = z.object({
+  name: z.string().min(1).max(100),
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase with hyphens only"),
+});
+
 // ==================== Translation Validators ====================
 
 export const upsertTranslationSchema = z.object({
   section: z.string().min(1).max(100),
   key: z.string().min(1).max(200),
   values: z.record(z.string(), z.string()),
+  defaultValue: z.string().max(5000).optional(),
   description: z.string().max(500).optional(),
 });
 
@@ -62,72 +76,21 @@ export const bulkUpsertTranslationsSchema = z.object({
     z.object({
       key: z.string().min(1).max(200),
       values: z.record(z.string(), z.string()),
+      defaultValue: z.string().max(5000).optional(),
       description: z.string().max(500).optional(),
     }),
   ),
+});
+
+export const autoTranslateSchema = z.object({
+  sourceLocaleCode: z.string().min(1).max(10),
+  targetLocaleCode: z.string().min(1).max(10),
+  texts: z.record(z.string(), z.string()),
 });
 
 export const listTranslationsQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(200).default(50),
   section: z.string().optional(),
-  search: z.string().optional(),
-});
-
-// ==================== Theme Validators ====================
-
-export const createThemeSchema = z.object({
-  name: z.string().min(1).max(100),
-  description: z.string().max(500).optional(),
-  isDefault: z.boolean().optional(),
-  colors: z.object({
-    primary: z.string(),
-    secondary: z.string(),
-    success: z.string(),
-    warning: z.string(),
-    error: z.string(),
-    info: z.string(),
-    background: z.string(),
-    surface: z.string(),
-    text: z.string(),
-    textSecondary: z.string(),
-    border: z.string(),
-  }).passthrough(),
-  typography: z.object({
-    fontFamily: z.string(),
-    fontSize: z.number(),
-    fontWeightLight: z.number(),
-    fontWeightRegular: z.number(),
-    fontWeightMedium: z.number(),
-    fontWeightBold: z.number(),
-    h1Size: z.string(),
-    h2Size: z.string(),
-    h3Size: z.string(),
-    bodySize: z.string(),
-    captionSize: z.string(),
-  }),
-  spacing: z.object({
-    unit: z.number(),
-    xs: z.number(),
-    sm: z.number(),
-    md: z.number(),
-    lg: z.number(),
-    xl: z.number(),
-  }),
-  borderRadius: z.object({
-    none: z.number(),
-    sm: z.number(),
-    md: z.number(),
-    lg: z.number(),
-    full: z.number(),
-  }),
-  components: z.record(z.string(), z.record(z.string(), z.string())).optional(),
-});
-
-export const updateThemeSchema = createThemeSchema.partial();
-
-export const listThemesQuerySchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100).default(20),
   search: z.string().optional(),
 });
